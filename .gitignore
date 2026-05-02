@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.env
+*.egg-info/
+
+# Database
+*.db
+*.sqlite
+
+# ChromaDB (large — not for git)
+backend/chroma_db/
+
+# Models
+*.gguf
+*.bin
+*.pt
+*.safetensors
+
+# Node
+node_modules/
+dist/
+.next/
+
+# Mac
+.DS_Store
+.AppleDouble
+
+# Docker
+.docker/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+logs/
+
+# Temp
+tmp/
+temp/

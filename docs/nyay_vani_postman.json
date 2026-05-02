@@ -1,0 +1,529 @@
+{
+  "info": {
+    "name": "Nyay Vani API",
+    "description": "Complete API test collection for Nyay Vani — Legal & Medical AI assistant.\n\nSETUP:\n1. Start Docker: docker compose up\n2. Wait for health check to pass\n3. Set base_url variable to http://localhost:8000\n4. Run '01 Health Check' first\n5. Run '02 Create Legal Session' — copy session_id to SESSION_ID variable\n6. Then run chat, voice, leads tests in order\n\nNote: SSE streaming endpoints return text/event-stream — use the Postman Send button and watch the response stream in.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {"key": "base_url", "value": "http://localhost:8000"},
+    {"key": "SESSION_ID", "value": "paste-session-id-here"},
+    {"key": "MEDICAL_SESSION_ID", "value": "paste-medical-session-id-here"},
+    {"key": "admin_user", "value": "admin"},
+    {"key": "admin_pass", "value": "nyayvani2024"}
+  ],
+  "item": [
+    {
+      "name": "🏥 01 Health & System",
+      "item": [
+        {
+          "name": "Root",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/",
+            "description": "App info and links"
+          }
+        },
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/health",
+            "description": "Check Ollama, ChromaDB, Database status + system RAM/CPU metrics.\nExpect: ollama=connected, both models ready, chromadb=connected"
+          }
+        },
+        {
+          "name": "API Docs",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/docs",
+            "description": "FastAPI auto-generated Swagger UI"
+          }
+        },
+        {
+          "name": "Legal Router Test",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/legal/test",
+            "description": "Quick test that legal router is mounted"
+          }
+        },
+        {
+          "name": "Medical Router Test",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/medical/test",
+            "description": "Quick test that medical router is mounted"
+          }
+        }
+      ]
+    },
+    {
+      "name": "📋 02 Session Management",
+      "item": [
+        {
+          "name": "Create Legal Session",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/session/new",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"tab_type\": \"legal\"}"
+            },
+            "description": "Creates a new legal session.\nCOPY the session_id from response and set it as SESSION_ID variable above."
+          }
+        },
+        {
+          "name": "Create Medical Session",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/session/new",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"tab_type\": \"medical\"}"
+            },
+            "description": "Creates a new medical session.\nCOPY the session_id to MEDICAL_SESSION_ID variable."
+          }
+        },
+        {
+          "name": "Get Session Details",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/session/{{SESSION_ID}}",
+            "description": "Returns full session details including:\n- agent_phase (intake or expert)\n- confidence_score (0-24)\n- metadata collected so far\n- full message history\n- emergency_flagged status"
+          }
+        },
+        {
+          "name": "Get Session Summary",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/session/{{SESSION_ID}}/summary",
+            "description": "AI-generated summary of the conversation.\nUsed to pre-fill lead forms for lawyers."
+          }
+        },
+        {
+          "name": "Delete Session (Reset)",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/session/{{SESSION_ID}}",
+            "description": "Deletes session and ALL messages.\nUse this to start fresh conversation."
+          }
+        }
+      ]
+    },
+    {
+      "name": "⚖️ 03 Legal Chat (SSE Streaming)",
+      "item": [
+        {
+          "name": "Legal Chat — Intake Phase (Domestic Violence)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/legal/chat",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"{{SESSION_ID}}\",\n  \"message\": \"Mere pati ne mujhe ghar se nikaala hai aur maar bhi raha hai\",\n  \"input_type\": \"text\"\n}"
+            },
+            "description": "STREAMING ENDPOINT — returns text/event-stream\n\nYou will see SSE events:\n- event: metrics → RAM/CPU usage\n- event: agent_start → which model is being used (E2B for intake)\n- event: token → each word streaming\n- event: metadata_update → confidence score increasing\n- event: done → full response + metrics\n\nThis message starts intake phase. Agent 1 (E2B) will ask follow-up questions.\nKeep sending messages with same SESSION_ID to build the case file.\nOnce confidence >= 14/24, it switches to Expert mode automatically."
+          }
+        },
+        {
+          "name": "Legal Chat — Continue Intake (Add Location)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/legal/chat",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"{{SESSION_ID}}\",\n  \"message\": \"Main Lucknow, Uttar Pradesh mein rehti hoon, Hindu hoon, shaadi ko 5 saal ho gaye hain\",\n  \"input_type\": \"text\"\n}"
+            },
+            "description": "Continues intake conversation.\nProvides location, religion, marital details.\nWatch confidence_score increase in metadata_update events."
+          }
+        },
+        {
+          "name": "Legal Chat — Complete Intake (Trigger Expert)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/legal/chat",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"{{SESSION_ID}}\",\n  \"message\": \"Do bachche hain, police mein complaint nahi ki abhi tak, medical reports hain chot ki, bahut urgent hai\",\n  \"input_type\": \"text\"\n}"
+            },
+            "description": "Completes intake information.\nShould trigger phase_change event: intake → expert\nNext response will use E4B with RAG citations.\nLook for: event: citations, event: phase_change"
+          }
+        },
+        {
+          "name": "Legal Chat — Expert Response (Property Rights)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/legal/chat",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"{{SESSION_ID}}\",\n  \"message\": \"Kya mujhe ghar mein rehne ka haq hai?\",\n  \"input_type\": \"text\"\n}"
+            },
+            "description": "In expert phase — should receive RAG-grounded answer with citations.\nExpect: [Source: DV Act 2005, Section 17] citation in response.\nWatch: event: citations shows which legal docs were retrieved."
+          }
+        },
+        {
+          "name": "Legal Chat — Emergency Detection Test",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/legal/chat",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"{{SESSION_ID}}\",\n  \"message\": \"Pati abhi maar raha hai mujhe, bachao please\",\n  \"input_type\": \"text\"\n}"
+            },
+            "description": "EMERGENCY TEST — should trigger emergency event.\nExpect: event: emergency with helpline numbers (100, 181)\nNo LLM response — direct emergency UI data returned."
+          }
+        },
+        {
+          "name": "Legal Chat — Property Inheritance (New Session)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/legal/chat",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"{{SESSION_ID}}\",\n  \"message\": \"Mere papa ki death ho gayi, bhai bol rahe hain zameen sirf unki hai, mujhe koi hissa nahi milega\",\n  \"input_type\": \"text\"\n}"
+            },
+            "description": "Use Case 2: Property inheritance rights.\nCreate a NEW session first, paste its ID here.\nShould eventually cite Hindu Succession Act + SC judgment."
+          }
+        },
+        {
+          "name": "Legal Chat History",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/legal/history/{{SESSION_ID}}",
+            "description": "Get full conversation history for this session.\nShows all messages, which agent handled each, citations used."
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏥 04 Medical Chat (SSE Streaming)",
+      "item": [
+        {
+          "name": "Medical Chat — Pregnancy Warning Signs",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/medical/chat",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"{{MEDICAL_SESSION_ID}}\",\n  \"message\": \"Mujhe 7 mahine ki pregnancy hai, pair bahut sujan aa rahi hai aur sir mein bahut dard hai\",\n  \"input_type\": \"text\"\n}"
+            },
+            "description": "Use Case 1: Pregnancy warning signs.\nSwelling + headache = pre-eclampsia risk.\nExpect: urgent advice to go to hospital, mention of 102 ambulance, JSY scheme."
+          }
+        },
+        {
+          "name": "Medical Chat — Child Fever",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/medical/chat",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"{{MEDICAL_SESSION_ID}}\",\n  \"message\": \"Mere 2 saal ke bache ko 3 din se 103 degree bukhar hai, khaana nahi kha raha\",\n  \"input_type\": \"text\"\n}"
+            },
+            "description": "Use Case 2: Child fever.\nShould retrieve IMNCI guidelines.\nExpect: danger sign checklist, ORS recipe, hospital threshold guidance."
+          }
+        },
+        {
+          "name": "Medical Chat — Mental Health",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/medical/chat",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"{{MEDICAL_SESSION_ID}}\",\n  \"message\": \"Main bahut thak gayi hoon andar se, roti rehti hoon, kuch accha nahi lagta, jeena nahi chahti\",\n  \"input_type\": \"text\"\n}"
+            },
+            "description": "Use Case 3: Mental health / depression.\nNOTE: 'jeena nahi chahti' = emergency risk.\nExpect: emergency event triggered + iCall helpline number."
+          }
+        },
+        {
+          "name": "Medical Chat — Emergency (Convulsion)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/medical/chat",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"{{MEDICAL_SESSION_ID}}\",\n  \"message\": \"Mere bache ko akdi aa rahi hai, behosh ho gaya\",\n  \"input_type\": \"text\"\n}"
+            },
+            "description": "Medical emergency test — convulsion + unconscious.\nExpect: immediate emergency event with 108 ambulance number.\nNo LLM inference — direct emergency response."
+          }
+        }
+      ]
+    },
+    {
+      "name": "🎤 05 Voice (STT + TTS)",
+      "item": [
+        {
+          "name": "Transcribe Audio (STT)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/voice/transcribe",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "audio_file",
+                  "type": "file",
+                  "src": "",
+                  "description": "Upload any .wav or .webm audio file. Record yourself saying something in Hindi."
+                },
+                {
+                  "key": "language",
+                  "value": "hi",
+                  "type": "text",
+                  "description": "Optional — auto-detects if not provided"
+                }
+              ]
+            },
+            "description": "Upload audio file → get text back.\nUses Whisper tiny model (offline, 39MB).\nSupports Hindi, Tamil, Telugu, Bengali, Marathi etc.\n\nTO TEST: Record yourself saying 'Mera naam Priya hai' in Hindi,\nsave as audio.wav and upload here."
+          }
+        },
+        {
+          "name": "Synthesize Speech Hindi (TTS)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/voice/synthesize",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Aapke paas Protection of Women from Domestic Violence Act ke tahat ghar mein rehne ka adhikar hai. Aap seedha Magistrate court mein application de sakti hain.\",\n  \"language\": \"hi\"\n}"
+            },
+            "description": "Returns MP3 audio using hi-IN-SwaraNeural voice (Indian female).\nDownload the response audio to hear the Swara voice.\nThis is the voice that speaks answers to users."
+          }
+        },
+        {
+          "name": "Synthesize Speech English (TTS)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/voice/synthesize",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"You have the right to live in your shared household under the Domestic Violence Act 2005, Section 17.\",\n  \"language\": \"en\"\n}"
+            },
+            "description": "Returns MP3 in en-IN-NeerjaNeural voice (Indian English female)."
+          }
+        },
+        {
+          "name": "Synthesize Speech Tamil (TTS)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/voice/synthesize",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"உங்களுக்கு வீட்டில் வாழும் உரிமை இருக்கிறது\",\n  \"language\": \"ta\"\n}"
+            },
+            "description": "Tamil TTS using ta-IN-PallaviNeural voice.\nDemonstrates multilingual capability."
+          }
+        }
+      ]
+    },
+    {
+      "name": "🆘 06 Lead Generation",
+      "item": [
+        {
+          "name": "Submit Legal Lead (With Session)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/leads/legal",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"{{SESSION_ID}}\",\n  \"name\": \"Priya\",\n  \"phone\": \"9876543210\",\n  \"district\": \"Lucknow\",\n  \"state\": \"Uttar Pradesh\",\n  \"issue_type\": \"domestic_violence\",\n  \"urgency_level\": \"high\"\n}"
+            },
+            "description": "Submit request to connect with a free lawyer.\nConversation summary auto-attached from session.\nLawyer will call within 2-4 hours.\nCheck admin panel to see this lead appear."
+          }
+        },
+        {
+          "name": "Submit Legal Lead (Anonymous)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/leads/legal",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"9876543210\",\n  \"state\": \"Maharashtra\",\n  \"issue_type\": \"property\",\n  \"urgency_level\": \"medium\"\n}"
+            },
+            "description": "Anonymous lead — name and session_id optional.\nShows privacy-first design."
+          }
+        },
+        {
+          "name": "Submit Medical Lead",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/leads/medical",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"{{MEDICAL_SESSION_ID}}\",\n  \"name\": \"Sunita\",\n  \"phone\": \"8765432109\",\n  \"district\": \"Nagpur\",\n  \"state\": \"Maharashtra\",\n  \"symptom_summary\": \"7 months pregnant, severe headache and foot swelling\",\n  \"red_flag_detected\": true\n}"
+            },
+            "description": "Submit medical lead.\nred_flag_detected=true means urgent case."
+          }
+        },
+        {
+          "name": "Admin — List Legal Leads",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/leads/legal?status=pending&page=1&limit=20",
+              "query": [
+                {"key": "status", "value": "pending"},
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "20"}
+              ]
+            },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {"key": "username", "value": "{{admin_user}}"},
+                {"key": "password", "value": "{{admin_pass}}"}
+              ]
+            },
+            "description": "Admin only — requires Basic Auth.\nUsername: admin / Password: nyayvani2024\nLists all legal leads with pagination."
+          }
+        },
+        {
+          "name": "Admin — List Medical Leads",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/leads/medical?page=1&limit=20",
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "20"}
+              ]
+            },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {"key": "username", "value": "{{admin_user}}"},
+                {"key": "password", "value": "{{admin_pass}}"}
+              ]
+            },
+            "description": "Admin view of all medical leads."
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔄 07 Full Flow Test (Run In Order)",
+      "item": [
+        {
+          "name": "Step 1 — Health Check",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/health",
+            "description": "Verify all systems running"
+          }
+        },
+        {
+          "name": "Step 2 — Create Session",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/session/new",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"tab_type\": \"legal\"}"
+            },
+            "description": "COPY session_id to SESSION_ID variable"
+          }
+        },
+        {
+          "name": "Step 3 — First Message (Intake starts)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/legal/chat",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"{{SESSION_ID}}\",\n  \"message\": \"Mera pati mujhe maar ta hai aur ghar se nikalne ki dhamki de raha hai\",\n  \"input_type\": \"text\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Step 4 — Provide Details (Confidence builds)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/legal/chat",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"{{SESSION_ID}}\",\n  \"message\": \"Main Jaipur Rajasthan mein rehti hoon, Hindu hoon, 3 saal se shaadi hai, 1 bachcha hai, aur 2 mahine se maar pit ho rahi hai\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Step 5 — Complete Info (Triggers Expert)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/legal/chat",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"{{SESSION_ID}}\",\n  \"message\": \"Police mein nahi gayi, urgent hai, abhi safe hoon par darr lag raha hai\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Step 6 — Ask Specific Question (Expert + RAG)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/legal/chat",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"{{SESSION_ID}}\",\n  \"message\": \"Mujhe abhi kya karna chahiye? Koi free help mil sakti hai?\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Step 7 — Check Session State",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/session/{{SESSION_ID}}",
+            "description": "Verify: agent_phase=expert, confidence_score>=14, messages stored"
+          }
+        },
+        {
+          "name": "Step 8 — Submit Lead",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/leads/legal",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"{{SESSION_ID}}\",\n  \"phone\": \"9999999999\",\n  \"urgency_level\": \"high\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Step 9 — Verify Lead in Admin",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/leads/legal",
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {"key": "username", "value": "admin"},
+                {"key": "password", "value": "nyayvani2024"}
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
