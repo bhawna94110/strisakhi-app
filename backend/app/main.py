@@ -76,11 +76,16 @@ async def health_check():
     except Exception as e:
         health["system"] = {"error": str(e)}
 
-    # Ollama check
+
+    # Check Ollama
     try:
-        client = ollama_client.Client(host=settings.ollama_base_url)
-        models = client.list()
-        available = [m.model for m in models.models]
+        import httpx
+        response = httpx.get(
+            f"{settings.ollama_base_url}/api/tags",
+            timeout=5.0
+        )
+        data = response.json()
+        available = [m.get("name", "") for m in data.get("models", [])]
         health["services"]["ollama"] = {
             "status": "connected",
             "available_models": available,
