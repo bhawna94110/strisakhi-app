@@ -1,17 +1,13 @@
 """
-Intake Agent — Uses Gemma 4 E2B (lightweight)
-Conversationally gathers case information from user.
-Builds metadata JSON turn by turn.
+Intake Agent — Uses Gemma 4 E2B
+Uses requests library with /api/generate exactly like the working Streamlit script.
 """
-import json
-import re
-import ollama
+import requests
 from app.config import settings
 from app.utils.prompt_builder import build_intake_prompt
 from app.agents.model_router import calculate_confidence
 from typing import AsyncGenerator
 
-client = ollama.AsyncClient(host=settings.ollama_base_url)
 
 async def run_intake_stream(
     conversation_history: list,
@@ -19,34 +15,44 @@ async def run_intake_stream(
     tab_type: str,
     language: str = "hi"
 ) -> AsyncGenerator[dict, None]:
-    """
-    Stream intake agent response token by token.
-    Also yields metadata_update events when new info extracted.
-    """
-    prompt = build_intake_prompt(
-        conversation_history, metadata, tab_type, language
-    )
 
-    full_response = ""
+    # Build prompt using same format as working Streamlit script
+    system_prompt = build_intake_system_prompt(metadata, tab_type, language)
+    
+    # Get last user message
+    last_user_msg = ""
+    for msg in reversed(conversation_history):
+        if msg.get("role") == "user":
+            last_user_msg = msg.get("content", "")
+            break
+
+    full_prompt = f"{system_prompt}\nUser: {last_user_msg}\nNyay Vani:"
+
+    payload = {
+        "model": settings.intake_model,
+        "prompt": full_prompt,
+        "stream": False
+    }
 
     try:
-        stream = await client.chat(
-            model=settings.intake_model,
-            messages=[{"role": "user", "content": prompt}],
-            stream=True,
-            options={"temperature": 0.3, "num_predict": 256}
+        response = requests.post(
+            f"{settings.ollama_base_url}/api/generate",
+            json=payload,
+            timeout=180
         )
-
-        async for chunk in stream:
-            token = chunk.message.content or ""
-            full_response += token
-            yield {"type": "token", "token": token, "agent": "intake"}
-
+        full_response = response.json().get("response", "") or ""
     except Exception as e:
         yield {"type": "error", "message": str(e)}
         return
 
-    # Check for special signals in response
+    if not full_response.strip():
+        full_response = "Aapki baat samajh aayi. Kya aap mujhe bata sakti hain aap kaun se state mein rehti hain?"
+
+    # Stream word by word for frontend animation
+    for word in full_response.split(" "):
+        yield {"type": "token", "token": word + " ", "agent": "intake"}
+
+    # Check special signals
     if "EMERGENCY_DETECTED" in full_response:
         yield {"type": "emergency", "flag": True}
         return
@@ -55,7 +61,7 @@ async def run_intake_stream(
         yield {"type": "phase_change", "from": "intake", "to": "expert"}
         return
 
-    # Extract any new metadata from the full response
+    # Extract metadata
     new_metadata = extract_metadata_from_response(full_response, metadata, tab_type)
     if new_metadata != metadata:
         new_confidence = calculate_confidence(new_metadata, tab_type)
@@ -67,16 +73,30 @@ async def run_intake_stream(
 
     yield {"type": "done", "full_response": full_response, "agent": "intake"}
 
+
+def build_intake_system_prompt(metadata: dict, tab_type: str, language: str) -> str:
+    import json
+    if tab_type == "legal":
+        return f"""You are Nyay Vani, a compassionate legal intake assistant for rural Indian women.
+Your ONLY job is to gently understand the woman's situation before connecting her to legal guidance.
+Ask ONE question at a time. Be warm and gentle like a trusted older sister.
+Never give legal advice. Respond in Hindi.
+If immediate danger, say: EMERGENCY_DETECTED
+If enough info collected, say: READY_FOR_EXPERT
+Info collected: {json.dumps(metadata, ensure_ascii=False)}"""
+    else:
+        return f"""You are Nyay Vani, a compassionate medical intake assistant for rural Indian women.
+Your ONLY job is to understand symptoms through gentle conversation.
+Ask ONE question at a time. Be warm and calm like a caring nurse.
+Never diagnose or suggest medicines. Respond in Hindi.
+If red flag symptoms (unconscious, not breathing, heavy bleeding), say: EMERGENCY_DETECTED
+Info collected: {json.dumps(metadata, ensure_ascii=False)}"""
+
+
 def extract_metadata_from_response(response: str, existing: dict, tab_type: str) -> dict:
-    """
-    Simple heuristic extraction — in production this would use
-    a structured output from the model.
-    For now extracts common Indian states, religions, issues.
-    """
     updated = existing.copy()
     text = response.lower()
 
-    # Extract Indian states
     states = [
         "uttar pradesh", "up", "maharashtra", "rajasthan", "bihar",
         "madhya pradesh", "mp", "west bengal", "karnataka", "gujarat",
@@ -88,11 +108,23 @@ def extract_metadata_from_response(response: str, existing: dict, tab_type: str)
             updated["location_state"] = state.title()
             break
 
-    # Extract religion
     religions = ["hindu", "muslim", "christian", "sikh", "buddhist", "jain"]
     for religion in religions:
         if religion in text and not updated.get("religion"):
             updated["religion"] = religion
+            break
+
+    issue_keywords = {
+        "domestic_violence": ["ghar se nikaala", "maar", "peet", "hinsa", "violence", "evict"],
+        "property": ["zameen", "property", "land", "inheritance", "succession"],
+        "workplace": ["kaam", "job", "employer", "harassment", "salary", "wages"],
+        "divorce": ["talaq", "divorce", "separation", "alag"],
+        "maintenance": ["kharcha", "maintenance", "alimony", "nafqa"],
+        "dowry": ["dahej", "dowry"],
+    }
+    for issue, keywords in issue_keywords.items():
+        if any(kw in text for kw in keywords) and not updated.get("issue_type"):
+            updated["issue_type"] = issue
             break
 
     return updated

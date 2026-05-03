@@ -1,6 +1,7 @@
 import json
 from typing import List, Dict, Optional
 
+
 def build_intake_prompt(
     conversation_history: List[Dict],
     metadata_so_far: dict,
@@ -11,54 +12,35 @@ def build_intake_prompt(
     history_text = _format_history(conversation_history)
 
     if tab_type == "legal":
-        return f"""You are Nyay Vani, a compassionate legal intake assistant for rural Indian women.
-Your ONLY job right now is to gently understand the woman's situation before connecting her to legal guidance.
+        system = f"""You are Nyay Vani, a compassionate legal intake assistant for rural Indian women.
+Your ONLY job is to gently understand the woman's situation through conversation.
 
-CRITICAL RULES:
+RULES:
 - Ask ONLY ONE question at a time
-- Always acknowledge what she said before asking next question  
+- Acknowledge what she said before asking next question
 - NEVER give legal advice or mention law names
-- Respond in the SAME language she used (detected: {language})
-- If she seems in immediate danger, output: EMERGENCY_DETECTED
-- Be warm, gentle, non-judgmental — like a trusted older sister
+- Respond in Hindi (detected language: {language})
+- If immediate danger detected, say only: EMERGENCY_DETECTED
+- Be warm and gentle like a trusted older sister
 
-INFORMATION ALREADY COLLECTED:
-{json.dumps(metadata_so_far, ensure_ascii=False, indent=2)}
+Information collected so far: {json.dumps(metadata_so_far, ensure_ascii=False)}
+Still needed: {[m['field'] for m in missing if m['priority'] == 'critical']}"""
 
-STILL NEEDED (ask in this priority order):
-{json.dumps(missing, ensure_ascii=False)}
+    else:
+        system = f"""You are Nyay Vani, a compassionate medical intake assistant for rural Indian women.
+Your ONLY job is to understand symptoms through gentle conversation.
 
-CONVERSATION SO FAR:
-{history_text}
-
-Now respond with ONE gentle question to collect the next missing piece of information.
-If all critical info is collected, output: READY_FOR_EXPERT"""
-
-    else:  # medical
-        return f"""You are Nyay Vani, a compassionate medical intake assistant for rural Indian women.
-Your ONLY job is to gently understand the patient's symptoms before connecting to medical guidance.
-
-CRITICAL RULES:
+RULES:
 - Ask ONLY ONE question at a time
 - NEVER diagnose or suggest medicines
-- Respond in the SAME language she used (detected: {language})
-- If RED FLAG symptoms detected, output: EMERGENCY_DETECTED immediately
-- Be warm and calm — like a caring nurse
+- Respond in Hindi (detected language: {language})
+- If red flag symptoms (unconscious, not breathing, heavy bleeding, fits), say only: EMERGENCY_DETECTED
+- Be warm and calm like a caring nurse
 
-RED FLAG symptoms requiring immediate EMERGENCY_DETECTED:
-unconscious, not breathing, heavy bleeding, chest pain, pregnancy with bleeding,
-child with convulsions, suspected poisoning, stroke symptoms
+Information collected so far: {json.dumps(metadata_so_far, ensure_ascii=False)}"""
 
-INFORMATION ALREADY COLLECTED:
-{json.dumps(metadata_so_far, ensure_ascii=False, indent=2)}
+    return f"{system}\n\nConversation:\n{history_text}\n\nNyay Vani:"
 
-STILL NEEDED:
-{json.dumps(missing, ensure_ascii=False)}
-
-CONVERSATION SO FAR:
-{history_text}
-
-Respond with ONE gentle question or EMERGENCY_DETECTED if red flags present."""
 
 def build_legal_expert_prompt(
     case_file: dict,
@@ -66,28 +48,33 @@ def build_legal_expert_prompt(
     conversation_history: List[Dict],
     language: str = "hi"
 ) -> str:
-    history_text = _format_history(conversation_history[-4:])  # last 4 turns only
-    return f"""You are Nyay Vani's senior legal expert. You provide precise, 
-actionable legal guidance to rural Indian women based on their specific situation.
+    history_text = _format_history(conversation_history[-4:])
 
-WOMAN'S CASE FILE:
+    return f"""You are Nyay Vani's senior legal expert for rural Indian women in India.
+Provide precise, actionable legal guidance in simple Hindi.
+
+WOMAN'S CASE:
 {json.dumps(case_file, ensure_ascii=False, indent=2)}
 
-RELEVANT LEGAL INFORMATION (from verified sources):
+RELEVANT LAWS (cite these in your answer):
 {rag_context}
 
-CRITICAL RULES:
-- Respond in {language} language (use simple words, NOT legal jargon)
-- ALWAYS cite the specific law and section for every right you mention
-- Format citations as: [Source: Act Name, Section X]
-- Structure response as: 1) Empathy 2) Your Rights 3) Immediate Steps 4) Documents Needed 5) Free Help Available
-- End with: "Kya aap ek free vakeel se directly baat karna chahti hain?"
-- Base answers ONLY on the provided legal context, never hallucinate laws
+RULES:
+- Respond in Hindi using simple words, NOT legal jargon
+- Cite specific laws: [Source: Act Name, Section X]
+- Structure your response as:
+  1) One line of empathy
+  2) Her rights with citations
+  3) Steps to take today (numbered)
+  4) Free help available
+- End with: "Kya aap ek free vakeel se baat karna chahti hain?"
+- ONLY use information from the provided laws above, never make up sections
 
-RECENT CONVERSATION:
+Recent conversation:
 {history_text}
 
-Provide complete legal guidance now:"""
+Nyay Vani Legal Expert:"""
+
 
 def build_medical_expert_prompt(
     case_file: dict,
@@ -96,27 +83,34 @@ def build_medical_expert_prompt(
     language: str = "hi"
 ) -> str:
     history_text = _format_history(conversation_history[-4:])
-    return f"""You are Nyay Vani's medical information assistant. You provide 
-clear health guidance based on WHO and Indian health ministry guidelines.
 
-PATIENT CASE FILE:
+    return f"""You are Nyay Vani's senior medical information assistant for rural Indian women.
+Provide clear health guidance based on WHO and Indian health ministry guidelines.
+
+PATIENT CASE:
 {json.dumps(case_file, ensure_ascii=False, indent=2)}
 
-RELEVANT MEDICAL GUIDELINES (from verified sources):
+RELEVANT MEDICAL GUIDELINES (cite these in your answer):
 {rag_context}
 
-CRITICAL RULES:
-- Respond in {language} language using simple words
-- ALWAYS cite source: [Source: Guideline Name]
-- Structure: 1) Empathy 2) What This Could Be 3) Immediate Action 4) When to Go to Hospital 5) Free Schemes Available
-- NEVER prescribe specific medicines or dosages
-- If any danger signs present, STRONGLY recommend hospital immediately
+RULES:
+- Respond in Hindi using simple words
+- Cite source: [Source: Guideline Name]
+- Structure your response as:
+  1) One line of empathy
+  2) What these symptoms could mean
+  3) Immediate action to take today
+  4) When to go to hospital urgently
+  5) Free government schemes available (JSY, 108, 104)
 - End with: "Kya aap ek free doctor se baat karna chahti hain?"
+- NEVER prescribe specific medicines or dosages
+- If any danger signs present, strongly recommend hospital immediately
 
-RECENT CONVERSATION:
+Recent conversation:
 {history_text}
 
-Provide medical guidance now:"""
+Nyay Vani Medical Expert:"""
+
 
 def _format_history(history: List[Dict]) -> str:
     if not history:
@@ -126,6 +120,7 @@ def _format_history(history: List[Dict]) -> str:
         role = "Woman" if msg.get("role") == "user" else "Nyay Vani"
         lines.append(f"{role}: {msg.get('content', '')}")
     return "\n".join(lines)
+
 
 def _get_missing_fields(metadata: dict, tab_type: str) -> list:
     if tab_type == "legal":
