@@ -1,6 +1,5 @@
 import json
 import time
-import asyncio
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
@@ -14,7 +13,7 @@ from app.session.session_manager import (
     update_session_metadata, update_session_phase,
     flag_emergency, get_conversation_history
 )
-from app.agents.model_router import route, calculate_confidence, RouteDecision
+from app.agents.model_router import route, calculate_confidence, RouteDecision, INTAKE_MAX_TURNS
 from app.agents.intake_agent import run_intake_stream
 from app.agents.legal_agent import run_legal_expert_stream
 from app.emergency.detector import detect_emergency, get_emergency_response
@@ -26,7 +25,7 @@ router = APIRouter()
 class ChatRequest(BaseModel):
     session_id: str
     message: str
-    input_type: Optional[str] = "text"  # text | voice
+    input_type: Optional[str] = "text"
 
 @router.post("/chat")
 async def legal_chat(req: ChatRequest, db: Session = Depends(get_db)):
@@ -37,8 +36,6 @@ async def legal_chat(req: ChatRequest, db: Session = Depends(get_db)):
 
     # 2. Detect language
     language = detect_language(req.message)
-    if language != session_data.get("language", "hi"):
-        crud.update_session(db, req.session_id, language=language)
 
     # 3. Check emergency FIRST
     is_emergency, emergency_type, severity = detect_emergency(req.message, "legal")
@@ -54,19 +51,29 @@ async def legal_chat(req: ChatRequest, db: Session = Depends(get_db)):
         return StreamingResponse(emergency_stream(), media_type="text/event-stream")
 
     # 4. Save user message
-    save_message(db, req.session_id, "user", req.message, req.input_type, agent_used=session_data["agent_phase"])
+    save_message(db, req.session_id, "user", req.message, req.input_type,
+                 agent_used=session_data["agent_phase"])
 
     # 5. Get conversation history
     history = get_conversation_history(db, req.session_id)
 
-    # 6. Route decision
+    # 6. Count user turns — key routing signal
+    user_turn_count = sum(1 for m in history if m.get("role") == "user")
+
+    # 7. Force expert phase if turn limit reached
     metadata = session_data.get("metadata", {})
+    if user_turn_count >= INTAKE_MAX_TURNS and session_data["agent_phase"] == "intake":
+        update_session_phase(db, req.session_id, "expert")
+        session_data["agent_phase"] = "expert"
+
+    # 8. Route decision
     decision, model_name, reason = route(
         agent_phase=session_data["agent_phase"],
         confidence_score=session_data["confidence_score"],
         emergency_flagged=session_data["emergency_flagged"],
         metadata=metadata,
-        tab_type="legal"
+        tab_type="legal",
+        user_turn_count=user_turn_count
     )
 
     return StreamingResponse(
@@ -82,6 +89,7 @@ async def legal_chat(req: ChatRequest, db: Session = Depends(get_db)):
         }
     )
 
+
 async def _legal_stream_generator(
     db, session_id, message,
     decision, metadata, history, language,
@@ -92,10 +100,10 @@ async def _legal_stream_generator(
     citations = []
     agent_used = decision.value
 
-    # Send routing info first
+    # Send routing info
     yield f"data: {json.dumps({'type': 'routing', 'decision': decision.value, 'model': model_name, 'reason': reason})}\n\n"
 
-    # Send system metrics (compute display)
+    # Send metrics
     mem = psutil.virtual_memory()
     yield f"data: {json.dumps({'type': 'metrics', 'ram_used_gb': round(mem.used/(1024**3), 2), 'ram_percent': mem.percent, 'model': model_name})}\n\n"
 
@@ -127,7 +135,6 @@ async def _legal_stream_generator(
                 return
 
     elif decision == RouteDecision.EXPERT:
-        # Make sure phase is set to expert in DB
         if session_data["agent_phase"] != "expert":
             update_session_phase(db, session_id, "expert")
 
@@ -144,7 +151,7 @@ async def _legal_stream_generator(
                 yield f"data: {json.dumps({'type': 'error', 'message': event['message']})}\n\n"
                 return
 
-    # Save assistant message with metrics
+    # Save response
     response_ms = int((time.time() - start_time) * 1000)
     save_message(
         db, session_id, "assistant", full_response,
@@ -153,6 +160,7 @@ async def _legal_stream_generator(
     )
 
     yield f"data: {json.dumps({'type': 'done', 'full_response': full_response, 'citations': citations, 'response_ms': response_ms, 'agent': agent_used})}\n\n"
+
 
 @router.get("/test")
 async def legal_test():

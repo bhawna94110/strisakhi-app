@@ -1,7 +1,9 @@
 """
 ModelRouter — Cactus Prize Component
-Intelligently routes between Gemma 4 E2B (intake) and E4B (expert)
-based on session phase, confidence score, and emergency detection.
+Routes between intake and expert agents based on:
+1. Turn count (most reliable)
+2. Confidence score from metadata
+3. Emergency detection
 """
 from enum import Enum
 from app.config import settings
@@ -11,49 +13,56 @@ class RouteDecision(str, Enum):
     EXPERT    = "expert"
     EMERGENCY = "emergency"
 
-# These constants are documented explicitly for Cactus prize
-INTAKE_MODEL = settings.intake_model   # gemma3n:e2b — lightweight, conversational
-EXPERT_MODEL = settings.expert_model   # gemma3n:e4b — powerful, RAG-enabled
+INTAKE_MODEL = settings.intake_model
+EXPERT_MODEL = settings.expert_model
 
-CONFIDENCE_THRESHOLD = 14   # out of 24 — minimum to invoke expert
-MUST_HAVE_FIELDS_LEGAL = ["issue_type", "location_state", "religion", "urgency"]
-MUST_HAVE_FIELDS_MEDICAL = ["patient_age", "primary_symptom", "duration", "red_flag_checked"]
+# Lower threshold — just need to know the issue type
+CONFIDENCE_THRESHOLD = 4
+MUST_HAVE_FIELDS_LEGAL   = ["issue_type"]  # just needs problem identified
+MUST_HAVE_FIELDS_MEDICAL = ["primary_symptom"]
+
+# Turn count threshold — switch to expert after this many user messages
+INTAKE_MAX_TURNS = 3
 
 def route(
     agent_phase: str,
     confidence_score: int,
     emergency_flagged: bool,
     metadata: dict,
-    tab_type: str
+    tab_type: str,
+    user_turn_count: int = 0          # NEW parameter
 ) -> tuple[RouteDecision, str, str]:
     """
     Returns: (decision, model_name, reason)
-    
-    Routing logic:
-    1. Emergency → emergency handler (no LLM)
-    2. Phase=intake + confidence < threshold → E2B intake agent
-    3. Phase=intake + confidence >= threshold + all must-haves → E4B expert
-    4. Phase=expert → E4B expert always
+    Priority:
+    1. Emergency → emergency handler
+    2. Already expert → stay expert
+    3. Turn count >= 3 → force expert
+    4. Confidence + must-haves met → expert
+    5. Default → intake
     """
-    # Rule 1: Emergency override — no LLM needed
+    # Rule 1: Emergency override
     if emergency_flagged:
-        return RouteDecision.EMERGENCY, "", "Emergency flagged — bypass LLM"
+        return RouteDecision.EMERGENCY, "", "Emergency flagged"
 
     # Rule 2: Already in expert phase
     if agent_phase == "expert":
         return RouteDecision.EXPERT, EXPERT_MODEL, "Session in expert phase"
 
-    # Rule 3: Intake phase — check if ready for expert
+    # Rule 3: Turn count exceeded — force expert
+    if user_turn_count >= INTAKE_MAX_TURNS:
+        return RouteDecision.EXPERT, EXPERT_MODEL, f"Turn limit reached ({user_turn_count} turns) — switching to expert"
+
+    # Rule 4: Confidence threshold met
     must_haves = MUST_HAVE_FIELDS_LEGAL if tab_type == "legal" else MUST_HAVE_FIELDS_MEDICAL
-    all_must_haves = all(
-        metadata.get(field) for field in must_haves
-    )
+    all_must_haves = all(metadata.get(field) for field in must_haves)
 
     if confidence_score >= CONFIDENCE_THRESHOLD and all_must_haves:
         return RouteDecision.EXPERT, EXPERT_MODEL, f"Confidence {confidence_score}/24 — ready for expert"
 
-    # Rule 4: Stay in intake
+    # Rule 5: Stay in intake
     return RouteDecision.INTAKE, INTAKE_MODEL, f"Confidence {confidence_score}/24 — still gathering info"
+
 
 def calculate_confidence(metadata: dict, tab_type: str) -> int:
     """Calculate confidence score from collected metadata"""
@@ -87,13 +96,10 @@ def calculate_confidence(metadata: dict, tab_type: str) -> int:
         }
 
     for field, points in must_have.items():
-        if metadata.get(field):
-            score += points
+        if metadata.get(field): score += points
     for field, points in should_have.items():
-        if metadata.get(field):
-            score += points
+        if metadata.get(field): score += points
     for field, points in nice_to_have.items():
-        if metadata.get(field):
-            score += points
+        if metadata.get(field): score += points
 
     return score
