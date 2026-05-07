@@ -1,3 +1,7 @@
+"""
+Session API — StriSakhi
+Handles legal, medical, AND scheme sessions.
+"""
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -10,13 +14,17 @@ from app.session.session_manager import (
 router = APIRouter()
 
 class NewSessionRequest(BaseModel):
-    tab_type: str  # legal | medical
+    tab_type: str  # legal | medical | scheme
 
 @router.post("/new")
 async def new_session(req: NewSessionRequest, db: Session = Depends(get_db)):
-    if req.tab_type not in ["legal", "medical"]:
-        raise HTTPException(400, "tab_type must be 'legal' or 'medical'")
-    session = create_new_session(db, req.tab_type)
+    # scheme maps to legal in DB (same pipeline)
+    db_tab_type = "legal" if req.tab_type == "scheme" else req.tab_type
+    if db_tab_type not in ["legal", "medical"]:
+        raise HTTPException(400, "tab_type must be 'legal', 'medical', or 'scheme'")
+    session = create_new_session(db, db_tab_type)
+    # Return with original tab_type
+    session["tab_type"] = req.tab_type
     return session
 
 @router.get("/{session_id}")

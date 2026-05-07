@@ -1,23 +1,24 @@
-from sentence_transformers import SentenceTransformer
-from app.config import settings
-import numpy as np
+"""
+Embedder — uses ChromaDB's built-in embedding function.
+No sentence_transformers, no torch, no heavy dependencies.
+ChromaDB uses all-MiniLM-L6-v2 by default — same quality, no extra install.
+"""
+from chromadb.utils import embedding_functions
 
-_model = None
+_ef = None
 
 def get_embedder():
-    global _model
-    if _model is None:
-        print(f"Loading embedding model: {settings.embedding_model}")
-        _model = SentenceTransformer(settings.embedding_model)
-        print("Embedding model loaded")
-    return _model
+    global _ef
+    if _ef is None:
+        print("Loading ChromaDB default embedding function...")
+        _ef = embedding_functions.DefaultEmbeddingFunction()
+        print("Embedder ready")
+    return _ef
 
 def embed_texts(texts: list) -> list:
-    model = get_embedder()
-    embeddings = model.encode(texts, normalize_embeddings=True)
-    return embeddings.tolist()
+    ef = get_embedder()
+    return ef(texts)
 
 def embed_query(text: str) -> list:
-    model = get_embedder()
-    embedding = model.encode([text], normalize_embeddings=True)
-    return embedding[0].tolist()
+    ef = get_embedder()
+    return ef([text])[0]

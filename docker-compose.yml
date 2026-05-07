@@ -19,6 +19,7 @@ services:
       volumes:
         - ./backend:/app
         - chroma_data:/app/chroma_db
+        - /Users/bhawna/strisakhi-models:/app/strisakhi-models
       env_file:
         - ./backend/.env
       environment:
