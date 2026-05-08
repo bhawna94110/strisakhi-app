@@ -1,0 +1,7 @@
+{
+  "tts_speed_hi": 0.7,
+  "tts_speed_en": 1.0,
+  "intake_max_turns": 3,
+  "temperature": 0.3,
+  "expert_max_tokens": 600
+}

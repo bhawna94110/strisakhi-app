@@ -1,8 +1,10 @@
 """
 StriSakhi TTS — backend/app/voice/tts.py
-Offline TTS using Piper binary at /usr/local/piper
-Supports Hindi (Devanagari) and English only.
-Hinglish (Roman Hindi) → convert via LLM → Piper Hindi
+Language is passed explicitly from session — no auto-detection needed.
+Hindi → Piper priyamvada (Devanagari only)
+English → Piper Amy
+Bengali/others → no audio (204)
+Fallback: if Hindi session but response is not Devanagari → LLM converts first
 """
 import subprocess
 import tempfile
@@ -11,7 +13,7 @@ import re
 import logging
 import asyncio
 import httpx
-from pathlib import Path
+from app.runtime_config import get_config
 
 logger = logging.getLogger(__name__)
 
@@ -29,127 +31,65 @@ MODELS = {
     },
 }
 
-# These scripts have no Piper voice — return no audio
-NO_TTS_SCRIPTS = [
-    r'[\u0980-\u09FF]',  # Bengali
-    r'[\u0B80-\u0BFF]',  # Tamil
-    r'[\u0C00-\u0C7F]',  # Telugu
-    r'[\u0C80-\u0CFF]',  # Kannada
-    r'[\u0D00-\u0D7F]',  # Malayalam
-    r'[\u0A80-\u0AFF]',  # Gujarati
-    r'[\u0A00-\u0A7F]',  # Punjabi
-    r'[\u0900-\u094F\u0950-\u097F]',  # Devanagari (handled separately as "hi")
-]
-
-
-def remove_emojis(text: str) -> str:
-    # Remove all emoji and symbol unicode ranges
-    emoji_pattern = re.compile(
-        "[\U0001F600-\U0001F64F"
-        "\U0001F300-\U0001F5FF"
-        "\U0001F680-\U0001F9FF"
-        "\U00002702-\U000027B0"
-        "\U000024C2-\U0001F251"
-        "\U0001f926-\U0001f937"
-        "\U00010000-\U0010ffff"
-        "\u2640-\u2642"
-        "\u2600-\u2B55"
-        "\u200d\u23cf\u23e9\u231a\ufe0f\u3030]+",
-        flags=re.UNICODE
-    )
-    return emoji_pattern.sub('', text)
+TTS_SUPPORTED = {"hi", "en"}
 
 
 def clean_text(text: str) -> str:
-    """Remove markdown, citations, emojis, numbered lists from LLM output"""
-    text = remove_emojis(text)
+    # Remove emojis
+    emoji_re = re.compile(
+        "[\U0001F600-\U0001F64F\U0001F300-\U0001F5FF"
+        "\U0001F680-\U0001F9FF\U00002702-\U000027B0"
+        "\U0001f926-\U0001f937\U00010000-\U0010ffff"
+        "\u2640-\u2642\u2600-\u2B55\u200d\u23cf\u23e9"
+        "\u231a\ufe0f\u3030]+", flags=re.UNICODE)
+    text = emoji_re.sub('', text)
     text = re.sub(r'\[Source:[^\]]+\]', '', text)
     text = re.sub(r'\*\*(.+?)\*\*', r'\1', text)
     text = re.sub(r'\*(.+?)\*', r'\1', text)
     text = re.sub(r'^\d+\.\s*', '', text, flags=re.MULTILINE)
     text = re.sub(r'^[\*\-•]\s*', '', text, flags=re.MULTILINE)
     text = re.sub(r'#+ ', '', text)
-    text = ' '.join(text.split())
-    return text.strip()
+    return ' '.join(text.split()).strip()
 
 
-def detect_script(text: str) -> str:
-    """
-    Detect the dominant script in text.
-    Returns: 'devanagari' | 'roman' | 'bengali' | 'tamil' | 'other_indic' | 'mixed'
-    """
+def is_devanagari(text: str) -> bool:
     deva = len(re.findall(r'[\u0900-\u097F]', text))
-    roman = len(re.findall(r'[a-zA-Z]', text))
-    bengali = len(re.findall(r'[\u0980-\u09FF]', text))
-    tamil = len(re.findall(r'[\u0B80-\u0BFF]', text))
-    other_indic = len(re.findall(
-        r'[\u0C00-\u0C7F\u0C80-\u0CFF\u0D00-\u0D7F\u0A80-\u0AFF\u0A00-\u0A7F]', text
-    ))
-    total = deva + roman + bengali + tamil + other_indic
-    if total == 0:
-        return 'roman'
-
-    # Dominant script check (>50%)
-    if deva / total > 0.5:
-        return 'devanagari'
-    if roman / total > 0.5:
-        return 'roman'
-    if bengali / total > 0.3:
-        return 'bengali'
-    if tamil / total > 0.3:
-        return 'tamil'
-    if other_indic / total > 0.3:
-        return 'other_indic'
-
-    # Mixed Devanagari + Roman
-    if deva > 0 and roman > 0:
-        return 'devanagari' if deva >= roman else 'roman'
-
-    return 'roman'
+    total = len(re.findall(r'[a-zA-Z\u0900-\u097F]', text))
+    return total > 0 and (deva / total) > 0.5
 
 
-async def convert_hinglish_to_devanagari(text: str, llama_url: str) -> str:
-    """
-    Use Gemma 4 to convert Hinglish (Roman Hindi) to Devanagari.
-    Fast — just script conversion, no reasoning needed.
-    """
+async def convert_to_devanagari(text: str, llama_url: str) -> str:
+    """Fallback: use Gemma 4 to convert Roman Hindi to Devanagari"""
     try:
         async with httpx.AsyncClient(timeout=15.0) as client:
-            payload = {
-                "model": "gemma4",
-                "messages": [{
-                    "role": "user",
-                    "content": (
-                        f"Convert this Hindi text written in Roman script to Devanagari script. "
-                        f"Output ONLY the Devanagari text, nothing else, no explanation.\n\n"
-                        f"Input: {text}"
-                    )
-                }],
-                "stream": False,
-                "max_tokens": 300,
-                "temperature": 0.1,
-            }
-            r = await client.post(f"{llama_url}/v1/chat/completions", json=payload)
+            r = await client.post(
+                f"{llama_url}/v1/chat/completions",
+                json={
+                    "model": "gemma4",
+                    "messages": [{"role": "user", "content":
+                        f"Convert this Hindi text to Devanagari script. "
+                        f"Output ONLY the Devanagari text, nothing else.\n\nInput: {text}"
+                    }],
+                    "stream": False, "max_tokens": 400, "temperature": 0.1,
+                }
+            )
             result = r.json()["choices"][0]["message"]["content"].strip()
-            # Verify result is actually Devanagari
-            if re.search(r'[\u0900-\u097F]', result):
+            if is_devanagari(result):
                 return result
-            return text  # fallback if conversion failed
     except Exception as e:
-        logger.error(f"Hinglish conversion failed: {e}")
-        return text
+        logger.error(f"Devanagari conversion failed: {e}")
+    return text
 
 
-async def run_piper(text: str, model: str, config: str, speed: float) -> bytes:
-    """Run piper binary and return WAV bytes"""
+async def run_piper(text: str, lang: str, speed_override: float = None) -> bytes:
+    voice = MODELS[lang]
+    speed = speed_override if speed_override else voice["speed"]
+    safe_text = text.replace('"', "'").replace('`', "'").replace('$', '').replace('\n', ' ')
+
     with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as f:
         output_path = f.name
 
-    # Escape quotes in text
-    safe_text = text.replace('"', "'").replace('`', "'").replace('$', '')
-
-    cmd = f'echo "{safe_text}" | {PIPER} -m {model} -f {output_path} --length_scale {speed}'
-
+    cmd = f'echo "{safe_text}" | {PIPER} -m {voice["model"]} -f {output_path} --length_scale {speed}'
     loop = asyncio.get_event_loop()
     result = await loop.run_in_executor(
         None,
@@ -158,8 +98,7 @@ async def run_piper(text: str, model: str, config: str, speed: float) -> bytes:
 
     if result.returncode != 0:
         logger.error(f"Piper error: {result.stderr}")
-        if os.path.exists(output_path):
-            os.unlink(output_path)
+        if os.path.exists(output_path): os.unlink(output_path)
         return b""
 
     if not os.path.exists(output_path):
@@ -167,76 +106,46 @@ async def run_piper(text: str, model: str, config: str, speed: float) -> bytes:
 
     with open(output_path, "rb") as f:
         audio = f.read()
-
     os.unlink(output_path)
+    return audio if len(audio) > 44 else b""
 
-    if len(audio) <= 44:
+
+async def synthesize(
+    text: str,
+    lang: str = "hi",
+    llama_url: str = "http://host.docker.internal:8080",
+    speed: float = None
+) -> bytes:
+    """
+    Convert text to speech using session language.
+    lang: "hi" | "en" | "bn" | others
+    Returns WAV bytes or empty bytes if not supported.
+    Speed is read from runtime config if not passed explicitly.
+    """
+    if lang not in TTS_SUPPORTED:
         return b""
 
-    return audio
-
-
-async def synthesize(text: str, llama_url: str = "http://host.docker.internal:8080") -> tuple[bytes, str]:
-    """
-    Convert text to speech.
-    Returns (wav_bytes, lang_code)
-    Returns (b"", lang) if not supported.
-    """
-    if not text or len(text.strip()) < 3:
-        return b"", ""
-
-    # Step 1: Clean text
     clean = clean_text(text)
-    if not clean:
-        return b"", ""
+    if not clean or len(clean) < 3:
+        return b""
 
-    # Limit to first 400 chars for TTS (about 30 seconds)
-    clean = clean[:400]
+    # Limit length (~30 seconds of speech)
+    clean = clean[:450]
 
-    # Step 2: Detect script
-    script = detect_script(clean)
-    logger.info(f"TTS: script={script}, text={clean[:50]}")
+    # Read speed from runtime config (admin can change without restart)
+    if speed is None:
+        cfg = get_config()
+        speed = cfg.get(f"tts_speed_{lang}", MODELS.get(lang, {}).get("speed", 1.0))
 
-    # Step 3: Route based on script
-    if script == 'devanagari':
-        # Pure Hindi → Piper priyamvada directly
-        voice = MODELS["hi"]
-        audio = await run_piper(clean, voice["model"], voice["config"], voice["speed"])
-        return audio, "hi"
+    logger.info(f"TTS: lang={lang} speed={speed}")
 
-    elif script == 'roman':
-        # Could be English or Hinglish
-        # Simple heuristic: check for common Hinglish words
-        hinglish_words = [
-            'aapki', 'aapke', 'aapka', 'mujhe', 'mere', 'mera', 'meri',
-            'hoon', 'hain', 'hai', 'tha', 'thi', 'karo', 'karein', 'karna',
-            'namaste', 'dhanyavaad', 'theek', 'accha', 'nahin', 'nahi',
-            'aaj', 'kal', 'abhi', 'bahut', 'kuch', 'sab', 'aur', 'lekin',
-            'ghar', 'pati', 'sakhi', 'adhikar', 'kanoon', 'madad',
-        ]
-        text_lower = clean.lower()
-        hinglish_count = sum(1 for w in hinglish_words if w in text_lower)
+    if lang == "hi":
+        if not is_devanagari(clean):
+            logger.info("Hindi session but Roman text — converting to Devanagari")
+            clean = await convert_to_devanagari(clean, llama_url)
+        return await run_piper(clean, "hi", speed)
 
-        if hinglish_count >= 2:
-            # Hinglish → convert to Devanagari → Piper priyamvada
-            logger.info(f"TTS: Hinglish detected ({hinglish_count} words) → converting to Devanagari")
-            devanagari = await convert_hinglish_to_devanagari(clean, llama_url)
-            voice = MODELS["hi"]
-            audio = await run_piper(devanagari, voice["model"], voice["config"], voice["speed"])
-            return audio, "hi"
-        else:
-            # English → Piper amy
-            voice = MODELS["en"]
-            audio = await run_piper(clean, voice["model"], voice["config"], voice["speed"])
-            return audio, "en"
+    elif lang == "en":
+        return await run_piper(clean, "en", speed)
 
-    elif script in ('bengali', 'tamil', 'other_indic'):
-        # No TTS support
-        logger.info(f"TTS: No support for script={script}")
-        return b"", script
-
-    else:
-        # Mixed or unknown → try English
-        voice = MODELS["en"]
-        audio = await run_piper(clean, voice["model"], voice["config"], voice["speed"])
-        return audio, "en"
+    return b""

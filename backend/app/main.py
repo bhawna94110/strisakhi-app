@@ -39,7 +39,7 @@ app.add_middleware(
 )
 
 # Routers
-from app.api import legal, medical, session, leads, voice, scheme
+from app.api import legal, medical, session, leads, voice, scheme, admin
 
 app.include_router(legal.router,   prefix="/api/legal",   tags=["Legal"])
 app.include_router(medical.router, prefix="/api/medical", tags=["Medical"])
@@ -47,6 +47,7 @@ app.include_router(session.router, prefix="/api/session", tags=["Session"])
 app.include_router(leads.router,   prefix="/api/leads",   tags=["Leads"])
 app.include_router(voice.router,   prefix="/api/voice",   tags=["Voice"])
 app.include_router(scheme.router,  prefix="/api/scheme",  tags=["Scheme"])
+app.include_router(admin.router,   prefix="/api/admin",   tags=["Admin"])
 
 
 @app.get("/")

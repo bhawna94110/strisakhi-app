@@ -94,12 +94,12 @@ async function loadSessionHistory(sessionId) {
   } catch { return null; }
 }
 
-async function streamChat(tab, sessionId, message, onToken, onDone, onMeta) {
-  const ep = tab;
+async function streamChat(tab, sessionId, message, lang, onToken, onDone, onMeta) {
+  const ep = tab === "scheme" ? "legal" : tab;
   try {
     const res = await fetch(`${BASE_URL}/api/${ep}/chat`, {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ session_id: sessionId, message, input_type: "text" })
+      body: JSON.stringify({ session_id: sessionId, message, input_type: "text", language: lang })
     });
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
@@ -300,6 +300,24 @@ html,body,#root{height:100%;font-family:var(--fb);background:var(--bg);color:var
 .audio-msg{display:flex;flex-direction:column;gap:4px}
 .audio-wrap audio{display:block;width:180px;height:30px;filter:invert(1) hue-rotate(180deg);opacity:.85}
 .audio-sub{font-size:11px;opacity:.7;font-style:italic;margin-top:2px;line-height:1.4}
+.lang-picker{flex:1;overflow-y:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;gap:20px}
+.lp-title{font-family:var(--fd);font-size:20px;font-weight:700;text-align:center}
+.lp-sub{font-size:13px;color:var(--ink2);text-align:center;line-height:1.6;max-width:300px}
+.lp-options{display:flex;flex-direction:column;gap:10px;width:100%;max-width:320px}
+.lp-btn{display:flex;align-items:center;gap:14px;background:var(--wh);border:1.5px solid var(--border);border-radius:14px;padding:14px 18px;cursor:pointer;font-family:var(--fb);transition:all .2s;text-align:left;width:100%}
+.lp-btn:hover{border-color:var(--ink2);background:var(--bg)}
+.lp-btn.selected{border-color:var(--ink);background:var(--ink);color:white}
+.lp-btn:active{transform:scale(.98)}
+.lp-ico{font-size:24px;flex-shrink:0}
+.lp-name{font-size:15px;font-weight:700;display:block}
+.lp-desc{font-size:11px;color:var(--ink3);display:block;margin-top:2px}
+.lp-btn.selected .lp-desc{color:rgba(255,255,255,.65)}
+.lp-soon{opacity:.4;cursor:not-allowed}
+.lp-soon:hover{border-color:var(--border);background:var(--wh)}
+.lp-badge{font-size:9px;font-weight:700;background:var(--bg2);color:var(--ink3);border-radius:99px;padding:2px 7px;margin-left:auto;flex-shrink:0}
+.lp-cta{width:100%;max-width:320px;padding:14px;border-radius:13px;border:none;background:var(--ink);color:white;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--fb);transition:all .2s}
+.lp-cta:hover{opacity:.9}
+.lang-tag{font-size:10px;font-weight:700;background:var(--bg2);border:1px solid var(--border);border-radius:99px;padding:3px 9px;color:var(--ink2)}
 .typ-wrap{display:flex;align-items:center;gap:8px}
 .typ-dots{display:flex;gap:4px}
 .typ-dot{width:6px;height:6px;border-radius:50%;background:var(--ink3);opacity:.5;animation:tB 1.2s ease infinite}
@@ -436,6 +454,11 @@ function HomePage({ lang, onSelectSakhi, onResumeSession }) {
 function ChatPage({ sakhiId, resumeSessionId, lang, onBack }) {
   const sk = SAKHIS[sakhiId];
   const hi = lang === "hi";
+
+  // Session language — locked for entire session
+  const [sessionLang, setSessionLang] = useState(null); // null = not picked yet
+  const [langPicked, setLangPicked] = useState(false);
+
   const [sessionId, setSessionId] = useState(resumeSessionId || null);
   const [msgs, setMsgs] = useState([]);
   const [input, setInput] = useState("");
@@ -443,20 +466,15 @@ function ChatPage({ sakhiId, resumeSessionId, lang, onBack }) {
   const [phase, setPhase] = useState("intake");
   const [showWait, setShowWait] = useState(false);
   const [showQuicks, setShowQuicks] = useState(true);
-  const [ttsLoading, setTtsLoading] = useState(null); // msgIndex loading
+  const [ttsLoading, setTtsLoading] = useState(null);
   const audioRef = useRef(null);
   const [playingIdx, setPlayingIdx] = useState(null);
 
-  // Detect if text is Hindi or English for TTS support
-  const getTtsLang = (text) => {
-    if (!text || text.length < 5) return null;
-    // Devanagari script → Hindi TTS
-    if (/[\u0900-\u097F]/.test(text)) return "hi";
-    // Other Indic scripts → no TTS
-    if (/[\u0980-\u09FF\u0B80-\u0BFF\u0C00-\u0C7F\u0A80-\u0AFF\u0D00-\u0D7F\u0C80-\u0CFF]/.test(text)) return null;
-    // Roman script (English or Hinglish) → use English Amy voice
-    // Amy handles Hinglish reasonably — better than no audio
-    return "en";
+  // TTS supported only for hi and en sessions
+  const getTtsLang = () => {
+    if (sessionLang === "hi") return "hi";
+    if (sessionLang === "en") return "en";
+    return null;
   };
 
   const handleListen = async (text, idx) => {
@@ -468,13 +486,18 @@ function ChatPage({ sakhiId, resumeSessionId, lang, onBack }) {
     }
     setTtsLoading(idx);
     try {
+      const ttsLang = getTtsLang();
+      if (!ttsLang) {
+        alert("Audio not available for this language. Text is shown above.");
+        return;
+      }
       const res = await fetch(`${BASE_URL}/api/voice/tts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text })
+        body: JSON.stringify({ text, lang: ttsLang })
       });
-      if (res.status === 204) { // not supported
-        alert(hi ? "इस भाषा में audio उपलब्ध नहीं है" : "Audio not available for this language");
+      if (res.status === 204) {
+        alert("Audio not available for this language.");
         return;
       }
       if (!res.ok) throw new Error("TTS failed");
@@ -503,39 +526,48 @@ function ChatPage({ sakhiId, resumeSessionId, lang, onBack }) {
 
   useEffect(() => { sessionIdRef.current = sessionId; }, [sessionId]);
 
-  const greeting = `Hello! I'm ${sk.name} 🙏\n${sk.tagline}\n\nHow can I help you today?`;
-  const greetingHi = `नमस्ते! मैं ${sk.nameHi} हूँ 🙏\n${sk.taglineHi}\n\nआज मैं आपकी कैसे मदद कर सकती हूँ?`;
+  // Greetings per language
+  const GREETINGS = {
+    hi: `नमस्ते! मैं ${sk.nameHi} हूँ\n${sk.taglineHi}\n\nआज मैं आपकी कैसे मदद कर सकती हूँ?`,
+    en: `Hello! I'm ${sk.name}\n${sk.tagline}\n\nHow can I help you today?`,
+    bn: `নমস্কার! আমি ${sk.name}\n\nআজ আমি আপনাকে কীভাবে সাহায্য করতে পারি?`,
+  };
+
+  const startChat = async (chosenLang) => {
+    setSessionLang(chosenLang);
+    setLangPicked(true);
+    const id = await createSession(sakhiId);
+    setSessionId(id);
+    sessionIdRef.current = id;
+    const greet = GREETINGS[chosenLang] || GREETINGS.en;
+    setMsgs([{ role: "assistant", content: greet, agent: "intake", citations: [] }]);
+  };
 
   useEffect(() => {
-    const init = async () => {
-      if (resumeSessionId) {
-        // Load existing session history from backend
+    // If resuming, skip language picker and use Hindi default
+    if (resumeSessionId) {
+      const init = async () => {
+        setSessionLang("hi");
+        setLangPicked(true);
         setSessionId(resumeSessionId);
         sessionIdRef.current = resumeSessionId;
         const sessionData = await loadSessionHistory(resumeSessionId);
         if (sessionData?.messages?.length > 0) {
-          // Reconstruct messages from history
           const loadedMsgs = sessionData.messages.map(m => ({
-            role: m.role,
-            content: m.content,
+            role: m.role, content: m.content,
             agent: m.agent_used || (m.role === "assistant" ? "intake" : null),
             citations: m.citations || [],
           }));
           setMsgs(loadedMsgs);
-          // Restore phase
           if (sessionData.agent_phase === "expert") setPhase("expert");
           setShowQuicks(false);
         } else {
-          setMsgs([{ role: "assistant", content: hi ? greetingHi : greeting, agent: "intake", citations: [] }]);
+          setMsgs([{ role: "assistant", content: GREETINGS.hi, agent: "intake", citations: [] }]);
         }
-      } else {
-        const id = await createSession(sakhiId);
-        setSessionId(id);
-        sessionIdRef.current = id;
-        setMsgs([{ role: "assistant", content: hi ? greetingHi : greeting, agent: "intake", citations: [] }]);
-      }
-    };
-    init();
+      };
+      init();
+    }
+    // No resumeSessionId → show language picker (handled in render)
     return () => { clearTimeout(waitRef.current); clearTimeout(timerRef.current); };
   }, []);
 
@@ -559,6 +591,7 @@ function ChatPage({ sakhiId, resumeSessionId, lang, onBack }) {
       sakhiId === "scheme" ? "legal" : sakhiId,
       sessionIdRef.current,
       txt,
+      sessionLang || "hi",
       tok => {
         clearTimeout(waitRef.current);
         setShowWait(false);
@@ -657,12 +690,12 @@ function ChatPage({ sakhiId, resumeSessionId, lang, onBack }) {
   const reset = async () => {
     clearTimeout(waitRef.current);
     if (sessionIdRef.current) deleteSessionAPI(sessionIdRef.current);
-    const id = await createSession(sakhiId);
-    setSessionId(id);
-    sessionIdRef.current = id;
-    setMsgs([{ role: "assistant", content: hi ? greetingHi : greeting, agent: "intake", citations: [] }]);
-    setPhase("intake"); setIsTyping(false); isTypingRef.current = false;
+    setSessionId(null); sessionIdRef.current = null;
+    setMsgs([]); setPhase("intake");
+    setIsTyping(false); isTypingRef.current = false;
     setShowWait(false); setShowQuicks(true); setInput("");
+    // Go back to language picker
+    setSessionLang(null); setLangPicked(false);
   };
 
   const fmt = t => t
@@ -672,29 +705,80 @@ function ChatPage({ sakhiId, resumeSessionId, lang, onBack }) {
 
   const pIdx = phase === "expert" ? 2 : 1;
 
+  const LANG_OPTIONS = [
+    { code: "hi", name: "हिंदी", eng: "Hindi", desc: "Devanagari script · Priyamvada voice", tts: true },
+    { code: "en", name: "English", eng: "English", desc: "Roman script · Amy voice", tts: true },
+    { code: "bn", name: "বাংলা", eng: "Bengali", desc: "Bengali script · text only", tts: false },
+  ];
+  const COMING_SOON = ["தமிழ் Tamil", "తెలుగు Telugu", "मराठी Marathi"];
+
+  // Show language picker if not picked yet
+  if (!langPicked) {
+    return (
+      <div className="chat-pg fade">
+        <div className="chat-hdr">
+          <button className="back" onClick={onBack}>←</button>
+          <div className="ch-ico" style={{ background: sk.gradient }}>{sk.icon}</div>
+          <div style={{ flex: 1 }}>
+            <div className="ch-name" style={{ color: sk.color }}>{sk.name}</div>
+            <div className="ch-st">Choose your language</div>
+          </div>
+        </div>
+        <div className="lang-picker">
+          <div className="lp-title">Choose your language</div>
+          <div className="lp-sub">This will be used for the entire conversation. You can start a new chat to change.</div>
+          <div className="lp-options">
+            {LANG_OPTIONS.map(l => (
+              <button key={l.code} className="lp-btn" onClick={() => startChat(l.code)}>
+                <span className="lp-ico">{l.tts ? "🔊" : "📝"}</span>
+                <span>
+                  <span className="lp-name">{l.name} · {l.eng}</span>
+                  <span className="lp-desc">{l.desc}</span>
+                </span>
+              </button>
+            ))}
+            {COMING_SOON.map(l => (
+              <button key={l} className="lp-btn lp-soon" disabled>
+                <span className="lp-ico">🔜</span>
+                <span>
+                  <span className="lp-name">{l}</span>
+                  <span className="lp-desc">Coming soon</span>
+                </span>
+                <span className="lp-badge">Soon</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="chat-pg fade">
       <div className="chat-hdr">
         <button className="back" onClick={onBack}>←</button>
         <div className="ch-ico" style={{ background: sk.gradient }}>{sk.icon}</div>
         <div style={{ flex: 1 }}>
-          <div className="ch-name" style={{ color: sk.color }}>{hi ? sk.nameHi : sk.name}</div>
-          <div className="ch-st">
-            {phase === "expert" ? (hi ? "✓ विशेषज्ञ मोड" : "✓ Expert mode") : (hi ? "सुन रही हूँ..." : "Listening...")}
+          <div className="ch-name" style={{ color: sk.color }}>{sk.name}</div>
+          <div className="ch-st" style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            {phase === "expert" ? "✓ Expert mode" : "Listening..."}
+            <span className="lang-tag">
+              {sessionLang === "hi" ? "हिंदी" : sessionLang === "en" ? "English" : sessionLang === "bn" ? "বাংলা" : sessionLang}
+            </span>
           </div>
         </div>
-        <button className="new-btn" onClick={reset}>{hi ? "नया" : "New"} ↺</button>
+        <button className="new-btn" onClick={reset}>New ↺</button>
       </div>
 
       <div className="pbar">
-        <span className="p-lbl">{hi ? "चरण" : "Phase"}</span>
+        <span className="p-lbl">Phase</span>
         <div className="p-dots">
           {[0,1,2].map(i => (
             <div key={i} className={`p-dot ${i < pIdx ? "done" : i === pIdx ? "active" : ""}`}
               style={{ width: i === pIdx ? 18 : 9 }}/>
           ))}
         </div>
-        <span className="p-info">{phase === "expert" ? (hi ? "समाधान" : "Solution") : (hi ? "जानकारी" : "Intake")}</span>
+        <span className="p-info">{phase === "expert" ? "Solution" : "Intake"}</span>
       </div>
 
       <div className="msgs">
@@ -729,14 +813,14 @@ function ChatPage({ sakhiId, resumeSessionId, lang, onBack }) {
                   ))}
                 </div>
               )}
-              {/* 🔊 Listen button — only for Hindi and English */}
-              {m.role === "assistant" && m.content && !m.streaming && getTtsLang(m.content) && (
+              {/* 🔊 Listen button — only for Hindi and English sessions */}
+              {m.role === "assistant" && m.content && !m.streaming && getTtsLang() && (
                 <button
                   className={`listen-btn ${playingIdx === i ? "playing" : ""}`}
                   onClick={() => handleListen(m.content, i)}
                   disabled={ttsLoading === i}
                 >
-                  {ttsLoading === i ? "⏳" : playingIdx === i ? "⏹ Stop" : "🔊 " + (hi ? "सुनें" : "Listen")}
+                  {ttsLoading === i ? "⏳" : playingIdx === i ? "⏹ Stop" : "🔊 Listen"}
                 </button>
               )}
             </div>
