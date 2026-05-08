@@ -43,3 +43,7 @@ logs/
 # Temp
 tmp/
 temp/
+
+# Local LLM Server Binaries
+llama-b9073/
+llama-*/
