@@ -12,11 +12,126 @@ import os
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("Starting StriSakhi...")
+    print("\n" + "="*60)
+    print("  StriSakhi v2.0 — Starting Up")
+    print("="*60)
+
+    # Database
     init_db()
-    print("Database initialized")
+    print("✅ SQLite database ready")
+
+    # ChromaDB + auto-ingest
+    await auto_ingest()
+
+    # LLM check
+    try:
+        async with httpx.AsyncClient(timeout=3.0) as client:
+            r = await client.get(f"{settings.ollama_base_url}/health")
+            if r.status_code == 200:
+                print(f"✅ llama.cpp server ready at {settings.ollama_base_url}")
+            else:
+                print(f"⚠️  llama.cpp returned {r.status_code} — is llama-server running?")
+    except Exception:
+        print(f"❌ llama.cpp NOT reachable at {settings.ollama_base_url}")
+        print(f"   Run: llama-server -m <model> --mmproj <mmproj> --port 8080 --host 0.0.0.0")
+
+    # Piper TTS check
+    if os.path.exists("/usr/local/piper"):
+        print("✅ Piper TTS binary found at /usr/local/piper")
+    else:
+        print("❌ Piper TTS binary NOT found — TTS will not work")
+
+    piper_models = {
+        "Hindi (priyamvada)": "/app/strisakhi-models/piper/hi_IN-priyamvada-medium.onnx",
+        "English (amy)":      "/app/strisakhi-models/piper/en_US-amy-medium.onnx",
+    }
+    for name, path in piper_models.items():
+        if os.path.exists(path):
+            size = os.path.getsize(path) // (1024*1024)
+            print(f"✅ Piper voice {name}: {size}MB")
+        else:
+            print(f"❌ Piper voice {name}: NOT FOUND at {path}")
+
+    print("="*60)
+    print("  StriSakhi ready — http://0.0.0.0:8000")
+    print("="*60 + "\n")
+
     yield
     print("Shutting down StriSakhi...")
+
+
+async def auto_ingest():
+    """Check ChromaDB collections and ingest if empty. Shows clear status."""
+    import subprocess
+    import asyncio
+
+    print("\n--- ChromaDB Status ---")
+    try:
+        client = chromadb.PersistentClient(path=settings.chroma_persist_dir)
+        existing = [c.name for c in client.list_collections()]
+
+        scripts = []
+
+        # Check legal
+        if settings.legal_collection not in existing or \
+           client.get_collection(settings.legal_collection).count() == 0:
+            count = 0
+            print(f"⚠️  {settings.legal_collection}: EMPTY — will ingest now")
+            scripts.append(("legal", "scripts/ingest_legal_docs.py"))
+        else:
+            count = client.get_collection(settings.legal_collection).count()
+            print(f"✅ {settings.legal_collection}: {count} documents")
+
+        # Check medical
+        if settings.medical_collection not in existing or \
+           client.get_collection(settings.medical_collection).count() == 0:
+            print(f"⚠️  {settings.medical_collection}: EMPTY — will ingest now")
+            scripts.append(("medical", "scripts/ingest_medical_docs.py"))
+        else:
+            count = client.get_collection(settings.medical_collection).count()
+            print(f"✅ {settings.medical_collection}: {count} documents")
+
+        # Check scheme
+        if "scheme_documents" not in existing or \
+           client.get_collection("scheme_documents").count() == 0:
+            print(f"⚠️  scheme_documents: EMPTY — will ingest now")
+            scripts.append(("scheme", "scripts/ingest_scheme_docs.py"))
+        else:
+            count = client.get_collection("scheme_documents").count()
+            print(f"✅ scheme_documents: {count} documents")
+
+        if not scripts:
+            print("All ChromaDB collections ready")
+            print("-----------------------")
+            return
+
+        print(f"\nRunning {len(scripts)} ingestion script(s)...")
+        print("(First run downloads ~80MB embedding model — please wait)\n")
+
+        loop = asyncio.get_event_loop()
+        for name, script in scripts:
+            print(f"⏳ Ingesting {name} documents...")
+            result = await loop.run_in_executor(
+                None,
+                lambda s=script: subprocess.run(
+                    ["python", s],
+                    capture_output=False,  # show output directly in docker logs
+                    text=True,
+                    timeout=300            # 5 minute timeout
+                )
+            )
+            if result.returncode == 0:
+                print(f"✅ {name} ingestion complete")
+            else:
+                print(f"❌ {name} ingestion FAILED (exit code {result.returncode})")
+                print(f"   Run manually: docker exec nyay-vani-backend python {script}")
+
+        print("-----------------------")
+
+    except Exception as e:
+        print(f"❌ ChromaDB error: {e}")
+        print("   Try: docker exec nyay-vani-backend python scripts/ingest_legal_docs.py")
+        print("-----------------------")
 
 app = FastAPI(
     title="StriSakhi API",
