@@ -1,13 +1,4 @@
 services:
-  ollama:
-    image: ollama/ollama
-    container_name: nyay-vani-ollama
-    ports:
-      - "11434:11434"
-    volumes:
-      - ollama_data:/root/.ollama
-    restart: unless-stopped
-
   backend:
     build:
       context: ./backend
@@ -37,12 +28,7 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
-    environment:
-      - VITE_API_URL=http://localhost:8000
-    depends_on:
-      - backend
     restart: unless-stopped
 
 volumes:
-  ollama_data:
   chroma_data:
