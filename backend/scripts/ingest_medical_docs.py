@@ -1,192 +1,225 @@
 """
-Medical Document Ingestion Script
-Run this ONCE after ingest_legal_docs.py
+Medical Document Ingestion Script — StriSakhi
+Run ONCE after adding PDFs to rag_documents/medical/
 
 Usage:
   docker exec nyay-vani-backend python scripts/ingest_medical_docs.py
+
+Suggested PDFs to add:
+  - MOHFW maternal health guidelines
+  - ICMR nutrition guidelines for women
+  - National Mental Health Policy summary
+  - Ayushman Bharat / PMJAY scheme health benefits
+  - Common symptoms guide in simple language
 """
-import sys, os
+import sys
+import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import chromadb
-from sentence_transformers import SentenceTransformer
+from chromadb.utils import embedding_functions
 from langchain_community.document_loaders import PyPDFLoader, TextLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from app.config import settings
 
+# ─── Baseline medical knowledge (always ingested even without PDFs) ────────────
 BASELINE_MEDICAL_DATA = [
     {
-        "content": """WHO Antenatal Care Guidelines — India Adapted
-Danger Signs During Pregnancy (Seek IMMEDIATE hospital care):
-- Heavy vaginal bleeding at any time
-- Severe headache + blurred vision + swelling of face/hands (Pre-eclampsia warning)
-- Fits/convulsions
+        "content": """Maternal Health — Pregnancy Warning Signs
+Immediately go to hospital if you experience:
+- Heavy vaginal bleeding at any stage of pregnancy
+- Severe headache, blurred vision, swelling of hands/face (signs of pre-eclampsia)
+- High fever (above 101°F / 38.3°C)
 - Baby not moving for more than 12 hours after 28 weeks
-- High fever (above 38°C/100.4°F)
-- Difficulty breathing
 - Severe abdominal pain
-- Water breaking before 37 weeks
+- Difficulty breathing
+- Fits or convulsions
 
-Normal Antenatal Visits Schedule:
-- First visit: As soon as you know you are pregnant
-- Weeks 1-28: Once a month
-- Weeks 28-36: Every 2 weeks
-- Weeks 36+: Every week
+Normal pregnancy discomforts (not emergency):
+- Morning sickness (nausea/vomiting) in first trimester
+- Mild back pain
+- Frequent urination
+- Mild swelling of feet in evening
 
-Janani Suraksha Yojana (JSY) - FREE Government Scheme:
-- Free antenatal checkups at government health centres
-- Free institutional delivery
-- Cash incentive after delivery (Rs. 1400 in rural areas)
-- Free ambulance transport via 102 helpline
-- Call 102 for FREE ambulance for delivery
-
-Signs that Labour Has Started:
-Regular contractions every 5 minutes, water breaking, or continuous backache.
-Go to hospital immediately when any of these occur.""",
+Government scheme: Janani Suraksha Yojana (JSY)
+Provides cash assistance to pregnant women for institutional delivery.
+BPL women get Rs 1400 (rural) or Rs 1000 (urban) for delivery at government hospital.
+Apply at nearest ASHA worker or Primary Health Centre (PHC).""",
         "metadata": {
-            "act_name": "WHO Antenatal Care Guidelines India",
-            "section": "Danger Signs and Normal Care",
-            "source": "WHO ANC Guidelines",
-            "symptom_type": "pregnancy",
-            "language": "en"
+            "topic": "maternal_health",
+            "source": "MOHFW Maternal Health Guidelines",
+            "issue_type": "pregnancy",
         }
     },
     {
-        "content": """IMNCI Guidelines — Integrated Management of Neonatal and Childhood Illness
-Child Illness Assessment (0-5 years)
+        "content": """Child Health — Common Illnesses and When to Seek Help
 
-DANGER SIGNS requiring IMMEDIATE hospital visit:
-- Not able to drink or breastfeed
-- Vomits everything
-- Has had convulsions/fits
-- Lethargic or unconscious
-- Fast breathing (more than 50 breaths/min for age 2-12 months)
-- Chest indrawing (chest sucks in when breathing)
-- Stridor (high pitched sound when breathing in)
-- Severe malnutrition signs
+Danger signs in children — go to hospital IMMEDIATELY:
+- Child cannot drink or breastfeed
+- Child vomits everything
+- Child has convulsions/fits
+- Child is unconscious or cannot be woken
+- Rapid or difficult breathing
+- Severe dehydration (sunken eyes, dry mouth, no tears)
+- High fever in child under 3 months
 
-Fever Management:
-- Fever below 38.5°C (101.3°F): Give plenty of fluids, sponge with lukewarm water
-- Fever 38.5-39°C: Give paracetamol as per weight (do not give aspirin to children)
-- Fever above 39°C lasting more than 2 days: Go to hospital
-- Fever with rash: Go to hospital immediately
-- Fever in baby under 2 months: ALWAYS go to hospital same day
-
-Diarrhoea and ORS (Oral Rehydration Solution):
-- Give ORS after every loose stool
-- How to make ORS: 1 litre clean water + 6 teaspoons sugar + half teaspoon salt
+Diarrhoea management at home:
+- Give ORS (Oral Rehydration Solution) after every loose stool
 - Continue breastfeeding
-- Danger: Sunken eyes, very dry mouth, unable to drink — go to hospital immediately
+- Do NOT stop food
+- Give zinc tablets (10-14 days) — available free at government health centres
 
-ICDS (Anganwadi) Services — FREE for children under 6:
-Supplementary nutrition, immunisation, health check, pre-school education
-Visit your nearest Anganwadi centre for free services""",
+Vaccination schedule — free at government hospitals:
+- Birth: BCG, OPV, Hepatitis B
+- 6 weeks: DPT, OPV, Hepatitis B, Hib
+- 9 months: Measles
+- 12-15 months: MMR
+All vaccinations are FREE under Universal Immunisation Programme (UIP)""",
         "metadata": {
-            "act_name": "IMNCI Clinical Guidelines WHO",
-            "section": "Child Illness Danger Signs and Management",
-            "source": "IMNCI Guidelines",
-            "symptom_type": "child_illness",
-            "language": "en"
+            "topic": "child_health",
+            "source": "IMNCI Child Health Guidelines",
+            "issue_type": "child_illness",
         }
     },
     {
-        "content": """Mental Health Support for Women — India Resources
+        "content": """Mental Health — Depression and Anxiety in Women
 
-Signs of Depression (seek help if you have 5 or more for 2+ weeks):
-- Feeling sad, empty, or hopeless most of the day
-- Loss of interest in activities you used to enjoy
-- Significant weight loss or gain
-- Sleeping too much or too little
-- Feeling tired or low energy nearly every day
-- Feeling worthless or excessive guilt
-- Difficulty concentrating or making decisions
+Common signs of depression:
+- Persistent sadness, hopelessness for more than 2 weeks
+- Loss of interest in daily activities
+- Sleep problems (too much or too little)
+- Fatigue, loss of energy
+- Difficulty concentrating
+- Feelings of worthlessness or guilt
 - Thoughts of death or suicide
 
-This is a MEDICAL CONDITION — not weakness, not your fault.
-Depression is as real as diabetes or blood pressure. It needs treatment.
+Depression is a MEDICAL condition — it is NOT weakness. It can be treated.
 
-Postpartum Depression (after delivery):
-Feeling very sad, crying for no reason, not able to bond with baby after delivery.
-This is common and TREATABLE. Talk to a doctor or ASHA worker immediately.
+Common triggers for Indian women:
+- Domestic violence and abuse
+- Loss of a child or family member
+- Marital problems / separation
+- Financial stress
+- Postpartum depression (after delivery)
 
-FREE Mental Health Support in India:
-1. iCall (Tata Institute of Social Sciences): 9152987821
-   - Monday to Saturday, 8am to 10pm
-   - Counselling in Hindi, English, Marathi
-   - FREE of charge
+What to do:
+1. Talk to a doctor — depression is treatable with counselling and/or medicine
+2. iCall free counselling: 9152987821 (Monday-Saturday)
+3. Vandrevala Foundation 24x7 helpline: 1860-2662-345
+4. NIMHANS Helpline: 080-46110007
 
-2. Vandrevala Foundation Helpline: 1860-2662-345
-   - 24x7, FREE
-   - Hindi and English
-
-3. SNEHI: 044-24640050
-   - Available weekdays
-
-4. NIMHANS DISHA: 080-46110007
-   - Free mental health support
-   
-Remember: Asking for help is STRENGTH, not weakness.
-You deserve to feel well. Treatment works.""",
+NEVER prescribe antidepressants yourself — always consult a doctor first.""",
         "metadata": {
-            "act_name": "NIMHANS Community Mental Health Guidelines",
-            "section": "Depression Signs and Support Resources",
-            "source": "NIMHANS Mental Health",
-            "symptom_type": "mental_health",
-            "language": "en"
+            "topic": "mental_health",
+            "source": "NIMHANS Mental Health Guidelines",
+            "issue_type": "mental_health",
         }
     },
     {
-        "content": """National Health Mission — Free Health Services for Women
+        "content": """Nutrition for Women — Anaemia and Malnutrition
 
-Pradhan Mantri Matru Vandana Yojana (PMMVY):
-- Cash benefit of Rs. 5000 for first living child
-- For pregnant and lactating women
-- Apply at Anganwadi centre or health sub-centre
+Anaemia (low blood/iron) is very common in Indian women.
+Signs: fatigue, weakness, pale skin, dizziness, shortness of breath.
 
-Free Government Health Services:
-- All antenatal care at government hospitals: FREE
-- Institutional delivery: FREE
-- Postnatal care: FREE
-- Family planning services: FREE
-- Immunisation for children: FREE
-- Iron and folic acid tablets during pregnancy: FREE
-- Calcium supplements during pregnancy: FREE
+Iron-rich foods to eat daily:
+- Green leafy vegetables (palak, methi, sarson)
+- Lentils and pulses (dal)
+- Jaggery (gud)
+- Sesame seeds (til)
+- Dried fruits (raisins, dates)
+- Eat with Vitamin C (lemon, amla) to absorb iron better
 
-Ayushman Bharat (PM-JAY) Health Insurance:
-- Rs. 5 lakh per family per year for hospitalisation
-- For families in Socio-Economic Caste Census 2011 list
-- Works at empanelled government and private hospitals
-- No premium to pay
-- Check eligibility: pmjay.gov.in or call 14555
+Government scheme: POSHAN Abhiyaan
+Free iron and folic acid tablets at Anganwadi and PHC.
+Pregnant women: 1 tablet daily for 180 days — completely free.
 
-Emergency Numbers:
-- Ambulance: 108 (FREE, 24x7)
-- For delivery: 102 (FREE maternity ambulance)
-- Health helpline: 104 (FREE medical advice, 24x7)
-- Women helpline: 181
+Iodine deficiency:
+Always use iodised salt. Prevents goitre and developmental problems in children.
 
-Nearest Government Health Facility:
-- Sub-Centre (SC): Every 5000 population in plains
-- Primary Health Centre (PHC): Every 30,000 population
-- Community Health Centre (CHC): Every 1,20,000 population
-- District Hospital: Every district headquarter""",
+Protein needs:
+Women need ~45-55g protein daily.
+Good sources: dal, eggs, milk, paneer, soyabean, groundnuts.""",
         "metadata": {
-            "act_name": "National Health Mission India",
-            "section": "Free Health Schemes and Services",
-            "source": "NHM India",
-            "symptom_type": "general",
-            "language": "en"
+            "topic": "nutrition",
+            "source": "ICMR Nutrition Guidelines",
+            "issue_type": "nutrition",
+        }
+    },
+    {
+        "content": """Reproductive Health — Contraception and Family Planning
+
+Free contraception available at all government health centres:
+- Condoms: Free at PHC, sub-centres, ASHA workers
+- Oral contraceptive pills (Mala-N): Free at PHC
+- Injectable contraceptive (Antara): Free at PHC — 1 injection every 3 months
+- Copper-T IUD: Free insertion at PHC
+- Sterilisation (tubectomy): Free with compensation under family planning scheme
+
+Emergency contraception:
+- Take within 72 hours of unprotected sex
+- Available at chemist without prescription
+- NOT for regular use
+
+Signs needing immediate doctor visit:
+- Missed periods for 2+ months (rule out pregnancy)
+- Unusual vaginal discharge with smell or itching
+- Pain during intercourse
+- Heavy or irregular periods
+
+Menstrual hygiene:
+Free sanitary pads under Pradhan Mantri Surakshit Matritva Abhiyan at Anganwadi centres.""",
+        "metadata": {
+            "topic": "reproductive_health",
+            "source": "MOHFW Reproductive Health Guidelines",
+            "issue_type": "reproductive_health",
+        }
+    },
+    {
+        "content": """Government Health Schemes for Women
+
+Ayushman Bharat — Pradhan Mantri Jan Arogya Yojana (PMJAY):
+Free health insurance up to Rs 5 lakh per family per year.
+Covers hospitalisation at empanelled government and private hospitals.
+Eligibility: BPL families (check at pmjay.gov.in or call 14555)
+
+Janani Shishu Suraksha Karyakaram (JSSK):
+Free and cashless services for pregnant women at government hospitals:
+- Free delivery (normal and caesarean)
+- Free drugs and consumables
+- Free diagnostics
+- Free diet during hospital stay
+- Free blood transfusion
+- Free transport from home to hospital and back
+
+PM Matru Vandana Yojana (PMMVY):
+Rs 5000 cash benefit for first pregnancy.
+Conditions: institutional delivery + breastfeeding + vaccination.
+Apply at Anganwadi or Women and Child Development office.
+
+Rashtriya Swasthya Bima Yojana (RSBY):
+Smart card-based health insurance for BPL families.
+Covers hospitalisation up to Rs 30,000 per year.""",
+        "metadata": {
+            "topic": "health_schemes",
+            "source": "Government Health Schemes",
+            "issue_type": "health_schemes",
         }
     }
 ]
 
+
 def ingest_medical_documents():
     print("=" * 60)
-    print("Nyay Vani — Medical Document Ingestion")
+    print("StriSakhi — Medical Document Ingestion")
     print("=" * 60)
 
+    print(f"\nConnecting to ChromaDB at: {settings.chroma_persist_dir}")
     client = chromadb.PersistentClient(path=settings.chroma_persist_dir)
 
+    print("Loading ChromaDB default embedding function...")
+    ef = embedding_functions.DefaultEmbeddingFunction()
+
+    # Recreate collection
     try:
         client.delete_collection(settings.medical_collection)
         print(f"Deleted existing collection: {settings.medical_collection}")
@@ -195,55 +228,68 @@ def ingest_medical_documents():
 
     collection = client.create_collection(
         name=settings.medical_collection,
-        metadata={"description": "Medical guidelines for women and children health India"}
+        embedding_function=ef,
+        metadata={"description": "Medical health guidelines for Indian women"}
     )
+    print(f"Created collection: {settings.medical_collection}")
 
-    print(f"\nLoading embedding model: {settings.embedding_model}")
-    embedder = SentenceTransformer(settings.embedding_model)
+    documents = []
+    metadatas = []
+    ids = []
 
-    documents, metadatas, ids = [], [], []
-
+    # Baseline knowledge
     print(f"\nLoading {len(BASELINE_MEDICAL_DATA)} baseline medical documents...")
     for i, item in enumerate(BASELINE_MEDICAL_DATA):
         documents.append(item["content"])
         metadatas.append(item["metadata"])
-        ids.append(f"baseline_med_{i}")
+        ids.append(f"baseline_{i}")
 
-    medical_docs_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "rag_documents", "medical")
+    # Load PDFs if available
+    medical_docs_dir = os.path.join(
+        os.path.dirname(os.path.dirname(__file__)),
+        "rag_documents", "medical"
+    )
+
     if os.path.exists(medical_docs_dir):
         pdf_files = [f for f in os.listdir(medical_docs_dir) if f.endswith(('.pdf', '.txt'))]
         if pdf_files:
-            splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+            print(f"\nFound {len(pdf_files)} files in rag_documents/medical/")
+            splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=100)
             for fname in pdf_files:
                 fpath = os.path.join(medical_docs_dir, fname)
                 try:
-                    loader = PyPDFLoader(fpath) if fname.endswith('.pdf') else TextLoader(fpath)
-                    chunks = splitter.split_documents(loader.load())
+                    loader = PyPDFLoader(fpath) if fname.endswith('.pdf') else TextLoader(fpath, encoding='utf-8')
+                    pages = loader.load()
+                    chunks = splitter.split_documents(pages)
+                    print(f"  {fname}: {len(chunks)} chunks")
                     for j, chunk in enumerate(chunks):
                         documents.append(chunk.page_content)
                         metadatas.append({
-                            "act_name": fname.replace('.pdf','').replace('_',' ').title(),
-                            "section": f"Chunk {j+1}",
+                            "topic": fname.replace('.pdf','').replace('_',' ').title(),
                             "source": fname,
-                            "symptom_type": "general",
-                            "language": "en"
+                            "issue_type": "general",
                         })
-                        ids.append(f"pdf_med_{fname}_{j}")
-                    print(f"  {fname}: {len(chunks)} chunks")
+                        ids.append(f"pdf_{fname}_{j}")
                 except Exception as e:
-                    print(f"  WARNING: {fname}: {e}")
+                    print(f"  WARNING: Could not load {fname}: {e}")
+        else:
+            print("\nNo PDFs found in rag_documents/medical/ — using baseline only")
+            print("Add PDFs later and re-run this script to enhance Sehat Sakhi")
 
-    print(f"\nGenerating embeddings for {len(documents)} documents...")
-    all_embeddings = []
-    for i in range(0, len(documents), 32):
-        batch = documents[i:i+32]
-        emb = embedder.encode(batch, normalize_embeddings=True)
-        all_embeddings.extend(emb.tolist())
-        print(f"  Embedded {min(i+32, len(documents))}/{len(documents)}")
+    # Store in ChromaDB
+    print(f"\nEmbedding and storing {len(documents)} documents...")
+    batch_size = 50
+    for i in range(0, len(documents), batch_size):
+        collection.add(
+            documents=documents[i:i+batch_size],
+            metadatas=metadatas[i:i+batch_size],
+            ids=ids[i:i+batch_size]
+        )
+        print(f"  Stored {min(i+batch_size, len(documents))}/{len(documents)}")
 
-    collection.add(documents=documents, embeddings=all_embeddings, metadatas=metadatas, ids=ids)
     print(f"\n✅ SUCCESS: {len(documents)} medical documents ingested")
-    print(f"Collection '{settings.medical_collection}' ready for RAG queries")
+    print(f"Collection '{settings.medical_collection}' ready")
+
 
 if __name__ == "__main__":
     ingest_medical_documents()
