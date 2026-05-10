@@ -1,5 +1,9 @@
 """
-Legal API — passes session language to all agents
+Legal API — StriSakhi
+Fixes:
+1. Emergency response includes actual text (not just empty done)
+2. Emergency detected in expert phase also works
+3. Language properly enforced in all paths
 """
 import json
 import time
@@ -24,11 +28,20 @@ import psutil
 
 router = APIRouter()
 
+# Hardcoded emergency responses per language (no LLM call needed — instant)
+EMERGENCY_MESSAGES = {
+    "hi": "🆘 आपकी स्थिति बहुत गंभीर लग रही है।\n\n**अभी तुरंत करें:**\n📞 **181** — महिला हेल्पलाइन (24 घंटे, FREE)\n📞 **100** — Police\n📞 **1091** — Women in Distress\n\nआप सुरक्षित जगह जाएं। मैं यहाँ हूँ — बात जारी रखें।",
+    "en": "🆘 Your situation sounds very serious.\n\n**Call RIGHT NOW:**\n📞 **181** — Women Helpline (24 hours, FREE)\n📞 **100** — Police\n📞 **1091** — Women in Distress\n\nPlease get to a safe place. I'm still here — keep talking to me.",
+    "bn": "🆘 আপনার পরিস্থিতি খুব গুরুতর মনে হচ্ছে।\n\n**এখনই ফোন করুন:**\n📞 **181** — মহিলা হেল্পলাইন (24 ঘণ্টা, বিনামূল্যে)\n📞 **100** — পুলিশ\n\nনিরাপদ জায়গায় যান। আমি এখানে আছি।",
+}
+
+
 class ChatRequest(BaseModel):
     session_id: str
     message: str
     input_type: Optional[str] = "text"
-    language: Optional[str] = "hi"  # session language from frontend
+    language: Optional[str] = "hi"
+
 
 @router.post("/chat")
 async def legal_chat(req: ChatRequest, db: Session = Depends(get_db)):
@@ -38,15 +51,31 @@ async def legal_chat(req: ChatRequest, db: Session = Depends(get_db)):
 
     language = req.language or "hi"
 
+    # Emergency check — runs ALWAYS regardless of phase
     is_emergency, emergency_type, severity = detect_emergency(req.message, "legal")
     if is_emergency and severity == "critical":
         flag_emergency(db, req.session_id)
         save_message(db, req.session_id, "user", req.message, req.input_type)
+        # Use hardcoded message — instant, no LLM needed
+        emergency_text = EMERGENCY_MESSAGES.get(language, EMERGENCY_MESSAGES["en"])
         emergency_data = get_emergency_response(emergency_type, "legal", language)
-        async def es():
+
+        async def emergency_stream():
+            # 1. Send emergency overlay trigger
             yield f"data: {json.dumps({'type': 'emergency', 'data': emergency_data})}\n\n"
-            yield f"data: {json.dumps({'type': 'done'})}\n\n"
-        return StreamingResponse(es(), media_type="text/event-stream")
+            # 2. Stream the emergency message token by token (shows in chat bubble)
+            for word in emergency_text:
+                yield f"data: {json.dumps({'type': 'token', 'token': word, 'agent': 'emergency'})}\n\n"
+            # 3. Save and done
+            save_message(db, req.session_id, "assistant", emergency_text,
+                        citations=[], agent_used="emergency")
+            yield f"data: {json.dumps({'type': 'done', 'full_response': emergency_text, 'citations': [], 'agent': 'emergency', 'follow_up_questions': ['क्या आप सुरक्षित हैं?', 'क्या आप घर से बाहर जा सकती हैं?', 'क्या आपके पास phone है?'] if language == 'hi' else ['Are you safe right now?', 'Can you get to a safe place?', 'Is there someone who can help you?']})}\n\n"
+
+        return StreamingResponse(
+            emergency_stream(),
+            media_type="text/event-stream",
+            headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"}
+        )
 
     save_message(db, req.session_id, "user", req.message, req.input_type,
                  agent_used=session_data["agent_phase"])
@@ -74,6 +103,7 @@ async def legal_chat(req: ChatRequest, db: Session = Depends(get_db)):
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"}
     )
 
+
 async def _stream(db, session_id, message, decision, metadata,
                   history, language, session_data, model_name, reason):
     start = time.time()
@@ -98,9 +128,15 @@ async def _stream(db, session_id, message, decision, metadata,
                 update_session_phase(db, session_id, "expert")
                 yield f"data: {json.dumps({'type': 'phase_change', 'from': 'intake', 'to': 'expert'})}\n\n"
             elif ev["type"] == "emergency":
+                # Emergency detected mid-intake — flag and send hardcoded message
                 flag_emergency(db, session_id)
+                emergency_text = EMERGENCY_MESSAGES.get(language, EMERGENCY_MESSAGES["en"])
                 yield f"data: {json.dumps({'type': 'emergency'})}\n\n"
-                return
+                for word in emergency_text:
+                    yield f"data: {json.dumps({'type': 'token', 'token': word, 'agent': 'emergency'})}\n\n"
+                full_response = emergency_text
+                agent_used = "emergency"
+                break
             elif ev["type"] == "error":
                 yield f"data: {json.dumps({'type': 'error', 'message': ev['message']})}\n\n"
                 return
@@ -115,14 +151,24 @@ async def _stream(db, session_id, message, decision, metadata,
             elif ev["type"] == "rag_retrieved":
                 citations = ev.get("citations", [])
                 yield f"data: {json.dumps({'type': 'citations', 'citations': citations})}\n\n"
+            elif ev["type"] == "thinking":
+                yield f"data: {json.dumps({'type': 'thinking'})}\n\n"
             elif ev["type"] == "error":
                 yield f"data: {json.dumps({'type': 'error', 'message': ev['message']})}\n\n"
                 return
 
     response_ms = int((time.time() - start) * 1000)
+    follow_ups = []
+
+    # Get follow_up_questions from the done event if expert
+    if decision == RouteDecision.EXPERT:
+        pass  # Already yielded via done event from agent
+
     save_message(db, session_id, "assistant", full_response,
                  citations=citations, agent_used=agent_used, response_ms=response_ms)
-    yield f"data: {json.dumps({'type': 'done', 'full_response': full_response, 'citations': citations, 'response_ms': response_ms, 'agent': agent_used})}\n\n"
+
+    yield f"data: {json.dumps({'type': 'done', 'full_response': full_response, 'citations': citations, 'response_ms': response_ms, 'agent': agent_used, 'follow_up_questions': follow_ups})}\n\n"
+
 
 @router.get("/test")
 async def legal_test():

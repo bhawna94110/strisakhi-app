@@ -94,12 +94,13 @@ async function loadSessionHistory(sessionId) {
   } catch { return null; }
 }
 
-async function streamChat(tab, sessionId, message, lang, onToken, onDone, onMeta) {
+async function streamChat(tab, sessionId, message, lang, onToken, onDone, onMeta, signal) {
   const ep = tab === "scheme" ? "legal" : tab;
   try {
     const res = await fetch(`${BASE_URL}/api/${ep}/chat`, {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ session_id: sessionId, message, input_type: "text", language: lang })
+      body: JSON.stringify({ session_id: sessionId, message, input_type: "text", language: lang }),
+      signal,
     });
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
@@ -107,6 +108,7 @@ async function streamChat(tab, sessionId, message, lang, onToken, onDone, onMeta
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
+      if (signal?.aborted) { reader.cancel(); break; }
       buf += decoder.decode(value, { stream: true });
       const lines = buf.split("\n"); buf = lines.pop() || "";
       for (const line of lines) {
@@ -114,12 +116,14 @@ async function streamChat(tab, sessionId, message, lang, onToken, onDone, onMeta
         try {
           const ev = JSON.parse(line.slice(6));
           if (ev.type === "token") { onToken(ev.token); await new Promise(r => setTimeout(r, 0)); }
-          else if (ev.type === "done") onDone({ full_response: ev.full_response, citations: ev.citations || [], agent: ev.agent });
+          else if (ev.type === "done") onDone({ full_response: ev.full_response, citations: ev.citations || [], agent: ev.agent, follow_up_questions: ev.follow_up_questions || [] });
+          else if (ev.type === "emergency") onMeta({ type: "emergency", data: ev.data });
           else onMeta(ev);
         } catch {}
       }
     }
   } catch (err) {
+    if (err.name === "AbortError") return; // intentionally cancelled — don't call onDone
     onMeta({ type: "error", message: err.message });
     onDone({ full_response: "Connection error. Please try again.", citations: [], agent: "error" });
   }
@@ -324,11 +328,37 @@ html,body,#root{height:100%;font-family:var(--fb);background:var(--bg);color:var
 .typ-dot:nth-child(2){animation-delay:.2s}.typ-dot:nth-child(3){animation-delay:.4s}
 @keyframes tB{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-4px);opacity:1}}
 .typ-lbl{font-size:12px;color:var(--ink3);font-style:italic}
+.thinking-wrap{display:flex;flex-direction:column;gap:6px}
+.thinking-bar{display:flex;align-items:center;gap:8px}
+.thinking-ico{font-size:14px;animation:tSpin 2s linear infinite}
+@keyframes tSpin{0%{opacity:1}50%{opacity:.3}100%{opacity:1}}
+.thinking-lbl{font-size:12px;font-weight:600;color:var(--ink2)}
+.thinking-sub{font-size:11px;color:var(--ink3);font-style:italic}
+.thinking-progress{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:2px}
+.thinking-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#1a4a6b,#2196F3);animation:tFill 15s linear forwards}
+@keyframes tFill{from{width:0%}to{width:100%}}
 .wait-note{font-size:10px;color:var(--ink3);margin-top:4px;font-style:italic}
 .qpicks{padding:6px 16px 3px;display:flex;gap:6px;overflow-x:auto;flex-shrink:0}
 .qpicks::-webkit-scrollbar{display:none}
 .qchip{display:flex;align-items:center;gap:4px;background:var(--wh);border:1px solid var(--border);border-radius:99px;padding:6px 11px;font-size:11px;font-weight:500;white-space:nowrap;cursor:pointer;flex-shrink:0;color:var(--ink2);font-family:var(--fb);transition:all .2s}
 .qchip:hover{border-color:var(--ink3);color:var(--ink)}
+.followup-row{padding:8px 16px 4px;flex-shrink:0}
+.followup-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--ink3);margin-bottom:6px}
+.followup-chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.followup-chips::-webkit-scrollbar{display:none}
+.fchip{display:flex;align-items:center;background:var(--bg);border:1.5px solid var(--border);border-radius:99px;padding:6px 12px;font-size:11px;font-weight:600;white-space:nowrap;cursor:pointer;flex-shrink:0;color:var(--ink);font-family:var(--fb);transition:all .2s;gap:4px}
+.fchip:hover{background:var(--ink);color:white;border-color:var(--ink)}
+.fchip:active{transform:scale(.97)}
+.emergency-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.emergency-box{background:var(--wh);border-radius:20px;padding:24px 20px;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.emergency-title{font-size:20px;font-weight:800;color:#dc2626;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.emergency-msg{font-size:13px;color:var(--ink2);margin-bottom:18px;line-height:1.5}
+.emergency-lines{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.eline{display:flex;align-items:center;gap:12px;background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:12px 14px}
+.eline-num{font-size:20px;font-weight:800;color:#dc2626;font-family:var(--fb)}
+.eline-lbl{font-size:12px;color:var(--ink2);font-weight:500}
+.emergency-continue{width:100%;padding:14px;border-radius:12px;border:none;background:var(--ink);color:white;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--fb);transition:all .2s}
+.emergency-continue:active{transform:scale(.98)}
 .ibar{padding:10px 14px 16px;border-top:1px solid var(--border);background:var(--wh);flex-shrink:0}
 .irow{display:flex;gap:8px;align-items:flex-end}
 .tin{flex:1;border:1.5px solid var(--border);border-radius:12px;padding:10px 12px;font-size:14px;font-family:var(--fb);color:var(--ink);background:var(--bg);resize:none;outline:none;max-height:90px;line-height:1.4;transition:border-color .2s}
@@ -456,7 +486,7 @@ function ChatPage({ sakhiId, resumeSessionId, lang, onBack }) {
   const hi = lang === "hi";
 
   // Session language — locked for entire session
-  const [sessionLang, setSessionLang] = useState(null); // null = not picked yet
+  const [sessionLang, setSessionLang] = useState(null);
   const [langPicked, setLangPicked] = useState(false);
 
   const [sessionId, setSessionId] = useState(resumeSessionId || null);
@@ -469,6 +499,67 @@ function ChatPage({ sakhiId, resumeSessionId, lang, onBack }) {
   const [ttsLoading, setTtsLoading] = useState(null);
   const audioRef = useRef(null);
   const [playingIdx, setPlayingIdx] = useState(null);
+  const abortRef = useRef(null); // cancels previous stream on new send
+
+  // Follow-up questions (shown after expert response)
+  const [followUpQuestions, setFollowUpQuestions] = useState([]);
+
+  // Emergency overlay
+  const [emergency, setEmergency] = useState(null);
+
+  // Thinking mode — true when expert agent is reasoning
+  const [isThinking, setIsThinking] = useState(false);
+  const [thinkingSeconds, setThinkingSeconds] = useState(0);
+  const thinkingTimerRef = useRef(null); // null or {message, helplines}
+
+  // Emergency helplines per sakhi/language
+  const EMERGENCY_HELPLINES = {
+    legal: {
+      hi: { message: "आप सुरक्षित रहें। अभी मदद लें:", helplines: [
+        {num:"181", lbl:"महिला हेल्पलाइन (FREE)"}, {num:"100", lbl:"पुलिस"},
+        {num:"1091", lbl:"महिला संकट"}, {num:"15100", lbl:"मुफ्त वकील"},
+      ]},
+      en: { message: "Stay safe. Get help RIGHT NOW:", helplines: [
+        {num:"181", lbl:"Women Helpline (FREE)"}, {num:"100", lbl:"Police"},
+        {num:"1091", lbl:"Women in Distress"}, {num:"15100", lbl:"Free Legal Aid"},
+      ]},
+      bn: { message: "নিরাপদ থাকুন। এখনই সাহায্য নিন:", helplines: [
+        {num:"181", lbl:"মহিলা হেল্পলাইন (FREE)"}, {num:"100", lbl:"পুলিশ"},
+      ]},
+    },
+    health: {
+      hi: { message: "यह EMERGENCY है। तुरंत कॉल करें:", helplines: [
+        {num:"108", lbl:"Ambulance (FREE)"}, {num:"102", lbl:"Maternity"},
+        {num:"104", lbl:"Health Helpline"}, {num:"181", lbl:"Women Helpline"},
+      ]},
+      en: { message: "MEDICAL EMERGENCY. Call immediately:", helplines: [
+        {num:"108", lbl:"Ambulance (FREE)"}, {num:"102", lbl:"Maternity Emergency"},
+        {num:"104", lbl:"Health Helpline"},
+      ]},
+      bn: { message: "জরুরি! এখনই ফোন করুন:", helplines: [
+        {num:"108", lbl:"অ্যাম্বুলেন্স (FREE)"}, {num:"102", lbl:"মাতৃত্ব জরুরি"},
+      ]},
+    },
+    scheme: {
+      hi: { message: "तुरंत मदद लें:", helplines: [
+        {num:"181", lbl:"Women Helpline (FREE)"}, {num:"1800-419-8588", lbl:"Anti-Trafficking"},
+        {num:"1098", lbl:"CHILDLINE"},
+      ]},
+      en: { message: "Immediate help:", helplines: [
+        {num:"181", lbl:"Women Helpline (FREE)"}, {num:"1800-419-8588", lbl:"Anti-Trafficking"},
+      ]},
+      bn: { message: "তাৎক্ষণিক সাহায্য:", helplines: [
+        {num:"181", lbl:"মহিলা হেল্পলাইন"}, {num:"1800-419-8588", lbl:"পাচার বিরোধী"},
+      ]},
+    },
+  };
+
+  const showEmergency = () => {
+    const sakhiKey = sakhiId === "scheme" ? "scheme" : sakhiId === "health" ? "health" : "legal";
+    const langData = EMERGENCY_HELPLINES[sakhiKey]?.[sessionLang || "hi"]
+      || EMERGENCY_HELPLINES[sakhiKey]?.["en"];
+    setEmergency(langData);
+  };
 
   // TTS supported only for hi and en sessions
   const getTtsLang = () => {
@@ -576,12 +667,35 @@ function ChatPage({ sakhiId, resumeSessionId, lang, onBack }) {
   // ── CORE SEND (no stale closure issues) ──────────────────────────────────────
   const sendMessage = async (txt) => {
     if (!txt || !sessionIdRef.current) return;
+
+    // Cancel any in-progress stream
+    if (abortRef.current) abortRef.current.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
     setShowQuicks(false);
     setIsTyping(true);
     isTypingRef.current = true;
     setShowWait(false);
+    setIsThinking(false);
+    setThinkingSeconds(0);
     clearTimeout(waitRef.current);
     waitRef.current = setTimeout(() => setShowWait(true), 8000);
+
+    // If already in expert phase, show thinking animation immediately
+    if (phase === "expert") {
+      setIsThinking(true);
+      setThinkingSeconds(0);
+      thinkingTimerRef.current = setInterval(() => {
+        setThinkingSeconds(s => {
+          if (s >= 15) {
+            clearInterval(thinkingTimerRef.current);
+            setIsThinking(false);
+          }
+          return s + 1;
+        });
+      }, 1000);
+    }
 
     const msgId = Date.now();
     setMsgs(p => [...p, { role: "assistant", content: "", agent: "...", citations: [], id: msgId }]);
@@ -600,17 +714,64 @@ function ChatPage({ sakhiId, resumeSessionId, lang, onBack }) {
       },
       done => {
         clearTimeout(waitRef.current);
+        clearInterval(thinkingTimerRef.current);
         setShowWait(false);
         setIsTyping(false);
+        setIsThinking(false);
+        setThinkingSeconds(0);
         isTypingRef.current = false;
         const full = done.full_response || ai;
-        setMsgs(p => p.map(m => m.id === msgId
-          ? { ...m, content: full, agent: done.agent, citations: done.citations || [] }
-          : m
-        ));
+        if (full) {
+          setMsgs(p => p.map(m => m.id === msgId
+            ? { ...m, content: full, agent: done.agent, citations: done.citations || [] }
+            : m
+          ));
+        }
+        // Show follow-up chips for expert AND emergency responses
+        if (done.follow_up_questions?.length > 0 &&
+            (done.agent === "expert" || done.agent === "emergency")) {
+          setFollowUpQuestions(done.follow_up_questions);
+          setShowQuicks(false);
+        }
         if (full) addSessionHistory(sakhiId, sessionIdRef.current, txt);
       },
-      meta => { if (meta.type === "phase_change") setPhase("expert"); }
+      meta => {
+        if (meta.type === "phase_change") {
+          setPhase("expert");
+          // Start thinking animation when switching to expert
+          setIsThinking(true);
+          setThinkingSeconds(0);
+          clearInterval(thinkingTimerRef.current);
+          thinkingTimerRef.current = setInterval(() => {
+            setThinkingSeconds(s => {
+              if (s >= 15) {
+                clearInterval(thinkingTimerRef.current);
+                setIsThinking(false);
+              }
+              return s + 1;
+            });
+          }, 1000);
+        }
+        if (meta.type === "emergency") {
+          showEmergency();
+          clearTimeout(waitRef.current);
+          clearInterval(thinkingTimerRef.current);
+          setShowWait(false);
+          setIsTyping(false);
+          setIsThinking(false);
+          isTypingRef.current = false;
+          const emergencyMsg = sessionLang === "hi"
+            ? "🆘 आपकी स्थिति गंभीर लग रही है। कृपया अभी 181 पर call करें। मैं अभी भी यहाँ हूँ — बात जारी रखें।"
+            : sessionLang === "bn"
+            ? "🆘 এখনই 181-এ ফোন করুন। আমি এখনও এখানে আছি।"
+            : "🆘 Your situation sounds serious. Please call 181 RIGHT NOW. I'm still here — keep chatting.";
+          setMsgs(p => p.map(m => m.id === msgId
+            ? { ...m, content: emergencyMsg, agent: "emergency", citations: [] }
+            : m
+          ));
+        }
+      },
+      controller.signal
     );
   };
 
@@ -694,6 +855,10 @@ function ChatPage({ sakhiId, resumeSessionId, lang, onBack }) {
     setMsgs([]); setPhase("intake");
     setIsTyping(false); isTypingRef.current = false;
     setShowWait(false); setShowQuicks(true); setInput("");
+    setFollowUpQuestions([]); setEmergency(null);
+    clearInterval(thinkingTimerRef.current);
+    if (abortRef.current) abortRef.current.abort();
+    setIsThinking(false); setThinkingSeconds(0);
     // Go back to language picker
     setSessionLang(null); setLangPicked(false);
   };
@@ -755,6 +920,29 @@ function ChatPage({ sakhiId, resumeSessionId, lang, onBack }) {
 
   return (
     <div className="chat-pg fade">
+      {/* Emergency Overlay */}
+      {emergency && (
+        <div className="emergency-overlay">
+          <div className="emergency-box">
+            <div className="emergency-title">🆘 {sessionLang === "hi" ? "आपातकाल सहायता" : sessionLang === "bn" ? "জরুরি সাহায্য" : "Emergency Help"}</div>
+            <div className="emergency-msg">{emergency.message}</div>
+            <div className="emergency-lines">
+              {emergency.helplines.map((h, i) => (
+                <div key={i} className="eline">
+                  <div className="eline-num">{h.num}</div>
+                  <div className="eline-lbl">{h.lbl}</div>
+                </div>
+              ))}
+            </div>
+            <button className="emergency-continue" onClick={() => setEmergency(null)}>
+              {sessionLang === "hi" ? "मैं सुरक्षित हूँ — बात जारी रखें" :
+               sessionLang === "bn" ? "আমি নিরাপদ — চালিয়ে যান" :
+               "I am safe — continue chatting"}
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="chat-hdr">
         <button className="back" onClick={onBack}>←</button>
         <div className="ch-ico" style={{ background: sk.gradient }}>{sk.icon}</div>
@@ -830,11 +1018,42 @@ function ChatPage({ sakhiId, resumeSessionId, lang, onBack }) {
           <div className="msg">
             <div className="mav" style={{ background: sk.gradient, color: "white" }}>{sk.icon}</div>
             <div className="mbub ai">
-              <div className="typ-wrap">
-                <div className="typ-dots"><div className="typ-dot"/><div className="typ-dot"/><div className="typ-dot"/></div>
-                <span className="typ-lbl">{hi ? "सोच रही हूँ..." : "Thinking..."}</span>
-              </div>
-              {showWait && <div className="wait-note">{hi ? "थोड़ा इंतज़ार करें..." : "Please wait..."}</div>}
+              {isThinking ? (
+                <div className="thinking-wrap">
+                  <div className="thinking-bar">
+                    <span className="thinking-ico">🧠</span>
+                    <span className="thinking-lbl">
+                      {sessionLang === "hi" ? "गहराई से सोच रही हूँ..." :
+                       sessionLang === "bn" ? "গভীরভাবে ভাবছি..." :
+                       "Reasoning deeply..."}
+                    </span>
+                    <span style={{ fontSize: 10, color: "var(--ink3)", marginLeft: "auto" }}>
+                      {thinkingSeconds}s
+                    </span>
+                  </div>
+                  <div className="thinking-sub">
+                    {sessionLang === "hi" ? "आपके मामले का कानूनी विश्लेषण हो रहा है" :
+                     sessionLang === "bn" ? "আপনার বিষয়টি বিশ্লেষণ করা হচ্ছে" :
+                     "Analyzing your case with legal context"}
+                  </div>
+                  <div className="thinking-progress">
+                    <div className="thinking-fill" key={thinkingSeconds}/>
+                  </div>
+                </div>
+              ) : (
+                <div className="typ-wrap">
+                  <div className="typ-dots"><div className="typ-dot"/><div className="typ-dot"/><div className="typ-dot"/></div>
+                  <span className="typ-lbl">
+                    {sessionLang === "hi" ? "सुन रही हूँ..." :
+                     sessionLang === "bn" ? "শুনছি..." : "Listening..."}
+                  </span>
+                </div>
+              )}
+              {showWait && !isThinking && (
+                <div className="wait-note">
+                  {sessionLang === "hi" ? "थोड़ा इंतज़ार करें..." : "Please wait..."}
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -852,6 +1071,26 @@ function ChatPage({ sakhiId, resumeSessionId, lang, onBack }) {
               {u.icon} {hi ? u.hi : u.en}
             </button>
           ))}
+        </div>
+      )}
+
+      {/* Follow-up question chips — shown after expert response */}
+      {followUpQuestions.length > 0 && !isTyping && (
+        <div className="followup-row">
+          <div className="followup-lbl">
+            {sessionLang === "hi" ? "आगे पूछें:" : sessionLang === "bn" ? "আরও জিজ্ঞেস করুন:" : "Ask more:"}
+          </div>
+          <div className="followup-chips">
+            {followUpQuestions.map((q, i) => (
+              <button key={i} className="fchip" onClick={() => {
+                setFollowUpQuestions([]); // clear chips
+                setMsgs(p => [...p, { role: "user", content: q, citations: [] }]);
+                sendMessage(q);
+              }}>
+                💬 {q}
+              </button>
+            ))}
+          </div>
         </div>
       )}
 

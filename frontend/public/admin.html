@@ -7,8 +7,7 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f1117;color:#e8eaf6;min-height:100vh}
-/* LOGIN */
-#login{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:20px}
+#login{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh}
 .lbox{background:#1a1d27;border:1px solid #2e3347;border-radius:16px;padding:36px 32px;width:320px;text-align:center}
 .lico{font-size:36px;margin-bottom:14px}
 .lttl{font-size:20px;font-weight:600;margin-bottom:4px}
@@ -19,32 +18,39 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .pd.e{border-color:#ef4444;background:rgba(239,68,68,.12);color:#ef4444}
 .npad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .nb{padding:14px;border-radius:10px;border:1px solid #2e3347;background:#242838;color:#e8eaf6;font-size:18px;font-weight:600;cursor:pointer;transition:all .2s}
-.nb:hover{background:#2e3347;border-color:#3d4460}
-.nb:active{transform:scale(.95)}
+.nb:hover{background:#2e3347}.nb:active{transform:scale(.95)}
 .errtxt{font-size:12px;color:#ef4444;margin-top:10px;height:16px}
-/* DASHBOARD */
-#dash{display:none;max-width:860px;margin:0 auto;padding:24px 20px 60px}
-.dhdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid #2e3347}
-.dttl{font-size:18px;font-weight:600}
-.dsub{font-size:11px;color:#5f6688;margin-top:2px}
-.hacts{display:flex;gap:8px;align-items:center}
-.spill{display:flex;align-items:center;gap:6px;background:#1a1d27;border:1px solid #2e3347;border-radius:99px;padding:5px 13px;font-size:12px;font-weight:700}
+#dash{height:100vh;flex-direction:column}
+.topper{background:#1a1d27;border-bottom:1px solid #2e3347;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-icon{width:32px;height:32px;background:linear-gradient(135deg,#06b6d4,#3b82f6);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px}
+.brand-name{font-size:16px;font-weight:700}
+.brand-sub{font-size:10px;color:#5f6688;margin-top:1px}
+.topper-right{display:flex;align-items:center;gap:8px}
+.spill{display:flex;align-items:center;gap:6px;background:#242838;border:1px solid #2e3347;border-radius:99px;padding:5px 12px;font-size:11px;font-weight:700}
 .sdot{width:7px;height:7px;border-radius:50%}
-.rbtn{background:#242838;border:1px solid #2e3347;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;color:#9ca3c9;cursor:pointer;transition:all .2s}
+.rbtn{background:#242838;border:1px solid #2e3347;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;color:#9ca3c9;cursor:pointer;transition:all .2s}
 .rbtn:hover{background:#2e3347;color:#e8eaf6}
-.lout{background:none;border:none;font-size:12px;color:#5f6688;cursor:pointer;padding:7px 10px;border-radius:6px;transition:all .2s}
+.lout{background:none;border:none;font-size:12px;color:#5f6688;cursor:pointer;padding:6px 10px;border-radius:6px}
 .lout:hover{color:#e8eaf6;background:#242838}
-/* STAT CARDS */
-.scards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+.tabs{display:flex;border-bottom:1px solid #2e3347;background:#1a1d27;flex-shrink:0}
+.tab{padding:10px 18px;font-size:13px;font-weight:600;color:#5f6688;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
+.tab:hover{color:#9ca3c9}
+.tab.on{color:#06b6d4;border-bottom-color:#06b6d4}
+.tab-content{flex:1;overflow-y:auto;padding:20px}
+.tab-content::-webkit-scrollbar{width:5px}
+.tab-content::-webkit-scrollbar-thumb{background:#2e3347;border-radius:3px}
+.tab-panel{display:none}
+.tab-panel.on{display:block}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
 .sc{background:#1a1d27;border:1px solid #2e3347;border-radius:12px;padding:16px}
-.slbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#5f6688;margin-bottom:8px}
+.slbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#5f6688;margin-bottom:7px}
 .sval{font-size:26px;font-weight:700;line-height:1}
-.ssub{font-size:11px;color:#5f6688;margin-top:4px}
-.sbar{height:4px;background:#242838;border-radius:2px;margin-top:10px}
+.ssub{font-size:11px;color:#5f6688;margin-top:3px}
+.sbar{height:4px;background:#242838;border-radius:2px;margin-top:9px}
 .sfill{height:100%;border-radius:2px;transition:width .5s}
-/* SECTION */
-.sec{background:#1a1d27;border:1px solid #2e3347;border-radius:12px;margin-bottom:16px;overflow:hidden}
-.sechdr{padding:13px 16px;border-bottom:1px solid #2e3347;font-size:13px;font-weight:700;display:flex;align-items:center;gap:7px}
+.sec{background:#1a1d27;border:1px solid #2e3347;border-radius:12px;margin-bottom:14px;overflow:hidden}
+.sechdr{padding:13px 16px;border-bottom:1px solid #2e3347;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:space-between}
 .secbody{padding:14px 16px;display:flex;flex-direction:column;gap:8px}
 .row{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#242838;border-radius:10px}
 .rlbl{font-size:13px;font-weight:600;margin-bottom:2px}
@@ -53,60 +59,68 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .ok{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.2)}
 .err{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.2)}
 .warn{background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.2)}
-/* SETTINGS */
+.flow-wrap{padding:16px;overflow-x:auto}
+.flow-row{display:flex;align-items:flex-start;gap:0;min-width:600px}
+.fnode{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0}
+.fbox{border-radius:11px;padding:11px 13px;text-align:center;min-width:90px;border:1.5px solid #2e3347;background:#242838;transition:all .3s}
+.fbox.ok{border-color:#22c55e;background:rgba(34,197,94,.08)}
+.fbox.error{border-color:#ef4444;background:rgba(239,68,68,.08)}
+.fbox.active{border-color:#06b6d4;background:rgba(6,182,212,.08)}
+.fbox-ico{font-size:20px;margin-bottom:3px}
+.fbox-name{font-size:11px;font-weight:700;color:#e8eaf6;white-space:pre-line}
+.fbox-sub{font-size:9px;color:#5f6688;margin-top:2px;line-height:1.3;white-space:pre-line}
+.farrow{display:flex;align-items:center;padding:0 5px;flex-shrink:0;margin-top:18px;color:#3d4460;font-size:16px}
+.rd-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.rd-cond{background:#242838;border:1px solid #2e3347;border-radius:7px;padding:7px 11px;font-size:11px;color:#9ca3c9;font-family:monospace}
+.rd-arr{color:#5f6688;font-size:13px}
+.rd-r{border-radius:7px;padding:5px 11px;font-size:11px;font-weight:700}
+.rd-intake{background:rgba(59,130,246,.15);color:#3b82f6;border:1px solid rgba(59,130,246,.2)}
+.rd-expert{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.2)}
+.rd-emerg{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.2)}
+.log-box{background:#0d1117;border-radius:10px;padding:14px;font-family:monospace;font-size:11px;line-height:1.7;max-height:380px;overflow-y:auto;border:1px solid #2e3347}
+.log-box::-webkit-scrollbar{width:4px}
+.log-box::-webkit-scrollbar-thumb{background:#2e3347}
+.le{display:flex;gap:8px;align-items:flex-start;margin-bottom:2px}
+.lt{color:#3d4460;flex-shrink:0;font-size:10px;margin-top:2px}
+.ll{flex-shrink:0;font-weight:700;font-size:10px;margin-top:2px}
+.ll.INFO{color:#3b82f6}.ll.OK{color:#22c55e}.ll.WARN{color:#f59e0b}.ll.ERR{color:#ef4444}.ll.EVENT{color:#a855f7}
+.lm{color:#9ca3c9;word-break:break-word}
+.lm.hl{color:#e8eaf6;font-weight:600}
+.log-empty{color:#3d4460;text-align:center;padding:24px;font-size:12px}
 .setting-row{display:flex;align-items:center;justify-content:space-between;padding:12px;background:#242838;border-radius:10px}
-.setting-label{font-size:13px;font-weight:600}
-.setting-sub{font-size:11px;color:#5f6688;margin-top:2px}
-.setting-control{display:flex;align-items:center;gap:10px}
-input[type=range]{width:130px;height:4px;appearance:none;background:#3d4460;border-radius:2px;outline:none;cursor:pointer}
+.sl{flex:1}
+.sl-name{font-size:13px;font-weight:600}
+.sl-sub{font-size:11px;color:#5f6688;margin-top:2px}
+.sc-ctrl{display:flex;align-items:center;gap:10px;flex-shrink:0}
+input[type=range]{width:115px;height:4px;appearance:none;background:#3d4460;border-radius:2px;outline:none;cursor:pointer}
 input[type=range]::-webkit-slider-thumb{appearance:none;width:14px;height:14px;border-radius:50%;background:#06b6d4;cursor:pointer}
-.slider-val{font-size:12px;font-weight:700;color:#06b6d4;min-width:36px;text-align:right}
-select{background:#1a1d27;border:1px solid #3d4460;color:#e8eaf6;padding:5px 10px;border-radius:7px;font-size:12px;cursor:pointer}
-.save-btn{background:#06b6d4;border:none;color:white;padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:12px;transition:all .2s}
+.sv{font-size:12px;font-weight:700;color:#06b6d4;min-width:34px;text-align:right}
+.save-btn{background:#06b6d4;border:none;color:white;padding:8px 18px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:12px;transition:all .2s}
 .save-btn:hover{background:#0891b2}
-.save-btn:active{transform:scale(.97)}
-.saved-msg{font-size:12px;color:#22c55e;margin-top:6px;height:16px}
-/* RAG GRID */
+.savedmsg{font-size:12px;margin-top:7px;height:16px}
+.errbox{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:10px;padding:12px;text-align:center;color:#ef4444;font-size:13px;margin-bottom:14px;display:none}
 .raggrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:14px 16px}
 .ragitem{background:#242838;border-radius:10px;padding:12px;text-align:center}
 .ragnum{font-size:22px;font-weight:700;color:#06b6d4}
 .raglbl{font-size:11px;color:#5f6688;margin-top:3px}
-/* FLOW */
-.flow{display:flex;align-items:center;flex-wrap:wrap;gap:4px;padding:16px}
-.fstep{display:flex;flex-direction:column;align-items:center;gap:5px}
-.fico{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;background:#242838;border:1.5px solid #2e3347;transition:all .3s}
-.fico.act{border-color:#06b6d4;background:rgba(6,182,212,.1)}
-.flbl{font-size:9px;font-weight:600;text-align:center;color:#5f6688;line-height:1.3;max-width:60px}
-.flbl.act{color:#06b6d4}
-.farr{font-size:14px;color:#3d4460;margin-bottom:16px}
-/* ERRBOX */
-.errbox{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:10px;padding:14px;text-align:center;color:#ef4444;font-size:13px;margin-bottom:16px;display:none}
+.badge-pill{background:#a855f7;color:white;font-size:9px;padding:1px 6px;border-radius:99px;margin-left:5px}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="login">
   <div class="lbox">
     <div class="lico">🔐</div>
     <div class="lttl">StriSakhi Admin</div>
     <div class="lsub">Enter PIN to continue</div>
     <div class="pins">
-      <div class="pd" id="p0"></div>
-      <div class="pd" id="p1"></div>
-      <div class="pd" id="p2"></div>
-      <div class="pd" id="p3"></div>
+      <div class="pd" id="p0"></div><div class="pd" id="p1"></div>
+      <div class="pd" id="p2"></div><div class="pd" id="p3"></div>
     </div>
     <div class="npad">
-      <button class="nb" onclick="press('1')">1</button>
-      <button class="nb" onclick="press('2')">2</button>
-      <button class="nb" onclick="press('3')">3</button>
-      <button class="nb" onclick="press('4')">4</button>
-      <button class="nb" onclick="press('5')">5</button>
-      <button class="nb" onclick="press('6')">6</button>
-      <button class="nb" onclick="press('7')">7</button>
-      <button class="nb" onclick="press('8')">8</button>
-      <button class="nb" onclick="press('9')">9</button>
+      <button class="nb" onclick="press('1')">1</button><button class="nb" onclick="press('2')">2</button><button class="nb" onclick="press('3')">3</button>
+      <button class="nb" onclick="press('4')">4</button><button class="nb" onclick="press('5')">5</button><button class="nb" onclick="press('6')">6</button>
+      <button class="nb" onclick="press('7')">7</button><button class="nb" onclick="press('8')">8</button><button class="nb" onclick="press('9')">9</button>
       <button class="nb" onclick="press('del')" style="color:#ef4444">⌫</button>
       <button class="nb" onclick="press('0')">0</button>
       <button class="nb" onclick="press('clr')" style="color:#5f6688">C</button>
@@ -115,287 +129,356 @@ select{background:#1a1d27;border:1px solid #3d4460;color:#e8eaf6;padding:5px 10p
   </div>
 </div>
 
-<!-- DASHBOARD -->
-<div id="dash">
-  <div class="dhdr">
-    <div><div class="dttl">StriSakhi Admin</div><div class="dsub" id="lupdated">Loading...</div></div>
-    <div class="hacts">
-      <div class="spill"><div class="sdot" id="odot"></div><span id="ostatus" style="font-size:12px;font-weight:700">Loading</span></div>
+<div id="dash" style="display:none;flex-direction:column;height:100vh">
+
+  <div class="topper">
+    <div class="brand">
+      <div class="brand-icon">⚡</div>
+      <div>
+        <div class="brand-name">StriSakhi Admin</div>
+        <div class="brand-sub" id="lupdated">Loading...</div>
+      </div>
+    </div>
+    <div class="topper-right">
+      <div class="spill">
+        <div class="sdot" id="odot" style="background:#5f6688"></div>
+        <span id="ostatus" style="font-size:11px;font-weight:700;color:#5f6688">Loading</span>
+      </div>
       <button class="rbtn" onclick="load()">↻ Refresh</button>
       <button class="lout" onclick="logout()">Logout</button>
     </div>
   </div>
 
-  <div class="errbox" id="errbox"></div>
-
-  <!-- Stat cards -->
-  <div class="scards">
-    <div class="sc"><div class="slbl">CPU</div><div class="sval" id="cpu">—</div><div class="ssub">Container</div><div class="sbar"><div class="sfill" id="cpub" style="background:#22c55e"></div></div></div>
-    <div class="sc"><div class="slbl">RAM Used</div><div class="sval" id="ram">—</div><div class="ssub" id="ramsub">of —GB</div><div class="sbar"><div class="sfill" id="ramb" style="background:#06b6d4"></div></div></div>
-    <div class="sc"><div class="slbl">Sessions</div><div class="sval" id="sess" style="color:#f59e0b">—</div><div class="ssub">All time</div></div>
-    <div class="sc"><div class="slbl">Messages</div><div class="sval" id="msgs" style="color:#a855f7">—</div><div class="ssub">All time</div></div>
+  <div class="tabs">
+    <div class="tab on" onclick="switchTab('system')" id="tab-system">📊 System</div>
+    <div class="tab" onclick="switchTab('flow')" id="tab-flow">🧠 AI Flow</div>
+    <div class="tab" onclick="switchTab('logs')" id="tab-logs">📋 Logs <span class="badge-pill" id="log-badge">0</span></div>
+    <div class="tab" onclick="switchTab('settings')" id="tab-settings">⚙️ Settings</div>
   </div>
 
-  <!-- AI Flow -->
-  <div class="sec">
-    <div class="sechdr">🧠 AI Architecture</div>
-    <div class="flow" id="flow"></div>
-  </div>
+  <div class="tab-content">
 
-  <!-- Services -->
-  <div class="sec">
-    <div class="sechdr">🔌 Services</div>
-    <div class="secbody" id="svc"></div>
-  </div>
-
-  <!-- Models -->
-  <div class="sec">
-    <div class="sechdr">🤖 Loaded Models</div>
-    <div class="secbody" id="mdls"></div>
-  </div>
-
-  <!-- Three Sakhis -->
-  <div class="sec">
-    <div class="sechdr">🌸 Three Sakhis</div>
-    <div class="secbody" id="sakhis"></div>
-  </div>
-
-  <!-- RAG -->
-  <div class="sec" id="ragsec" style="display:none">
-    <div class="sechdr">📚 RAG Knowledge Base</div>
-    <div class="raggrid" id="ragdata"></div>
-  </div>
-
-  <!-- Settings -->
-  <div class="sec">
-    <div class="sechdr">⚙️ Settings</div>
-    <div class="secbody">
-      <div class="setting-row">
-        <div><div class="setting-label">Hindi TTS speed</div><div class="setting-sub">Priyamvada voice · lower = slower (better for rural users)</div></div>
-        <div class="setting-control">
-          <input type="range" id="hi-speed" min="0.7" max="1.8" step="0.1" value="1.2" oninput="document.getElementById('hi-spv').textContent=this.value+'×'">
-          <span class="slider-val" id="hi-spv">1.2×</span>
-        </div>
+    <!-- SYSTEM -->
+    <div class="tab-panel on" id="panel-system">
+      <div class="errbox" id="errbox"></div>
+      <div class="cards">
+        <div class="sc"><div class="slbl">CPU</div><div class="sval" id="cpu">—</div><div class="ssub">Container</div><div class="sbar"><div class="sfill" id="cpub"></div></div></div>
+        <div class="sc"><div class="slbl">RAM Used</div><div class="sval" id="ram">—</div><div class="ssub" id="ramsub">of —GB</div><div class="sbar"><div class="sfill" id="ramb" style="background:#06b6d4"></div></div></div>
+        <div class="sc"><div class="slbl">Sessions</div><div class="sval" id="sess" style="color:#f59e0b">—</div><div class="ssub">All time</div></div>
+        <div class="sc"><div class="slbl">Messages</div><div class="sval" id="msgs" style="color:#a855f7">—</div><div class="ssub">All time</div></div>
       </div>
-      <div class="setting-row">
-        <div><div class="setting-label">English TTS speed</div><div class="setting-sub">Amy voice</div></div>
-        <div class="setting-control">
-          <input type="range" id="en-speed" min="0.7" max="1.8" step="0.1" value="1.0" oninput="document.getElementById('en-spv').textContent=this.value+'×'">
-          <span class="slider-val" id="en-spv">1.0×</span>
-        </div>
-      </div>
-      <div class="setting-row">
-        <div><div class="setting-label">Intake max turns</div><div class="setting-sub">Switch to expert after N user messages</div></div>
-        <div class="setting-control">
-          <input type="range" id="intake-turns" min="1" max="6" step="1" value="3" oninput="document.getElementById('itv').textContent=this.value">
-          <span class="slider-val" id="itv">3</span>
-        </div>
-      </div>
-      <div class="setting-row">
-        <div><div class="setting-label">LLM temperature</div><div class="setting-sub">Higher = more creative, lower = more consistent</div></div>
-        <div class="setting-control">
-          <input type="range" id="temp" min="0.1" max="0.9" step="0.1" value="0.3" oninput="document.getElementById('tmpv').textContent=this.value">
-          <span class="slider-val" id="tmpv">0.3</span>
-        </div>
-      </div>
-      <div class="setting-row">
-        <div><div class="setting-label">Expert max tokens</div><div class="setting-sub">Max tokens in expert agent response</div></div>
-        <div class="setting-control">
-          <input type="range" id="max-tok" min="200" max="800" step="50" value="600" oninput="document.getElementById('tokv').textContent=this.value">
-          <span class="slider-val" id="tokv">600</span>
-        </div>
-      </div>
-      <button class="save-btn" onclick="saveSettings()">Save Settings</button>
-      <div class="saved-msg" id="savedmsg"></div>
+      <div class="sec"><div class="sechdr">🔌 Services</div><div class="secbody" id="svc"></div></div>
+      <div class="sec"><div class="sechdr">🤖 Loaded Models</div><div class="secbody" id="mdls"></div></div>
+      <div class="sec"><div class="sechdr">🌸 Three Sakhis</div><div class="secbody" id="sakhis"></div></div>
+      <div class="sec" id="ragsec" style="display:none"><div class="sechdr">📚 RAG Knowledge Base</div><div class="raggrid" id="ragdata"></div></div>
     </div>
+
+    <!-- AI FLOW -->
+    <div class="tab-panel" id="panel-flow">
+      <div class="sec">
+        <div class="sechdr">🧠 Request Architecture</div>
+        <div class="flow-wrap"><div class="flow-row" id="flow-row"></div></div>
+      </div>
+      <div class="sec">
+        <div class="sechdr">🔀 Routing Logic</div>
+        <div style="padding:14px 16px">
+          <div style="font-size:12px;color:#5f6688;margin-bottom:12px">How StriSakhi decides which agent handles each message:</div>
+          <div class="rd-row"><div class="rd-cond">Emergency keywords detected</div><div class="rd-arr">→</div><div class="rd-r rd-emerg">🆘 EMERGENCY — show helplines + short response</div></div>
+          <div class="rd-row"><div class="rd-cond">user_turns ≥ intake_max_turns (4)</div><div class="rd-arr">→</div><div class="rd-r rd-expert">⚡ EXPERT agent forced</div></div>
+          <div class="rd-row"><div class="rd-cond">agent_phase === "expert" already</div><div class="rd-arr">→</div><div class="rd-r rd-expert">⚡ EXPERT agent continues</div></div>
+          <div class="rd-row"><div class="rd-cond">confidence_score ≥ 0.65 (has location + crime)</div><div class="rd-arr">→</div><div class="rd-r rd-expert">⚡ EXPERT early switch</div></div>
+          <div class="rd-row"><div class="rd-cond">Frustration detected ("bas karo", short replies)</div><div class="rd-arr">→</div><div class="rd-r rd-expert">⚡ EXPERT skip intake</div></div>
+          <div class="rd-row"><div class="rd-cond">Otherwise (turns 1–4)</div><div class="rd-arr">→</div><div class="rd-r rd-intake">🔍 INTAKE agent</div></div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sechdr">🌸 Three Sakhi Pipelines</div>
+        <div class="secbody">
+          <div class="row"><div><div class="rlbl">⚖️ Kanoon Sakhi — Legal</div><div class="rsub">intake → legal_agent → ChromaDB (194 chunks: DV Act, IPC, POSH, Hindu Succession) → 10 crime types</div></div><span class="bdg ok" id="kanoon-st">● Active</span></div>
+          <div class="row"><div><div class="rlbl">🌿 Sehat Sakhi — Medical</div><div class="rsub">intake → medical_agent → ChromaDB (medical_documents) → 8 health categories → never diagnoses</div></div><span class="bdg ok" id="sehat-st">● Active</span></div>
+          <div class="row"><div><div class="rlbl">📜 Yojana Sakhi — Schemes</div><div class="rsub">intake → scheme_agent → scheme_documents + 14-scheme hardcoded database → PMAY, Ayushman, MGNREGS...</div></div><span class="bdg ok" id="yojana-st">● Active</span></div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sechdr">🌐 Language System</div>
+        <div class="secbody">
+          <div class="row"><div><div class="rlbl">हिंदी (Hindi)</div><div class="rsub">Session-locked · Devanagari forced in system prompt · Piper priyamvada (61MB, offline)</div></div><span class="bdg ok">● TTS Ready</span></div>
+          <div class="row"><div><div class="rlbl">English</div><div class="rsub">Session-locked · English forced in system prompt · Piper Amy (60MB, offline)</div></div><span class="bdg ok">● TTS Ready</span></div>
+          <div class="row"><div><div class="rlbl">বাংলা (Bengali)</div><div class="rsub">Session-locked · Bengali forced in system prompt · No TTS (no Bengali Piper voice)</div></div><span class="bdg warn">● Text Only</span></div>
+          <div class="row" style="opacity:.5"><div><div class="rlbl">Tamil · Telugu · Marathi + more</div><div class="rsub">Coming soon — Gemma 4 supports 140+ languages natively</div></div><span class="bdg" style="background:#1a1d27;color:#5f6688;border:1px solid #2e3347">● Soon</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOGS -->
+    <div class="tab-panel" id="panel-logs">
+      <div style="font-size:12px;color:#5f6688;margin-bottom:14px">Live activity log — routing decisions, RAG retrievals, TTS calls, errors. Polls every 5 seconds.</div>
+      <div class="cards" style="margin-bottom:14px">
+        <div class="sc"><div class="slbl">Total Events</div><div class="sval" id="log-total" style="color:#a855f7">0</div></div>
+        <div class="sc"><div class="slbl">Emergencies</div><div class="sval" id="log-emerg" style="color:#ef4444">0</div></div>
+        <div class="sc"><div class="slbl">Expert Routes</div><div class="sval" id="log-expert" style="color:#22c55e">0</div></div>
+        <div class="sc"><div class="slbl">TTS Calls</div><div class="sval" id="log-tts" style="color:#06b6d4">0</div></div>
+      </div>
+      <div class="sec">
+        <div class="sechdr" style="justify-content:space-between">
+          <span>📋 Live Event Log</span>
+          <button class="rbtn" onclick="clearLogs()" style="font-size:11px;padding:4px 10px">Clear</button>
+        </div>
+        <div style="padding:12px 14px">
+          <div class="log-box" id="log-box"><div class="log-empty">No events yet — start a conversation in the app to see live logs here</div></div>
+        </div>
+      </div>
+      <div class="sec" style="margin-top:14px">
+        <div class="sechdr">🔌 Backend Health Log</div>
+        <div style="padding:12px 14px"><div class="log-box" id="health-log" style="max-height:180px"></div></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="tab-panel" id="panel-settings">
+      <div style="font-size:12px;color:#5f6688;margin-bottom:14px">Changes apply immediately — saved to <code style="color:#06b6d4">config_runtime.json</code>. No restart needed.</div>
+      <div class="sec">
+        <div class="sechdr">🔊 TTS Settings</div>
+        <div class="secbody">
+          <div class="setting-row"><div class="sl"><div class="sl-name">Hindi TTS Speed (Priyamvada)</div><div class="sl-sub">Lower = slower · 1.2× recommended for rural women</div></div><div class="sc-ctrl"><input type="range" id="hi-speed" min="0.7" max="1.8" step="0.1" value="1.2" oninput="document.getElementById('hi-spv').textContent=this.value+'×'"><span class="sv" id="hi-spv">1.2×</span></div></div>
+          <div class="setting-row"><div class="sl"><div class="sl-name">English TTS Speed (Amy)</div><div class="sl-sub">Normal speed for English users</div></div><div class="sc-ctrl"><input type="range" id="en-speed" min="0.7" max="1.8" step="0.1" value="1.0" oninput="document.getElementById('en-spv').textContent=this.value+'×'"><span class="sv" id="en-spv">1.0×</span></div></div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sechdr">🧩 Agent Settings</div>
+        <div class="secbody">
+          <div class="setting-row"><div class="sl"><div class="sl-name">Intake Max Turns</div><div class="sl-sub">Switch to expert after N user messages</div></div><div class="sc-ctrl"><input type="range" id="intake-turns" min="1" max="7" step="1" value="4" oninput="document.getElementById('itv').textContent=this.value"><span class="sv" id="itv">4</span></div></div>
+          <div class="setting-row"><div class="sl"><div class="sl-name">LLM Temperature</div><div class="sl-sub">0.2 recommended · higher = more creative</div></div><div class="sc-ctrl"><input type="range" id="temp" min="0.1" max="0.9" step="0.1" value="0.2" oninput="document.getElementById('tmpv').textContent=this.value"><span class="sv" id="tmpv">0.2</span></div></div>
+          <div class="setting-row"><div class="sl"><div class="sl-name">Expert Max Tokens</div><div class="sl-sub">600 = ~350 words response</div></div><div class="sc-ctrl"><input type="range" id="max-tok" min="200" max="900" step="50" value="600" oninput="document.getElementById('tokv').textContent=this.value"><span class="sv" id="tokv">600</span></div></div>
+        </div>
+      </div>
+      <button class="save-btn" onclick="saveSettings()">💾 Save to Backend</button>
+      <div class="savedmsg" id="savedmsg"></div>
+      <div class="sec" style="margin-top:14px">
+        <div class="sechdr">📋 Current config_runtime.json</div>
+        <pre id="config-json" style="font-family:monospace;font-size:11px;color:#9ca3c9;padding:14px 16px;white-space:pre-wrap">Loading...</pre>
+      </div>
+    </div>
+
   </div>
 </div>
 
 <script>
-const CORRECT = '1234';
-const API = 'http://localhost:8000';
-let pin = '';
-let timer = null;
+const CORRECT='1234', API='http://localhost:8000';
+let pin='', timer=null, logTimer=null;
+let eventLog=[], logStats={total:0,emergencies:0,expert:0,tts:0};
+let prevMessages=0;
 
-function press(k) {
-  if (k === 'del') pin = pin.slice(0,-1);
-  else if (k === 'clr') pin = '';
-  else if (pin.length < 4) pin += k;
-  document.getElementById('perr').textContent = '';
-  for (let i=0;i<4;i++) {
-    const d = document.getElementById('p'+i);
-    d.className = 'pd' + (i < pin.length ? ' f' : '');
-    d.textContent = i < pin.length ? '●' : '';
-  }
-  if (pin.length === 4) {
-    setTimeout(() => {
-      if (pin === CORRECT) {
-        document.getElementById('login').style.display = 'none';
-        document.getElementById('dash').style.display = 'block';
-        load();
-        timer = setInterval(load, 15000);
+function press(k){
+  if(k==='del')pin=pin.slice(0,-1);
+  else if(k==='clr')pin='';
+  else if(pin.length<4)pin+=k;
+  document.getElementById('perr').textContent='';
+  for(let i=0;i<4;i++){const d=document.getElementById('p'+i);d.className='pd'+(i<pin.length?' f':'');d.textContent=i<pin.length?'●':'';}
+  if(pin.length===4){
+    setTimeout(()=>{
+      if(pin===CORRECT){
+        document.getElementById('login').style.display='none';
+        const d=document.getElementById('dash');d.style.display='flex';
+        setTimeout(()=>{load();loadSettings();},50);
+        timer=setInterval(load,15000);
+        logTimer=setInterval(pollLogs,5000);
+        addLog('INFO','StriSakhi Admin connected',false);
+        addLog('INFO','Monitoring: llama.cpp · ChromaDB · SQLite · Piper TTS',false);
       } else {
-        for (let i=0;i<4;i++) { const d=document.getElementById('p'+i); d.className='pd e'; }
-        document.getElementById('perr').textContent = 'Wrong PIN';
-        setTimeout(() => { pin=''; for(let i=0;i<4;i++){const d=document.getElementById('p'+i);d.className='pd';d.textContent='';} }, 700);
+        for(let i=0;i<4;i++){const d=document.getElementById('p'+i);d.className='pd e';}
+        document.getElementById('perr').textContent='Wrong PIN';
+        setTimeout(()=>{pin='';for(let i=0;i<4;i++){const d=document.getElementById('p'+i);d.className='pd';d.textContent='';}},700);
       }
-    }, 100);
+    },100);
   }
 }
 
-function logout() {
-  if (timer) clearInterval(timer);
-  document.getElementById('dash').style.display = 'none';
-  document.getElementById('login').style.display = 'flex';
-  pin = ''; for(let i=0;i<4;i++){const d=document.getElementById('p'+i);d.className='pd';d.textContent='';}
+function logout(){
+  if(timer)clearInterval(timer);if(logTimer)clearInterval(logTimer);
+  document.getElementById('dash').style.display='none';
+  document.getElementById('login').style.display='flex';
+  pin='';for(let i=0;i<4;i++){const d=document.getElementById('p'+i);d.className='pd';d.textContent='';}
 }
 
-function bdg(st) {
-  const ok = ['connected','ok','loaded','ready','found'].includes(st);
-  const err = ['error','NOT FOUND','missing','not loaded'].includes(st);
-  const cls = ok?'ok':err?'err':'warn';
-  const lbl = ok?'● Ready':err?'● Error':'● '+st;
-  return `<span class="bdg ${cls}">${lbl}</span>`;
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('on'));
+  document.getElementById('tab-'+name).classList.add('on');
+  document.getElementById('panel-'+name).classList.add('on');
 }
 
-function row(label, sub, st) {
-  return `<div class="row"><div><div class="rlbl">${label}</div><div class="rsub">${sub}</div></div>${bdg(st)}</div>`;
+function bdg(st){
+  const ok=['connected','ok','loaded','ready','found'].includes(st);
+  const err=['error','NOT FOUND','missing','not loaded'].includes(st);
+  const cls=ok?'ok':err?'err':'warn';
+  return`<span class="bdg ${cls}">${ok?'● Ready':err?'● Error':'● '+st}</span>`;
 }
 
-async function load() {
-  try {
-    const r = await fetch(API+'/api/health');
-    if (!r.ok) throw new Error('HTTP '+r.status);
-    const d = await r.json();
-    document.getElementById('errbox').style.display = 'none';
-    document.getElementById("dash").style.display = "block";
-    setTimeout(() => render(d), 50);
-  } catch(e) {
-    const eb = document.getElementById('errbox');
-    eb.style.display = 'block';
-    eb.textContent = '⚠️ Cannot reach backend — is Docker running? '+e.message;
+function row(lbl,sub,st){return`<div class="row"><div><div class="rlbl">${lbl}</div><div class="rsub">${sub}</div></div>${bdg(st)}</div>`;}
+
+async function load(){
+  addHealthLog('INFO','Fetching /api/health...');
+  try{
+    const r=await fetch(API+'/api/health');
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const d=await r.json();
+    document.getElementById('errbox').style.display='none';
+    addHealthLog('OK',`OK — ${d.status} · sessions:${d.services?.database?.total_sessions||0} · msgs:${d.services?.database?.total_messages||0}`);
+    setTimeout(()=>render(d),50);
+  }catch(e){
+    addHealthLog('ERR','Cannot reach backend: '+e.message);
+    const eb=document.getElementById('errbox');eb.style.display='block';eb.textContent='⚠️ '+e.message;
   }
 }
 
-function render(d) {
-  const sys = d.system||{}, svc = d.services||{}, tts = d.tts||{};
-  const llm = svc.llamacpp||{}, db = svc.database||{}, chroma = svc.chromadb||{};
-
-  document.getElementById('lupdated').textContent = 'Updated: '+new Date().toLocaleTimeString();
-
-  const ok = d.status==='ok';
-  document.getElementById('odot').style.background = ok?'#22c55e':'#f59e0b';
-  document.getElementById('ostatus').textContent = ok?'All Systems OK':'Degraded';
-  document.getElementById('ostatus').style.color = ok?'#22c55e':'#f59e0b';
-
-  const cpu = sys.cpu_percent||0;
-  document.getElementById('cpu').textContent = cpu+'%';
-  const cpub = document.getElementById('cpub');
-  cpub.style.width = cpu+'%';
-  cpub.style.background = cpu>80?'#ef4444':'#22c55e';
-
-  const rp = sys.ram_percent||0;
-  document.getElementById('ram').textContent = (sys.ram_used_gb||'—')+'GB';
-  document.getElementById('ramsub').textContent = 'of '+(sys.ram_total_gb||'—')+'GB';
-  document.getElementById('ramb').style.width = rp+'%';
-
-  document.getElementById('sess').textContent = db.total_sessions??'—';
-  document.getElementById('msgs').textContent = db.total_messages??'—';
-
+function render(d){
+  const sys=d.system||{},svc=d.services||{},tts=d.tts||{};
+  const llm=svc.llamacpp||{},db=svc.database||{},chroma=svc.chromadb||{};
+  document.getElementById('lupdated').textContent='Updated: '+new Date().toLocaleTimeString();
+  const ok=d.status==='ok';
+  document.getElementById('odot').style.background=ok?'#22c55e':'#f59e0b';
+  document.getElementById('ostatus').textContent=ok?'All Systems OK':'Degraded';
+  document.getElementById('ostatus').style.color=ok?'#22c55e':'#f59e0b';
+  const cpu=sys.cpu_percent||0;
+  document.getElementById('cpu').textContent=cpu+'%';
+  document.getElementById('cpub').style.cssText=`width:${cpu}%;background:${cpu>80?'#ef4444':'#22c55e'}`;
+  document.getElementById('ram').textContent=(sys.ram_used_gb||'—')+'GB';
+  document.getElementById('ramsub').textContent='of '+(sys.ram_total_gb||'—')+'GB';
+  document.getElementById('ramb').style.width=(sys.ram_percent||0)+'%';
+  document.getElementById('sess').textContent=db.total_sessions??'—';
+  document.getElementById('msgs').textContent=db.total_messages??'—';
+  const dc=Object.values(chroma.document_counts||{}).reduce((a,b)=>a+b,0);
+  document.getElementById('svc').innerHTML=[
+    row('llama.cpp server',(llm.url||'host.docker.internal:8080')+' · Metal GPU · thinking:disabled',llm.status||'error'),
+    row('ChromaDB (RAG)',dc+' docs in '+(chroma.collections||[]).length+' collections',chroma.status||'error'),
+    row('SQLite database',(db.total_sessions||0)+' sessions · '+(db.total_messages||0)+' messages',db.status||'error'),
+    row('Piper TTS binary','/usr/local/piper · offline',tts.binary||'NOT FOUND'),
+  ].join('');
+  const hi=tts.voices?.hindi||{},en=tts.voices?.english||{};
+  document.getElementById('mdls').innerHTML=[
+    row('Gemma 4 E2B (Q4_K_M)','3.2GB · LLM + STT · 140+ languages · native audio',llm.status==='connected'?'loaded':'not loaded'),
+    row('mmproj-gemma4-e2b','557MB · audio projector for STT',llm.status==='connected'?'loaded':'not loaded'),
+    row('Piper hi_IN-priyamvada',(hi.size_mb||0)+'MB · Hindi female · offline',hi.status||'missing'),
+    row('Piper en_US-amy',(en.size_mb||0)+'MB · English female · offline',en.status||'missing'),
+  ].join('');
+  const sk=llm.status==='connected'?'ok':'error';
+  document.getElementById('sakhis').innerHTML=[
+    row('⚖️ Kanoon Sakhi','Legal · 10 crime types · DV Act, IPC, POSH, Succession · /api/legal',sk),
+    row('🌿 Sehat Sakhi','Medical · 8 health categories · pregnancy, mental, child · /api/medical',sk),
+    row('📜 Yojana Sakhi','Schemes · 14 govt schemes + RAG · PMAY, Ayushman, MGNREGS · /api/scheme',sk),
+  ].join('');
   // Flow
-  const llmOk = llm.status==='connected';
-  const steps = [
-    {ico:'🎤',lbl:'Voice\nInput',act:true},null,
-    {ico:'🔄',lbl:'WAV\nConvert',act:true},null,
-    {ico:'⚡',lbl:'Gemma4\nSTT',act:llmOk},null,
-    {ico:'🧩',lbl:'Intake\nAgent',act:true},null,
-    {ico:'📚',lbl:'RAG\nChromaDB',act:chroma.status==='connected'},null,
-    {ico:'⚖️',lbl:'Expert\nAgent',act:true},null,
-    {ico:'🔊',lbl:'Piper\nTTS',act:tts.binary==='found'},
+  const llmOk=llm.status==='connected',chromaOk=chroma.status==='connected',piperOk=tts.binary==='found';
+  const steps=[
+    {ico:'🎤',name:'Voice\nInput',sub:'WebM→WAV\n16kHz mono',st:'active'},
+    null,
+    {ico:'⚡',name:'Gemma 4\nSTT',sub:'Native audio\ntranscription',st:llmOk?'ok':'error'},
+    null,
+    {ico:'🔍',name:'Intake\nAgent',sub:'6 params\n4 turns max',st:'active'},
+    null,
+    {ico:'📚',name:'RAG\nChromaDB',sub:'Top-5 chunks\nsemantic search',st:chromaOk?'ok':'error'},
+    null,
+    {ico:'⚖️',name:'Expert\nAgent',sub:'5-block response\nfollow-ups',st:llmOk?'ok':'error'},
+    null,
+    {ico:'🔊',name:'Piper\nTTS',sub:'Offline\nHindi/English',st:piperOk?'ok':'error'},
   ];
-  document.getElementById('flow').innerHTML = steps.map(s =>
-    s===null ? '<span class="farr">→</span>' :
-    `<div class="fstep"><div class="fico ${s.act?'act':''}">${s.ico}</div><div class="flbl ${s.act?'act':''}">${s.lbl}</div></div>`
+  document.getElementById('flow-row').innerHTML=steps.map(s=>
+    s===null?'<div class="farrow">→</div>':
+    `<div class="fnode"><div class="fbox ${s.st}"><div class="fbox-ico">${s.ico}</div><div class="fbox-name">${s.name}</div><div class="fbox-sub">${s.sub}</div></div></div>`
   ).join('');
-
-  // Services
-  const docCount = Object.values(chroma.document_counts||{}).reduce((a,b)=>a+b,0);
-  document.getElementById('svc').innerHTML = [
-    row('llama.cpp server', llm.url||'host.docker.internal:8080 · Metal GPU · thinking disabled', llm.status||'error'),
-    row('ChromaDB (RAG)', docCount+' docs in '+(chroma.collections||[]).length+' collections', chroma.status||'error'),
-    row('SQLite database', (db.total_sessions||0)+' sessions · '+(db.total_messages||0)+' messages', db.status||'error'),
-    row('Piper TTS binary', '/usr/local/piper · offline speech engine', tts.binary||'NOT FOUND'),
-  ].join('');
-
-  // Models
-  const hi = tts.voices?.hindi||{}, en = tts.voices?.english||{};
-  document.getElementById('mdls').innerHTML = [
-    row('Gemma 4 E2B (Q4_K_M)', '3.2GB · LLM + STT · 140+ languages · audio support', llmOk?'loaded':'not loaded'),
-    row('mmproj-gemma4-e2b (Q8_0)', '557MB · audio projector for native STT', llmOk?'loaded':'not loaded'),
-    row('Piper hi_IN-priyamvada-medium', (hi.size_mb||0)+'MB · Hindi female · offline', hi.status||'missing'),
-    row('Piper en_US-amy-medium', (en.size_mb||0)+'MB · English female · offline', en.status||'missing'),
-  ].join('');
-
-  // Sakhis
-  const sk = llmOk?'ok':'error';
-  document.getElementById('sakhis').innerHTML = [
-    row('⚖️ Kanoon Sakhi', 'Legal rights & guidance · /api/legal', sk),
-    row('🌿 Sehat Sakhi', 'Health guidance · /api/medical', sk),
-    row('📜 Yojana Sakhi', 'Government schemes · /api/scheme', sk),
-  ].join('');
-
-  // RAG
-  const counts = chroma.document_counts||{};
-  if (Object.keys(counts).length > 0) {
-    document.getElementById('ragsec').style.display = 'block';
-    document.getElementById('ragdata').innerHTML = Object.entries(counts)
-      .map(([n,c]) => `<div class="ragitem"><div class="ragnum">${c}</div><div class="raglbl">${n}</div></div>`)
-      .join('');
+  const counts=chroma.document_counts||{};
+  if(Object.keys(counts).length>0){
+    document.getElementById('ragsec').style.display='block';
+    document.getElementById('ragdata').innerHTML=Object.entries(counts).map(([n,c])=>`<div class="ragitem"><div class="ragnum">${c}</div><div class="raglbl">${n}</div></div>`).join('');
   }
+  // Check for new messages → log event
+  const msgs=db.total_messages||0;
+  if(msgs>prevMessages&&prevMessages>0){
+    const diff=msgs-prevMessages;
+    addLog('EVENT',`${diff} new message(s) · total: ${msgs} messages in ${db.total_sessions||0} sessions`,true);
+  }
+  prevMessages=msgs;
 }
 
-async function saveSettings() {
-  const msg = document.getElementById('savedmsg');
-  const settings = {
-    pin: CORRECT,
-    tts_speed_hi: parseFloat(document.getElementById('hi-speed').value),
-    tts_speed_en: parseFloat(document.getElementById('en-speed').value),
-    intake_max_turns: parseInt(document.getElementById('intake-turns').value),
-    temperature: parseFloat(document.getElementById('temp').value),
-    expert_max_tokens: parseInt(document.getElementById('max-tok').value),
-  };
-  try {
-    const r = await fetch(API+'/api/admin/settings', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(settings)
-    });
-    if (!r.ok) throw new Error('HTTP '+r.status);
-    msg.textContent = '✓ Saved to backend — active immediately';
-    msg.style.color = '#22c55e';
-  } catch(e) {
-    msg.textContent = '⚠️ Save failed: '+e.message;
-    msg.style.color = '#ef4444';
-  }
-  setTimeout(() => msg.textContent = '', 3000);
+async function pollLogs(){
+  try{
+    const r=await fetch(API+'/api/health');
+    const d=await r.json();
+    const msgs=d.services?.database?.total_messages||0;
+    if(msgs>prevMessages&&prevMessages>0){
+      const diff=msgs-prevMessages;
+      addLog('EVENT',`+${diff} message(s) detected · total now: ${msgs}`,true);
+      prevMessages=msgs;
+    }
+  }catch(e){}
 }
 
-async function loadSettings() {
-  try {
-    const r = await fetch(API+'/api/admin/settings');
-    const s = await r.json();
-    if (s.tts_speed_hi) { document.getElementById('hi-speed').value=s.tts_speed_hi; document.getElementById('hi-spv').textContent=s.tts_speed_hi+'×'; }
-    if (s.tts_speed_en) { document.getElementById('en-speed').value=s.tts_speed_en; document.getElementById('en-spv').textContent=s.tts_speed_en+'×'; }
-    if (s.intake_max_turns) { document.getElementById('intake-turns').value=s.intake_max_turns; document.getElementById('itv').textContent=s.intake_max_turns; }
-    if (s.temperature) { document.getElementById('temp').value=s.temperature; document.getElementById('tmpv').textContent=s.temperature; }
-    if (s.expert_max_tokens) { document.getElementById('max-tok').value=s.expert_max_tokens; document.getElementById('tokv').textContent=s.expert_max_tokens; }
-  } catch(e) {
-    console.log('Could not load settings from backend:', e);
-  }
+function addLog(level,msg,highlight){
+  const now=new Date().toLocaleTimeString();
+  eventLog.push({time:now,level,msg,highlight:!!highlight});
+  if(eventLog.length>200)eventLog.shift();
+  logStats.total++;
+  if(msg.includes('emergency')||msg.includes('EMERGENCY'))logStats.emergencies++;
+  if(msg.includes('expert')||msg.includes('EXPERT'))logStats.expert++;
+  if(msg.includes('TTS')||msg.includes('tts'))logStats.tts++;
+  document.getElementById('log-total').textContent=logStats.total;
+  document.getElementById('log-emerg').textContent=logStats.emergencies;
+  document.getElementById('log-expert').textContent=logStats.expert;
+  document.getElementById('log-tts').textContent=logStats.tts;
+  document.getElementById('log-badge').textContent=logStats.total;
+  renderLogs();
 }
 
-// Load settings from backend when dashboard opens
-window.addEventListener('load', loadSettings);
+function addHealthLog(level,msg){
+  const c=document.getElementById('health-log');if(!c)return;
+  const e=document.createElement('div');e.className='le';
+  e.innerHTML=`<span class="lt">${new Date().toLocaleTimeString()}</span><span class="ll ${level}">${level}</span><span class="lm">${msg}</span>`;
+  c.appendChild(e);c.scrollTop=c.scrollHeight;
+  while(c.children.length>60)c.removeChild(c.firstChild);
+}
+
+function renderLogs(){
+  const c=document.getElementById('log-box');
+  if(eventLog.length===0){c.innerHTML='<div class="log-empty">No events yet — start a conversation in the app</div>';return;}
+  c.innerHTML=eventLog.slice().reverse().map(e=>`<div class="le"><span class="lt">${e.time}</span><span class="ll ${e.level}">${e.level}</span><span class="lm ${e.highlight?'hl':''}">${e.msg}</span></div>`).join('');
+}
+
+function clearLogs(){
+  eventLog=[];logStats={total:0,emergencies:0,expert:0,tts:0};
+  ['log-total','log-emerg','log-expert','log-tts','log-badge'].forEach(id=>document.getElementById(id).textContent=0);
+  document.getElementById('health-log').innerHTML='';
+  renderLogs();
+  addLog('INFO','Log cleared');
+}
+
+async function loadSettings(){
+  try{
+    const r=await fetch(API+'/api/admin/settings');
+    const s=await r.json();
+    if(s.tts_speed_hi){document.getElementById('hi-speed').value=s.tts_speed_hi;document.getElementById('hi-spv').textContent=s.tts_speed_hi+'×';}
+    if(s.tts_speed_en){document.getElementById('en-speed').value=s.tts_speed_en;document.getElementById('en-spv').textContent=s.tts_speed_en+'×';}
+    if(s.intake_max_turns){document.getElementById('intake-turns').value=s.intake_max_turns;document.getElementById('itv').textContent=s.intake_max_turns;}
+    if(s.temperature){document.getElementById('temp').value=s.temperature;document.getElementById('tmpv').textContent=s.temperature;}
+    if(s.expert_max_tokens){document.getElementById('max-tok').value=s.expert_max_tokens;document.getElementById('tokv').textContent=s.expert_max_tokens;}
+    document.getElementById('config-json').textContent=JSON.stringify(s,null,2);
+    addLog('OK','Settings loaded from backend: '+JSON.stringify(s));
+  }catch(e){addLog('WARN','Could not load settings: '+e.message);}
+}
+
+async function saveSettings(){
+  const msg=document.getElementById('savedmsg');
+  const s={pin:CORRECT,tts_speed_hi:parseFloat(document.getElementById('hi-speed').value),tts_speed_en:parseFloat(document.getElementById('en-speed').value),intake_max_turns:parseInt(document.getElementById('intake-turns').value),temperature:parseFloat(document.getElementById('temp').value),expert_max_tokens:parseInt(document.getElementById('max-tok').value)};
+  try{
+    const r=await fetch(API+'/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(s)});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const saved=await r.json();
+    document.getElementById('config-json').textContent=JSON.stringify(saved,null,2);
+    msg.textContent='✓ Saved — active immediately';msg.style.color='#22c55e';
+    addLog('OK',`Settings saved → TTS_hi:${s.tts_speed_hi}× TTS_en:${s.tts_speed_en}× turns:${s.intake_max_turns} temp:${s.temperature} tokens:${s.expert_max_tokens}`,true);
+  }catch(e){msg.textContent='⚠️ '+e.message;msg.style.color='#ef4444';addLog('ERR','Settings save failed: '+e.message);}
+  setTimeout(()=>msg.textContent='',4000);
+}
 </script>
 </body>
 </html>
