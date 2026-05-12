@@ -403,15 +403,36 @@ function render(d){
 
 async function pollLogs(){
   try{
-    const r=await fetch(API+'/api/health');
+    const r=await fetch(API+'/api/admin/logs?limit=50');
     const d=await r.json();
-    const msgs=d.services?.database?.total_messages||0;
-    if(msgs>prevMessages&&prevMessages>0){
-      const diff=msgs-prevMessages;
-      addLog('EVENT',`+${diff} message(s) detected · total now: ${msgs}`,true);
-      prevMessages=msgs;
+    const events=d.events||[];
+    if(events.length===0)return;
+
+    // Only show new events since last poll
+    const lastTs=window._lastLogTs||'';
+    const newEvents=lastTs
+      ? events.filter(e=>e.ts>lastTs)
+      : events.slice(-10); // first poll: show last 10
+    if(newEvents.length===0)return;
+    window._lastLogTs=events[events.length-1].ts;
+
+    for(const ev of newEvents){
+      const detail=Object.entries(ev.detail||{})
+        .map(([k,v])=>`<span style="color:#5f6688">${k}=</span>${v}`)
+        .join(' ');
+      const isHighlight=['EMERGENCY','PHASE','DONE','EXPERT'].includes(ev.type);
+      const isError=ev.level==='ERROR'||ev.type==='ERROR';
+      const icon={
+        'INTAKE':'🔍','EXPERT':'⚡','EMERGENCY':'🚨','PHASE':'→',
+        'RAG':'📚','ROUTE':'🔀','DONE':'✅','ERROR':'❌',
+        'PARAM':'📝','EMERGENCY_CHECK':'🛡️','FOLLOWUP':'💬'
+      }[ev.type]||'•';
+      const lbl=`${icon} [${ev.type}]${ev.session?' <span style="color:#3d4460">'+ev.session+'</span>':''} ${detail}`;
+      addLog(isError?'ERR':isHighlight?'EVENT':'INFO', lbl, isHighlight);
     }
-  }catch(e){}
+  }catch(e){
+    // silent — log polling is best effort
+  }
 }
 
 function addLog(level,msg,highlight){

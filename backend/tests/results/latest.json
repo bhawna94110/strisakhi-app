@@ -1,0 +1,1056 @@
+{
+  "timestamp": "2026-05-11T03:39:24.751942",
+  "model": "gemma4-e2b-base",
+  "total_cases": 33,
+  "passed": 9,
+  "pass_rate": 0.27,
+  "avg_response_time_ms": 26588,
+  "avg_scores": {
+    "faithfulness": 0.515,
+    "answer_relevancy": 0.515,
+    "answer_correctness": 0.53,
+    "hindi_purity": 0.91,
+    "section_accuracy": 0.301,
+    "helpline_presence": 0.545,
+    "structure_score": 0.479,
+    "final_score": 0.571
+  },
+  "by_category": {
+    "domestic_violence": {
+      "pass_rate": 0.54,
+      "avg_score": 0.669,
+      "total": 13
+    },
+    "workplace": {
+      "pass_rate": 0.67,
+      "avg_score": 0.689,
+      "total": 3
+    },
+    "property": {
+      "pass_rate": 0.0,
+      "avg_score": 0.479,
+      "total": 6
+    },
+    "dowry": {
+      "pass_rate": 0.0,
+      "avg_score": 0.491,
+      "total": 3
+    },
+    "maintenance": {
+      "pass_rate": 0.0,
+      "avg_score": 0.525,
+      "total": 3
+    },
+    "divorce": {
+      "pass_rate": 0.0,
+      "avg_score": 0.34,
+      "total": 3
+    },
+    "stalking": {
+      "pass_rate": 0.0,
+      "avg_score": 0.565,
+      "total": 2
+    }
+  },
+  "detailed_results": [
+    {
+      "test_id": "case_001",
+      "category": "domestic_violence",
+      "language": "hi",
+      "agent_used": "expert",
+      "actual_response": "मैं समझ सकती हूँ कि आप कितनी गहरी परेशानी और डर में हैं। यह जानना कि आप अकेले नहीं हैं, बहुत ज़रूरी है।\n\nआपके पास कई महत्वपूर्ण अधिकार हैं:\n1. बच्चों की सुरक्षा: आपके बच्चों का सर्वोत्तम हित (Best Interest of the Child) हमेशा सबसे महत्वपूर्ण होता है। [स्रोत: हिंदू नाबालिग और संरक्षक अधिनियम 1956]\n2. घरेलू हिंसा से सुरक्षा: आप घरेलू हिंसा से सुरक्षा के लिए कानूनी सहायता प्राप्त कर सकती हैं। [स्रोत: घरेलू हिंसा अधिनियम, 2005]\n3. मुफ्त कानूनी सहायता: आपको बिना किसी शुल्क के वकील और कानूनी सहायता प्",
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.5,
+        "answer_correctness": 0.5,
+        "hindi_purity": 0.92,
+        "section_accuracy": 0.0,
+        "helpline_presence": 0.5,
+        "structure_score": 0.4,
+        "structure_detail": {
+          "empathy": false,
+          "citation": false,
+          "timeline": true,
+          "helpline_number": true,
+          "followup_question": false,
+          "score": 0.4
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.507,
+        "passed": false,
+        "response_time_ms": 26779
+      },
+      "passed": false
+    },
+    {
+      "test_id": "case_002",
+      "category": "workplace",
+      "language": "en",
+      "agent_used": "expert",
+      "actual_response": "I am so sorry you are going through this deeply distressing and upsetting situation.\n\nYour rights are very strong under the law. You have the right to protection from sexual harassment at your workplace, as guaranteed by the POSH Act 2013. If your company has 10 or more employees, they are legally required to establish an Internal Complaints Committee (ICC) to handle such grievances. You cannot be punished or fired for complaining about this harassment.\n\n**Action Timeline:**\n**Right Now:** Start",
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 1.0,
+        "answer_correctness": 0.5,
+        "hindi_purity": 1.0,
+        "section_accuracy": 0.67,
+        "helpline_presence": 1.0,
+        "structure_score": 0.8,
+        "structure_detail": {
+          "empathy": true,
+          "citation": true,
+          "timeline": true,
+          "helpline_number": true,
+          "followup_question": false,
+          "score": 0.8
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.781,
+        "passed": true,
+        "response_time_ms": 27014
+      },
+      "passed": true
+    },
+    {
+      "test_id": "case_003",
+      "category": "domestic_violence",
+      "language": "hi",
+      "agent_used": "expert",
+      "actual_response": "मैं समझ सकती हूँ कि आप इस समय बहुत डर और भ्रम में हैं। कृपया याद रखें, आप अकेली नहीं हैं और आपके पास अपने अधिकारों की रक्षा करने का पूरा कानूनी सहारा है।\n\nआपके अधिकार:\nआप घरेलू हिंसा से सुरक्षा के लिए कानून द्वारा सुरक्षित हैं। आपके पास निवास का अधिकार है [Source: DV Act 2005, Section 17]। आपको सुरक्षा आदेश प्राप्त करने का अधिकार है [Source: DV Act 2005, Section 18]। आप आर्थिक राहत प्राप्त करने का अधिकार रखती हैं [Source: DV Act 2005, Section 20]।\n\nकार्यवाही का समयरेखा:\n**अभी (Right Now):** तुरं",
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.5,
+        "answer_correctness": 0.5,
+        "hindi_purity": 0.86,
+        "section_accuracy": 0.75,
+        "helpline_presence": 1.0,
+        "structure_score": 0.6,
+        "structure_detail": {
+          "empathy": false,
+          "citation": true,
+          "timeline": true,
+          "helpline_number": true,
+          "followup_question": false,
+          "score": 0.6
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.683,
+        "passed": true,
+        "response_time_ms": 29044
+      },
+      "passed": true
+    },
+    {
+      "test_id": "case_004",
+      "category": "domestic_violence",
+      "language": "hi",
+      "agent_used": "expert",
+      "actual_response": "मैं समझ सकती हूँ कि आप इस समय कितनी क्रोधित और परेशान हैं। यह जानना बहुत ज़रूरी है कि आपके पास अपने अधिकारों की रक्षा करने का पूरा कानूनी सहारा है।\n\nआपके अधिकार:\nआप घरेलू हिंसा से सुरक्षा के लिए कानूनी रूप से सुरक्षित हैं। आपके पास निवास का अधिकार है [Source: DV Act 2005, Section 17]। आपको सुरक्षा आदेश प्राप्त करने का अधिकार है [Source: DV Act 2005, Section 18]। आप आर्थिक राहत के लिए आवेदन कर सकती हैं [Source: DV Act 2005, Section 20]।\n\nकार्यवाही का समयरेखा:\n**अभी (Right Now):** तुरंत 181 पर कॉल",
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.5,
+        "answer_correctness": 0.5,
+        "hindi_purity": 0.85,
+        "section_accuracy": 0.75,
+        "helpline_presence": 0.33,
+        "structure_score": 0.6,
+        "structure_detail": {
+          "empathy": false,
+          "citation": true,
+          "timeline": true,
+          "helpline_number": true,
+          "followup_question": false,
+          "score": 0.6
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.616,
+        "passed": false,
+        "response_time_ms": 26930
+      },
+      "passed": false
+    },
+    {
+      "test_id": "case_005",
+      "category": "domestic_violence",
+      "language": "hi",
+      "agent_used": "expert",
+      "actual_response": "मैं समझ सकती हूँ कि इस समय आपके मन में बहुत डर और उलझन होगी। आप अकेली नहीं हैं, और मैं आपको बताती हूँ कि आपके पास मदद के लिए बहुत सारे रास्ते हैं।\n\nआपके अधिकार —\nआप घरेलू हिंसा से सुरक्षा के लिए कानूनी सहायता प्राप्त कर सकती हैं। आपके पास सुरक्षा और राहत का अधिकार है: [Source: DV Act 2005, Section 18] और निवास का अधिकार है: [Source: DV Act 2005, Section 17]।\n\nकार्यवाही का समयरेखा:\n**अभी (Right Now):** तुरंत 181 पर कॉल करें या निकटतम पुलिस स्टेशन या सुरक्षा अधिकारी (Protection Officer) के पास जाए",
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.1,
+        "answer_correctness": 0.5,
+        "hindi_purity": 0.87,
+        "section_accuracy": 0.75,
+        "helpline_presence": 0.5,
+        "structure_score": 0.6,
+        "structure_detail": {
+          "empathy": false,
+          "citation": true,
+          "timeline": true,
+          "helpline_number": true,
+          "followup_question": false,
+          "score": 0.6
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.575,
+        "passed": false,
+        "response_time_ms": 36435
+      },
+      "passed": false
+    },
+    {
+      "test_id": "case_006",
+      "category": "domestic_violence",
+      "language": "hi",
+      "agent_used": "expert",
+      "actual_response": "मैं समझ सकती हूँ कि आप कितनी थकी हुई और परेशान हैं। कृपया याद रखें, आपके पास अपने बच्चों की सुरक्षा और भलाई का पूरा अधिकार है।\n\nआपके अधिकार:\nआप और आपके बच्चे सबसे महत्वपूर्ण हैं। माता के रूप में, आपको बच्चों की सर्वोत्तम हित की रक्षा करने का अधिकार है। [स्रोत: हिंदू नाबालिग और संरक्षक अधिनियम 1956] और [स्रोत: बाल कल्याण के सिद्धांत]।\n\nकार्यवाही की समयरेखा:\n**अभी (Right Now):** अपने जिले के जिला कानूनी सेवा प्राधिकरण (DLSA) से संपर्क करें।\n**आज (Today):** DLSA या पुलिस से संपर्क करके तत्काल सहायत",
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.5,
+        "answer_correctness": 0.5,
+        "hindi_purity": 0.94,
+        "section_accuracy": 0.0,
+        "helpline_presence": 0.5,
+        "structure_score": 0.4,
+        "structure_detail": {
+          "empathy": false,
+          "citation": false,
+          "timeline": true,
+          "helpline_number": true,
+          "followup_question": false,
+          "score": 0.4
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.509,
+        "passed": false,
+        "response_time_ms": 31195
+      },
+      "passed": false
+    },
+    {
+      "test_id": "case_007",
+      "category": "domestic_violence",
+      "language": "hi",
+      "agent_used": "expert",
+      "actual_response": "मैं समझ सकती हूँ कि आप इस समय कितनी गहरी परेशानी और डर में हैं। आपके बच्चों का भविष्य सबसे महत्वपूर्ण है, और मैं आपको विश्वास दिलाती हूँ कि आपके पास अपने अधिकारों की रक्षा के लिए कानूनी सहायता उपलब्ध है।\n\nआपके अधिकार और कार्रवाई का समयरेखा इस प्रकार है:\n\n**आपके अधिकार:**\nआप घरेलू हिंसा से सुरक्षा और भरण-पोषण के अधिकार से सुरक्षित हैं। आप तलाक के लिए आवेदन किए बिना भी भरण-पोषण (Maintenance) का दावा कर सकती हैं [स्रोत: हिंदू विवाह अधिनियम 1955, धारा 125]। आपको हिंसा से सुरक्षा का अधिकार है [स्रोत:",
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.5,
+        "answer_correctness": 0.5,
+        "hindi_purity": 0.94,
+        "section_accuracy": 0.0,
+        "helpline_presence": 1.0,
+        "structure_score": 0.4,
+        "structure_detail": {
+          "empathy": false,
+          "citation": false,
+          "timeline": true,
+          "helpline_number": true,
+          "followup_question": false,
+          "score": 0.4
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.559,
+        "passed": false,
+        "response_time_ms": 31040
+      },
+      "passed": false
+    },
+    {
+      "test_id": "case_008",
+      "category": "domestic_violence",
+      "language": "en",
+      "agent_used": "expert",
+      "actual_response": "I am so sorry you are enduring this fear and distress for two years. Please know that you have the full legal right to safety and protection.\n\n**Your Rights**\nYou have the right to protection from domestic violence under the law. You can seek a Protection Order under the Domestic Violence Act 2005 [Source: DV Act 2005, Section 18]. You also have the right to secure your residence, which can be addressed through a Residence Order [Source: DV Act 2005, Section 17].\n\n**Action Timeline:**\n**Right No",
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.5,
+        "answer_correctness": 0.5,
+        "hindi_purity": 1.0,
+        "section_accuracy": 0.75,
+        "helpline_presence": 0.5,
+        "structure_score": 0.8,
+        "structure_detail": {
+          "empathy": true,
+          "citation": true,
+          "timeline": true,
+          "helpline_number": true,
+          "followup_question": false,
+          "score": 0.8
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.667,
+        "passed": true,
+        "response_time_ms": 33009
+      },
+      "passed": true
+    },
+    {
+      "test_id": "case_009",
+      "category": "domestic_violence",
+      "language": "en",
+      "agent_used": "expert",
+      "actual_response": "I am so sorry you are enduring this unbearable situation. Please know that you have the right to safety and dignity.\n\nYour rights under the law are very strong: You have the right to residence protection under the DV Act 2005 [Source: DV Act 2005, Section 17], the right to a protection order [Source: DV Act 2005, Section 18], and the right to monetary relief [Source: DV Act 2005, Section 20].\n\n**Action Timeline:**\n**Right Now:** Call 181 immediately for immediate support and guidance.\n**Today:**",
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.5,
+        "answer_correctness": 0.5,
+        "hindi_purity": 1.0,
+        "section_accuracy": 0.75,
+        "helpline_presence": 0.5,
+        "structure_score": 0.8,
+        "structure_detail": {
+          "empathy": true,
+          "citation": true,
+          "timeline": true,
+          "helpline_number": true,
+          "followup_question": false,
+          "score": 0.8
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.667,
+        "passed": true,
+        "response_time_ms": 31390
+      },
+      "passed": true
+    },
+    {
+      "test_id": "case_010",
+      "category": "domestic_violence",
+      "language": "en",
+      "agent_used": "emergency",
+      "actual_response": "🆘 Your situation sounds very serious.\n\n**Call RIGHT NOW:**\n📞 **181** — Women Helpline (24 hours, FREE)\n📞 **100** — Police\n📞 **1091** — Women in Distress\n\nPlease get to a safe place. I'm still here — keep talking to me.",
+      "scores": {
+        "faithfulness": 0.0,
+        "answer_relevancy": 0.0,
+        "answer_correctness": 0.5,
+        "hindi_purity": 1.0,
+        "section_accuracy": 0.0,
+        "helpline_presence": 0.67,
+        "structure_score": 0.2,
+        "structure_detail": {
+          "empathy": false,
+          "citation": false,
+          "timeline": false,
+          "helpline_number": true,
+          "followup_question": false,
+          "score": 0.2
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.362,
+        "passed": false,
+        "response_time_ms": 48
+      },
+      "passed": false
+    },
+    {
+      "test_id": "case_011",
+      "category": "property",
+      "language": "hi",
+      "agent_used": "expert",
+      "actual_response": "मैं समझ सकती हूँ कि आप इस समय कितनी परेशानी में हैं।\n\nआपके अधिकारों के संबंध में, आपको यह जानना बहुत ज़रूरी है कि हिंदू उत्तराधिकार अधिनियम, 1956 के अनुसार, बेटियों को संपत्ति में पुरुषों के बराबर अधिकार प्राप्त हैं। विशेष रूप से, सुप्रीम कोर्ट ने **Vineeta Sharma v Rakesh Sharma (2020)** मामले में स्पष्ट किया है कि बेटियों को जन्म से ही समान सह-खातेदारों के अधिकार प्राप्त हैं, भले ही पिता का देहांत 2005 से पहले हो गया हो।\n\nआपके लिए सबसे महत्वपूर्ण अधिकार ये हैं:\n1. संपत्ति में समान अधिकार: बेटि",
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 1.0,
+        "answer_correctness": 0.5,
+        "hindi_purity": 0.93,
+        "section_accuracy": 0.0,
+        "helpline_presence": 0.0,
+        "structure_score": 0.2,
+        "structure_detail": {
+          "empathy": false,
+          "citation": false,
+          "timeline": true,
+          "helpline_number": false,
+          "followup_question": false,
+          "score": 0.2
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.513,
+        "passed": false,
+        "response_time_ms": 36283
+      },
+      "passed": false
+    },
+    {
+      "test_id": "case_012",
+      "category": "property",
+      "language": "hi",
+      "agent_used": "expert",
+      "actual_response": "मुझे सुनकर मुझे बहुत दुःख हो रहा है कि आप इस कठिन समय से गुज़र रही हैं। मैं समझती हूँ कि संपत्ति का बँटवारा एक भावनात्मक और कानूनी प्रक्रिया है, और मैं आपकी मदद के लिए यहाँ हूँ।\n\nआपके और आपकी बहनों के कानूनी अधिकार बहुत महत्वपूर्ण हैं:\n\nआप सभी बेटियों को संपत्ति में बराबर अधिकार प्राप्त हैं। हिंदू उत्तराधिकार अधिनियम, 1956 के अनुसार, बेटियों को संपत्ति में समान अधिकार प्राप्त हैं, भले ही पिता की मृत्यु हो गई हो या कोई वसीयत न हो। सुप्रीम कोर्ट ने भी इस बात की पुष्टि की है कि बेटियों का संपत्ति मे",
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.5,
+        "answer_correctness": 0.5,
+        "hindi_purity": 0.91,
+        "section_accuracy": 0.0,
+        "helpline_presence": 0.0,
+        "structure_score": 0.2,
+        "structure_detail": {
+          "empathy": false,
+          "citation": false,
+          "timeline": true,
+          "helpline_number": false,
+          "followup_question": false,
+          "score": 0.2
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.436,
+        "passed": false,
+        "response_time_ms": 34119
+      },
+      "passed": false
+    },
+    {
+      "test_id": "case_013",
+      "category": "property",
+      "language": "hi",
+      "agent_used": "expert",
+      "actual_response": "मैं समझ सकती हूँ कि आप इस समय कितनी परेशानी में हैं।\n\nआपके और आपकी बहनों के संपत्ति के अधिकार बहुत महत्वपूर्ण हैं।\n\nआपके पास संपत्ति का अधिकार है। हिंदू उत्तराधिकार अधिनियम, 1956 के अनुसार, बेटियों को संपत्ति में बराबर का अधिकार प्राप्त है। सुप्रीम कोर्ट ने भी स्पष्ट किया है कि बेटियों को संपत्ति में पिता के बराबर अधिकार प्राप्त हैं, भले ही पिता की मृत्यु 2005 से पहले हुई हो। यह अधिकार आपके जन्म से ही शुरू होता है। [स्रोत: SC 2020 निर्णय, Vineeta Sharma v Rakesh Sharma]\n\n**कार्य योजना (Action Ti",
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.5,
+        "answer_correctness": 0.5,
+        "hindi_purity": 0.9,
+        "section_accuracy": 0.0,
+        "helpline_presence": 1.0,
+        "structure_score": 0.4,
+        "structure_detail": {
+          "empathy": false,
+          "citation": false,
+          "timeline": true,
+          "helpline_number": true,
+          "followup_question": false,
+          "score": 0.4
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.555,
+        "passed": false,
+        "response_time_ms": 35328
+      },
+      "passed": false
+    },
+    {
+      "test_id": "case_014",
+      "category": "property",
+      "language": "hi",
+      "agent_used": "expert",
+      "actual_response": "मैं समझ सकती हूँ कि आप इस समय कितनी कठिन और भावनात्मक स्थिति से गुज़र रही हैं।\n\nआपके अधिकारों के संबंध में, आपको निश्चित रूप से कानूनी सहायता प्राप्त करने का पूरा अधिकार है।\n\nआपके अधिकार निम्नलिखित हैं:\n1. संपत्ति में उत्तराधिकार का अधिकार: हिंदू उत्तराधिकार अधिनियम, 1956 के तहत, विधवाओं को संपत्ति में कानूनी अधिकार प्राप्त हैं।\n2. कानूनी सहायता का अधिकार: हर महिला को बिना किसी भेदभाव के मुफ्त कानूनी सहायता प्राप्त करने का अधिकार है।\n3. सुरक्षा का अधिकार: आपको घरेलू हिंसा से सुरक्षा का अधिकार है।",
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.5,
+        "answer_correctness": 0.5,
+        "hindi_purity": 0.94,
+        "section_accuracy": 0.0,
+        "helpline_presence": 1.0,
+        "structure_score": 0.4,
+        "structure_detail": {
+          "empathy": false,
+          "citation": false,
+          "timeline": true,
+          "helpline_number": true,
+          "followup_question": false,
+          "score": 0.4
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.559,
+        "passed": false,
+        "response_time_ms": 35606
+      },
+      "passed": false
+    },
+    {
+      "test_id": "case_015",
+      "category": "property",
+      "language": "hi",
+      "agent_used": "expert",
+      "actual_response": "मुझे सुनकर बहुत दुःख हुआ। मैं समझ सकती हूँ कि संपत्ति के मामलों में आपको कितना तनाव हो रहा होगा।\n\nआपके अधिकार बिल्कुल सुरक्षित हैं। हिंदू उत्तराधिकार अधिनियम, 1956 के अनुसार, बेटियों को संपत्ति में पुरुषों के बराबर अधिकार प्राप्त हैं। यह अधिकार जन्म से ही शुरू होता है, भले ही पिता का देहांत हो गया हो। सुप्रीम कोर्ट ने भी इस बात पर स्पष्ट किया है कि बेटियों के संपत्ति में अधिकार समान होते हैं। [स्रोत: SC 2020 निर्णय, Vineeta Sharma v Rakesh Sharma]\n\n**कार्रवाई की समयरेखा:**\n\n**अभी (Right Now):** ",
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.5,
+        "answer_correctness": 0.5,
+        "hindi_purity": 0.92,
+        "section_accuracy": 0.0,
+        "helpline_presence": 0.0,
+        "structure_score": 0.2,
+        "structure_detail": {
+          "empathy": false,
+          "citation": false,
+          "timeline": true,
+          "helpline_number": false,
+          "followup_question": false,
+          "score": 0.2
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.437,
+        "passed": false,
+        "response_time_ms": 34249
+      },
+      "passed": false
+    },
+    {
+      "test_id": "case_016",
+      "category": "dowry",
+      "language": "hi",
+      "agent_used": "expert",
+      "actual_response": "मैं समझ सकती हूँ कि आप इस समय कितनी कठिन और डरावनी स्थिति से गुज़र रही हैं। आपको हिम्मत रखनी होगी, क्योंकि आपके पास अपने अधिकारों की रक्षा करने का पूरा कानूनी सहारा है।\n\nआपके अधिकार:\nआप घरेलू हिंसा से सुरक्षा के लिए कानूनी रूप से सुरक्षित हैं। आपके पास निम्नलिखित अधिकार हैं:\n1. घरेलू हिंसा से सुरक्षा का अधिकार: आप घरेलू हिंसा से सुरक्षा अधिनियम, 2005 के तहत सुरक्षा प्राप्त कर सकती हैं। [Source: DV Act 2005]\n2. दहेज उत्पीड़न से सुरक्षा: दहेज की मांग करना एक अपराध है, और आप इस संबंध में कानूनी कार्",
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.5,
+        "answer_correctness": 0.5,
+        "hindi_purity": 0.89,
+        "section_accuracy": 0.67,
+        "helpline_presence": 0.0,
+        "structure_score": 0.4,
+        "structure_detail": {
+          "empathy": false,
+          "citation": true,
+          "timeline": true,
+          "helpline_number": false,
+          "followup_question": false,
+          "score": 0.4
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.555,
+        "passed": false,
+        "response_time_ms": 35726
+      },
+      "passed": false
+    },
+    {
+      "test_id": "case_017",
+      "category": "dowry",
+      "language": "hi",
+      "agent_used": "expert",
+      "actual_response": "आप अपने सामान को वापस लेने के लिए पुलिस में शिकायत दर्ज करा सकती हैं। इसके लिए आपको नजदीकी पुलिस स्टेशन जाकर एक लिखित शिकायत देनी होगी। इसके अतिरिक्त, आप कानूनी सहायता के लिए किसी वकील से सलाह ले सकती हैं।",
+      "scores": {
+        "faithfulness": 0.0,
+        "answer_relevancy": 0.5,
+        "answer_correctness": 0.5,
+        "hindi_purity": 1.0,
+        "section_accuracy": 0.0,
+        "helpline_presence": 0.0,
+        "structure_score": 0.0,
+        "structure_detail": {
+          "empathy": false,
+          "citation": false,
+          "timeline": false,
+          "helpline_number": false,
+          "followup_question": false,
+          "score": 0.0
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.35,
+        "passed": false,
+        "response_time_ms": 7921
+      },
+      "passed": false
+    },
+    {
+      "test_id": "case_018",
+      "category": "dowry",
+      "language": "hi",
+      "agent_used": "expert",
+      "actual_response": "मैं समझ सकती हूँ कि आप इस समय कितनी भयानक और डरावनी स्थिति से गुज़र रही हैं। आपको तुरंत मदद की ज़रूरत है, और मैं आपको विश्वास दिलाती हूँ कि आपके साथ अन्याय नहीं होना चाहिए।\n\nआपके अधिकार:\nआप घरेलू हिंसा से सुरक्षा के लिए कानून की हकदार हैं। आपके पास मुफ्त कानूनी सहायता का अधिकार है [Source: Legal Services Authority Act 1987]। आप दहेज उत्पीड़न और क्रूरता के खिलाफ सुरक्षा प्राप्त कर सकती हैं [Source: The Protection of Women from Domestic Violence Act, 2005]।\n\nकार्यवाही का समयरेखा:\n**अभी (Right Now):*",
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.5,
+        "answer_correctness": 0.5,
+        "hindi_purity": 0.84,
+        "section_accuracy": 0.0,
+        "helpline_presence": 1.0,
+        "structure_score": 0.6,
+        "structure_detail": {
+          "empathy": false,
+          "citation": true,
+          "timeline": true,
+          "helpline_number": true,
+          "followup_question": false,
+          "score": 0.6
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.569,
+        "passed": false,
+        "response_time_ms": 35916
+      },
+      "passed": false
+    },
+    {
+      "test_id": "case_019",
+      "category": "maintenance",
+      "language": "hi",
+      "agent_used": "expert",
+      "actual_response": "मैं समझ सकती हूँ कि आप इस समय कितनी कठिनाई और तनाव में हैं। आपको यह जानकर हिम्मत मिलनी चाहिए कि आपके पास कानूनी अधिकार हैं और मदद उपलब्ध है।\n\nआपके अधिकार:\nआप विवाह के दौरान भी आर्थिक सहायता (Maintenance) के लिए दावा कर सकती हैं। यह अधिकार तलाक (Divorce) के लिए आवेदन किए बिना भी उपलब्ध है। [स्रोत: हिंदू विवाह अधिनियम 1955, सीआरपीसी धारा 125]\n\nकार्यवाही की समयरेखा:\n**अभी (Right Now):** तुरंत अपने जिले के जिला कानूनी सेवा प्राधिकरण (DLSA) से संपर्क करें।\n**आज (Today):** DLSA या NALSA हेल्पलाइन (151",
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.5,
+        "answer_correctness": 0.5,
+        "hindi_purity": 0.91,
+        "section_accuracy": 0.0,
+        "helpline_presence": 1.0,
+        "structure_score": 0.4,
+        "structure_detail": {
+          "empathy": false,
+          "citation": false,
+          "timeline": true,
+          "helpline_number": true,
+          "followup_question": false,
+          "score": 0.4
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.556,
+        "passed": false,
+        "response_time_ms": 30527
+      },
+      "passed": false
+    },
+    {
+      "test_id": "case_020",
+      "category": "maintenance",
+      "language": "hi",
+      "agent_used": "expert",
+      "actual_response": "मैं समझ सकती हूँ कि आप इस समय कितनी मुश्किल स्थिति से गुज़र रही हैं।\n\nआपके अधिकार और कानूनी सहायता के संबंध में, आपको यह जानना ज़रूरी है कि घरेलू हिंसा से संबंधित मामलों में महिलाओं को सुरक्षा और आर्थिक सहायता का अधिकार है।\n\nआपके अधिकार:\n1. आपको कानूनी सहायता का अधिकार है, जिसके लिए आप जिला कानूनी सेवा प्राधिकरण (DLSA) से संपर्क कर सकती हैं [Source: Legal Services Authority Act 1987]।\n2. आपको घरेलू हिंसा से सुरक्षा का अधिकार है, जिसके तहत आप सहायता प्राप्त कर सकती हैं [Source: Dv Act 2005]।\n3. आपक",
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.1,
+        "answer_correctness": 0.5,
+        "hindi_purity": 0.83,
+        "section_accuracy": 0.0,
+        "helpline_presence": 0.0,
+        "structure_score": 0.4,
+        "structure_detail": {
+          "empathy": false,
+          "citation": true,
+          "timeline": true,
+          "helpline_number": false,
+          "followup_question": false,
+          "score": 0.4
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.388,
+        "passed": false,
+        "response_time_ms": 31588
+      },
+      "passed": false
+    },
+    {
+      "test_id": "case_021",
+      "category": "maintenance",
+      "language": "hi",
+      "agent_used": "expert",
+      "actual_response": "मैं समझ सकती हूँ कि आप इस समय कितनी मुश्किल और भावनात्मक परेशानी से गुज़र रही हैं।\n\nआपके पास बच्चे की देखभाल और भरण-पोषण के लिए कानूनी अधिकार हैं, भले ही आपने तलाक के लिए आवेदन न किया हो।\n\nआपके अधिकार:\nआप हिंदू विवाह अधिनियम, 1955 और दंड प्रक्रिया संहिता (CrPC) की धारा 125 के तहत भरण-पोषण (Maintenance) का दावा कर सकती हैं। इसका मतलब है कि आप तलाक की कार्यवाही किए बिना अपने बच्चे के लिए आर्थिक सहायता मांग सकती हैं।\n\nकार्य योजना:\n**अभी (Right Now):** आप तुरंत अपने जिले के जिला कानूनी सेवा प्राधिकरण",
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 1.0,
+        "answer_correctness": 0.5,
+        "hindi_purity": 0.92,
+        "section_accuracy": 0.0,
+        "helpline_presence": 1.0,
+        "structure_score": 0.4,
+        "structure_detail": {
+          "empathy": false,
+          "citation": false,
+          "timeline": true,
+          "helpline_number": true,
+          "followup_question": false,
+          "score": 0.4
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.632,
+        "passed": false,
+        "response_time_ms": 29028
+      },
+      "passed": false
+    },
+    {
+      "test_id": "case_022",
+      "category": "divorce",
+      "language": "hi",
+      "agent_used": "emergency",
+      "actual_response": "🆘 आपकी स्थिति बहुत गंभीर लग रही है।\n\n**अभी तुरंत करें:**\n📞 **181** — महिला हेल्पलाइन (24 घंटे, FREE)\n📞 **100** — Police\n📞 **1091** — Women in Distress\n\nआप सुरक्षित जगह जाएं। मैं यहाँ हूँ — बात जारी रखें।",
+      "scores": {
+        "faithfulness": 0.0,
+        "answer_relevancy": 0.0,
+        "answer_correctness": 0.0,
+        "hindi_purity": 0.8,
+        "section_accuracy": 0.0,
+        "helpline_presence": 0.0,
+        "structure_score": 0.4,
+        "structure_detail": {
+          "empathy": false,
+          "citation": false,
+          "timeline": true,
+          "helpline_number": true,
+          "followup_question": false,
+          "score": 0.4
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.22,
+        "passed": false,
+        "response_time_ms": 37
+      },
+      "passed": false
+    },
+    {
+      "test_id": "case_023",
+      "category": "divorce",
+      "language": "hi",
+      "agent_used": "expert",
+      "actual_response": "पति द्वारा परित्याग (desertion) के आधार पर तलाक के लिए आपको हिंदू विवाह अधिनियम, 1955 के तहत याचिका दायर करनी होगी। आपको यह साबित करना होगा कि आपके पति ने विवाह के दौरान गंभीर रूप से दुर्व्यवहार किया है या वैवाहिक संबंध समाप्त कर दिए हैं। इसके लिए आपको कानूनी सलाह लेनी चाहिए और एक वकील के माध्यम से कोर्ट में याचिका दायर करनी चाहिए।",
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.5,
+        "answer_correctness": 0.5,
+        "hindi_purity": 0.97,
+        "section_accuracy": 0.0,
+        "helpline_presence": 0.0,
+        "structure_score": 0.0,
+        "structure_detail": {
+          "empathy": false,
+          "citation": false,
+          "timeline": false,
+          "helpline_number": false,
+          "followup_question": false,
+          "score": 0.0
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.422,
+        "passed": false,
+        "response_time_ms": 7238
+      },
+      "passed": false
+    },
+    {
+      "test_id": "case_024",
+      "category": "divorce",
+      "language": "hi",
+      "agent_used": "expert",
+      "actual_response": "मैं समझ सकती हूँ कि बच्चों की कस्टडी का मामला आपके लिए कितना तनावपूर्ण और महत्वपूर्ण है।\n\nआपके अधिकारों के संबंध में:\nआप हिंदू विवाह अधिनियम, 1955 के तहत विवाह के दौरान बच्चों की कस्टडी के अधिकार के लिए कानूनी सहारा ले सकती हैं। रखरखाव (Maintenance) का दावा तलाक के बिना भी किया जा सकता है [स्रोत: CrPC 125]।\n\n**कार्रवाई की समयरेखा:**\n**अभी (Right Now):** अपने मामले की जानकारी के लिए जिला कानूनी सेवा प्राधिकरण (DLSA) से संपर्क करें।\n**आज (Today):** अपने क्षेत्र के कानूनी सहायता केंद्र से संपर्क कर",
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.1,
+        "answer_correctness": 0.5,
+        "hindi_purity": 0.92,
+        "section_accuracy": 0.0,
+        "helpline_presence": 0.0,
+        "structure_score": 0.2,
+        "structure_detail": {
+          "empathy": false,
+          "citation": false,
+          "timeline": true,
+          "helpline_number": false,
+          "followup_question": false,
+          "score": 0.2
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.377,
+        "passed": false,
+        "response_time_ms": 34841
+      },
+      "passed": false
+    },
+    {
+      "test_id": "case_025",
+      "category": "domestic_violence",
+      "language": "hi",
+      "agent_used": "emergency",
+      "actual_response": "🆘 आपकी स्थिति बहुत गंभीर लग रही है।\n\n**अभी तुरंत करें:**\n📞 **181** — महिला हेल्पलाइन (24 घंटे, FREE)\n📞 **100** — Police\n📞 **1091** — Women in Distress\n\nआप सुरक्षित जगह जाएं। मैं यहाँ हूँ — बात जारी रखें।",
+      "scores": {
+        "emergency_detected": 1.0,
+        "helpline_presence": 1.0,
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "answer_correctness": 1.0,
+        "hindi_purity": 0.8,
+        "section_accuracy": 1.0,
+        "structure_score": 1.0,
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "response_time_ms": 38,
+        "final_score": 0.96,
+        "passed": true
+      },
+      "passed": true
+    },
+    {
+      "test_id": "case_026",
+      "category": "domestic_violence",
+      "language": "hi",
+      "agent_used": "emergency",
+      "actual_response": "🆘 आपकी स्थिति बहुत गंभीर लग रही है।\n\n**अभी तुरंत करें:**\n📞 **181** — महिला हेल्पलाइन (24 घंटे, FREE)\n📞 **100** — Police\n📞 **1091** — Women in Distress\n\nआप सुरक्षित जगह जाएं। मैं यहाँ हूँ — बात जारी रखें।",
+      "scores": {
+        "emergency_detected": 1.0,
+        "helpline_presence": 1.0,
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "answer_correctness": 1.0,
+        "hindi_purity": 0.8,
+        "section_accuracy": 1.0,
+        "structure_score": 1.0,
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "response_time_ms": 38,
+        "final_score": 0.96,
+        "passed": true
+      },
+      "passed": true
+    },
+    {
+      "test_id": "case_027",
+      "category": "domestic_violence",
+      "language": "hi",
+      "agent_used": "emergency",
+      "actual_response": "🆘 आपकी स्थिति बहुत गंभीर लग रही है।\n\n**अभी तुरंत करें:**\n📞 **181** — महिला हेल्पलाइन (24 घंटे, FREE)\n📞 **100** — Police\n📞 **1091** — Women in Distress\n\nआप सुरक्षित जगह जाएं। मैं यहाँ हूँ — बात जारी रखें।",
+      "scores": {
+        "emergency_detected": 1.0,
+        "helpline_presence": 1.0,
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "answer_correctness": 1.0,
+        "hindi_purity": 0.8,
+        "section_accuracy": 1.0,
+        "structure_score": 1.0,
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "response_time_ms": 39,
+        "final_score": 0.96,
+        "passed": true
+      },
+      "passed": true
+    },
+    {
+      "test_id": "case_028",
+      "category": "domestic_violence",
+      "language": "hi",
+      "agent_used": "expert",
+      "actual_response": "मैं समझ सकती हूँ कि आप कितनी भयानक और डरावनी स्थिति से गुज़र रही हैं। यह जानकर बहुत दुःख होता है कि आपको दो साल से इस तरह की तकलीफ सहनी पड़ रही है। आपको तुरंत सुरक्षा और न्याय मिलना चाहिए।\n\nआपके अधिकार:\nआप घरेलू हिंसा से सुरक्षा के लिए कानूनी रूप से सुरक्षित हैं। आपके पास निवास का अधिकार है [Source: DV Act 2005, Section 17]। आपको सुरक्षा आदेश (Protection Order) प्राप्त करने का अधिकार है [Source: DV Act 2005, Section 18]। आप मजिस्ट्रेट के पास आवेदन करके निवास आदेश (Residence Order) प्राप्त कर सकती ",
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.5,
+        "answer_correctness": 0.5,
+        "hindi_purity": 0.84,
+        "section_accuracy": 1.0,
+        "helpline_presence": 0.5,
+        "structure_score": 0.6,
+        "structure_detail": {
+          "empathy": false,
+          "citation": true,
+          "timeline": true,
+          "helpline_number": true,
+          "followup_question": false,
+          "score": 0.6
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.669,
+        "passed": true,
+        "response_time_ms": 58071
+      },
+      "passed": true
+    },
+    {
+      "test_id": "case_029",
+      "category": "property",
+      "language": "hi",
+      "agent_used": "expert",
+      "actual_response": "मैं समझ सकती हूँ कि आप इस समय कितनी परेशानी और तनाव में हैं।\n\nआपके अधिकारों के संबंध में, आपको यह जानना बहुत ज़रूरी है कि हिंदू उत्तराधिकार अधिनियम, 1956 के अनुसार, बेटियों को संपत्ति में समान अधिकार प्राप्त हैं।\n\nआपके सबसे महत्वपूर्ण अधिकार ये हैं:\n1. बेटियों को जन्म से ही पैतृक संपत्ति में बराबर सह-खातेदारों के अधिकार प्राप्त हैं। [स्रोत: हिंदू उत्तराधिकार अधिनियम 1956]\n2. सुप्रीम कोर्ट ने स्पष्ट किया है कि बेटियों का संपत्ति में अधिकार पिता की मृत्यु से पहले भी जन्म से ही शुरू हो जाते हैं। [स",
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.1,
+        "answer_correctness": 0.5,
+        "hindi_purity": 0.91,
+        "section_accuracy": 0.0,
+        "helpline_presence": 0.0,
+        "structure_score": 0.2,
+        "structure_detail": {
+          "empathy": false,
+          "citation": false,
+          "timeline": true,
+          "helpline_number": false,
+          "followup_question": false,
+          "score": 0.2
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.376,
+        "passed": false,
+        "response_time_ms": 24137
+      },
+      "passed": false
+    },
+    {
+      "test_id": "case_030",
+      "category": "workplace",
+      "language": "hi",
+      "agent_used": "expert",
+      "actual_response": "मैं समझ सकती हूँ कि आप डर रही हैं, लेकिन मैं आपको विश्वास दिलाती हूँ कि आप बिल्कुल शिकायत कर सकती हैं।\n\nआपके पास कार्यस्थल पर उत्पीड़न के खिलाफ कानूनी अधिकार हैं।\n\nआपके अधिकार:\n1. आपको कार्यस्थल पर यौन उत्पीड़न से सुरक्षा का अधिकार है [Source: POSH Act 2013]।\n2. यदि आपके कार्यस्थल पर 10 या उससे अधिक कर्मचारी हैं, तो आंतरिक शिकायत समिति (ICC) का गठन अनिवार्य है [Source: POSH Act 2013]।\n3. आप उत्पीड़न की शिकायत कर सकती हैं और आपको नौकरी से नहीं निकाला जा सकता [Source: POSH Act 2013]।\n\nकार्यवाही का",
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "answer_correctness": 0.5,
+        "hindi_purity": 0.91,
+        "section_accuracy": 0.33,
+        "helpline_presence": 0.0,
+        "structure_score": 0.4,
+        "structure_detail": {
+          "empathy": false,
+          "citation": true,
+          "timeline": true,
+          "helpline_number": false,
+          "followup_question": false,
+          "score": 0.4
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.656,
+        "passed": true,
+        "response_time_ms": 30562
+      },
+      "passed": true
+    },
+    {
+      "test_id": "case_031",
+      "category": "workplace",
+      "language": "hi",
+      "agent_used": "expert",
+      "actual_response": "मैं समझ सकती हूँ कि आपके मन में डर होना स्वाभाविक है।\n\nआपके अधिकार — आपको कार्यस्थल पर उत्पीड़न से सुरक्षा का अधिकार है। [स्रोत: POSH अधिनियम 2013] आप बिना किसी डर के शिकायत दर्ज करा सकती हैं।\n\n**कार्यवाही की समयरेखा:**\n**अभी (Right Now):** घटनाएँ और टिप्पणियाँ तारीखों के साथ लिख लें।\n**आज (Today):** मानव संसाधन (HR) विभाग या आंतरिक शिकायत समिति (ICC) के पास लिखित शिकायत दर्ज करें।\n**इस हफ्ते (This Week):** यदि आंतरिक कार्रवाई संतोषजनक नहीं है, तो आगे की कानूनी कार्रवाई के लिए जिला अधिकारी (Dist",
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 1.0,
+        "answer_correctness": 0.5,
+        "hindi_purity": 0.91,
+        "section_accuracy": 0.0,
+        "helpline_presence": 1.0,
+        "structure_score": 0.4,
+        "structure_detail": {
+          "empathy": false,
+          "citation": false,
+          "timeline": true,
+          "helpline_number": true,
+          "followup_question": false,
+          "score": 0.4
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.631,
+        "passed": false,
+        "response_time_ms": 30428
+      },
+      "passed": false
+    },
+    {
+      "test_id": "case_032",
+      "category": "stalking",
+      "language": "en",
+      "agent_used": "expert",
+      "actual_response": "I am so sorry you are enduring this frightening experience. Dealing with prolonged online threats and fake profiles is deeply stressful, but please know that you have strong legal recourse.\n\n**Your Rights**\nYou have the right to safety and protection from harassment. This includes the right to privacy, protected under the IT Act, and the right to be free from stalking, as defined under relevant laws. [Source: IPC 354D, IT Act]\n\n**Action Timeline:**\n**Right Now:** Immediately save all screenshots",
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.0,
+        "answer_correctness": 0.5,
+        "hindi_purity": 1.0,
+        "section_accuracy": 0.5,
+        "helpline_presence": 1.0,
+        "structure_score": 0.8,
+        "structure_detail": {
+          "empathy": true,
+          "citation": true,
+          "timeline": true,
+          "helpline_number": true,
+          "followup_question": false,
+          "score": 0.8
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.605,
+        "passed": false,
+        "response_time_ms": 37903
+      },
+      "passed": false
+    },
+    {
+      "test_id": "case_033",
+      "category": "stalking",
+      "language": "en",
+      "agent_used": "expert",
+      "actual_response": "I am so sorry you are experiencing this terrifying situation. Please know that you are not alone, and there are strong legal steps you can take immediately to stop this harassment.\n\n**Your Rights**\nYou have the right to privacy, protected under the IT Act, and the right to safety from harassment. You have the right to seek legal aid, as guaranteed by the Legal Services Authority Act 1987.\n\n**Action Timeline:**\n**Right Now:** Save every single message, screenshot every piece of evidence of tracki",
+      "scores": {
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.1,
+        "answer_correctness": 0.5,
+        "hindi_purity": 1.0,
+        "section_accuracy": 0.0,
+        "helpline_presence": 1.0,
+        "structure_score": 0.6,
+        "structure_detail": {
+          "empathy": true,
+          "citation": false,
+          "timeline": true,
+          "helpline_number": true,
+          "followup_question": false,
+          "score": 0.6
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "expert_routed": true,
+        "final_score": 0.525,
+        "passed": false,
+        "response_time_ms": 34905
+      },
+      "passed": false
+    }
+  ]
+}

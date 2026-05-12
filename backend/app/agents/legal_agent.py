@@ -1,194 +1,218 @@
 """
-Kanoon Sakhi — Legal Expert Agent
-5-block response: Empathy → Rights → Action Timeline → Helpline → Follow-up
+Kanoon Sakhi — Legal Expert Agent (frozen prompt v1.1)
+5-block response: Empathy → Rights → Timeline → Helpline → Follow-up
 RAG-grounded: never invents section numbers.
-Language-aware: Hindi/English/Bengali.
+Thinking OFF (faster, consistent formatting).
 """
-import requests
 import json
+import re
+import requests
 from app.config import settings
 from app.rag.legal_rag import get_legal_context
 from typing import AsyncGenerator
 
+# ─── Language Instructions ────────────────────────────────────────────────────
 LANGUAGE_INSTRUCTIONS = {
-    "hi": "🔴 CRITICAL — LANGUAGE RULE: Sirf Devanagari lipi mein jawab do. Roman script BILKUL nahi. Agar koi Hinglish mein likhti hai, aap Devanagari mein jawab do.",
-    "en": "🔴 CRITICAL — LANGUAGE RULE: Respond ONLY in English. Never use Hindi, Devanagari, or any other script.",
-    "bn": "🔴 CRITICAL — LANGUAGE RULE: Sudhu Bangla lipi te uttor dao. Roman ba Hindi lipi kokhono byabohar koro na.",
+    "hi": (
+        "🔴 CRITICAL LANGUAGE RULE: "
+        "Sirf Devanagari lipi mein jawab do. "
+        "KABHI BHI Roman/English script mat use karo Hindi shabdon ke liye."
+    ),
+    "en": (
+        "🔴 CRITICAL LANGUAGE RULE: "
+        "Respond ONLY in English. "
+        "Never use Hindi, Devanagari, or any other script."
+    ),
+    "bn": (
+        "🔴 CRITICAL LANGUAGE RULE: "
+        "Sudhu Bangla lipi te uttor dao. "
+        "Roman ba Hindi lipi kokhono byabohar koro na."
+    ),
 }
 
-# Crime-specific guidance injected into prompt
+# ─── Timeline format per language ─────────────────────────────────────────────
+TIMELINE_FORMAT = {
+    "hi": "**अभी (Right Now):** [1 step]\n**आज (Today):** [1-2 steps]\n**इस हफ्ते (This Week):** [1 step]",
+    "en": "**Right Now:** [1 step]\n**Today:** [1-2 steps]\n**This Week:** [1 step]",
+    "bn": "**এখনই (Right Now):** [1 step]\n**আজ (Today):** [1-2 steps]\n**এই সপ্তাহে (This Week):** [1 step]",
+}
+
+# ─── Crime-specific guidance blocks ──────────────────────────────────────────
 CRIME_GUIDANCE = {
     "domestic_violence": """
-Primary law: DV Act 2005. Key sections: 17 (residence right), 18 (protection order), 19 (residence order), 20 (monetary relief), 12 (application to magistrate).
-Always mention: Protection Officer (free help), Magistrate application (no lawyer needed, case heard within 3 days).
-Today's action: Call 181, go to nearest police station or Protection Officer.
-NEVER say: "talk to husband", "family matter", "try to compromise".
-""",
-    "dowry": """
-Primary law: Dowry Prohibition Act 1961, IPC 498A (cruelty by husband/relatives), IPC 304B (dowry death).
-Key fact: Demanding dowry is a CRIMINAL offence. Giving is also illegal.
-Always mention: 498A is cognizable — police can arrest without warrant.
-Today's action: File FIR at police station, call 181.
+Key law: DV Act 2005
+Critical sections: 17 (residence right), 18 (protection order), 19 (residence order), 20 (monetary relief), 12 (Magistrate application)
+Key facts: Woman CANNOT be evicted from shared household. Magistrate must hear within 3 days. Protection Officer in every district is FREE.
+Helpline: 181
+NEVER say: "talk to husband", "family matter", "compromise"
 """,
     "property": """
-Primary law: Hindu Succession Act 1956, amended 2005. Supreme Court: Vineeta Sharma v Rakesh Sharma (2020).
-Key right: Daughters have EQUAL coparcenary rights from birth — even if father died before 2005.
-Always cite: SC 2020 judgment by name — very powerful and often unknown.
-Today's action: Collect birth certificate + father's documents, call DLSA 15100.
+Key law: Hindu Succession Act 1956 (Amendment 2005)
+Critical case: Vineeta Sharma v. Rakesh Sharma, Supreme Court 2020
+Key facts: Daughters have EQUAL coparcenary rights from birth (Section 6). Applies even if father died before 2005. Applies to agricultural land in most states.
+Helpline: 15100
 """,
-    "rape": """
-Primary law: IPC 376, Criminal Law Amendment Act 2013.
-Key rights: FIR MUST be registered (police cannot refuse). No two-finger test. Free medical examination. Compensation scheme.
-Always mention: One Stop Centre (call 181), 1091 women in distress helpline.
-Today's action: Call 181 immediately, go to hospital first (free examination).
+    "dowry": """
+Key law: Dowry Prohibition Act 1961, IPC 498A, IPC 304B
+Key facts: Demanding dowry is CRIMINAL (Dowry Prohibition Act Section 3). IPC 498A cognizable — police can arrest without warrant. Dowry death = IPC 304B minimum 7 years.
+Helpline: 181, 100
+""",
+    "maintenance": """
+Key law: CrPC Section 125
+Key facts: Maintenance WITHOUT divorce is possible. No court fee. Interim maintenance within 60 days. Amount based on husband's income.
+Helpline: 15100
 """,
     "divorce": """
-Primary law: Hindu Marriage Act 1955, CrPC Section 125 (maintenance), Muslim Women Protection Act 1986.
-Key right: Maintenance can be claimed WITHOUT filing for divorce (CrPC 125). No court fee. Interim relief within 60 days.
-Always clarify: Maintenance ≠ divorce. She can ask for maintenance while still married.
-Today's action: Apply at Family Court (no fee), call DLSA 15100 for free lawyer.
+Key law: Hindu Marriage Act 1955 (Section 13), CrPC Section 125
+Key facts: Grounds include cruelty, desertion, adultery. Maintenance can be claimed separately via CrPC 125 without divorce.
+Helpline: 15100
 """,
     "workplace": """
-Primary law: POSH Act 2013.
-Key rights: ICC mandatory for 10+ employees. Cannot be fired for complaining. Complaint within 3 months (extendable).
-Always mention: If no ICC → file with District Officer. Transfer can be requested during inquiry.
-Today's action: Written complaint to HR/ICC, document all incidents with dates.
+Key law: POSH Act 2013
+Critical sections: 4 (ICC mandatory for 10+ employees), 9 (3 month complaint window), 11 (no retaliation)
+Key facts: ICC required for 10+ employees. Cannot be fired for complaining. District Officer if no ICC.
+Helpline: 15100
 """,
     "stalking": """
-Primary law: IPC 354D (stalking), IT Act 66E (privacy), IT Act 67 (obscene content).
-Key fact: Online harassment IS a criminal offence. Police can act.
-Always mention: National Cyber Crime helpline 1930, screenshot and save all evidence.
-Today's action: Call 1930, file complaint at cybercrime.gov.in.
+Key law: IPC 354D (stalking), IT Act 66E (privacy), IT Act 67 (obscene content)
+Key facts: Online harassment IS criminal. Screenshot all evidence. Police can act immediately.
+Helpline: 1930 (cyber crime)
+""",
+    "rape": """
+Key law: IPC 376, Criminal Law Amendment Act 2013
+Key facts: FIR MUST be registered — police cannot refuse. No two-finger test. Free medical examination. Compensation available.
+Helpline: 181, 1091
 """,
     "acid_attack": """
-Primary law: IPC 326A (acid attack), IPC 326B (attempt to throw acid).
-Key rights: Hospitals CANNOT refuse treatment. Minimum Rs 3 lakh compensation (NALSA scheme). Fast-track court.
-Always mention: Acid Survivors Foundation India (ASFI), NALSA acid attack compensation scheme.
-Today's action: Emergency medical care first (any hospital must treat), call 181.
+Key law: IPC 326A, IPC 326B
+Key facts: Hospitals CANNOT refuse treatment. Minimum Rs 3 lakh compensation (NALSA scheme). Fast-track court.
+Helpline: 181
 """,
     "custody": """
-Primary law: Guardian and Wards Act 1890, Hindu Minority and Guardianship Act 1956.
-Key right: Mother gets natural custody of children under 5. Best interest of child is the court's primary consideration.
-Always clarify: Father threatening "I will take children" is often legally false.
-Today's action: Apply for interim custody at Family Court, call DLSA 15100.
+Key law: Guardian and Wards Act 1890, Hindu Minority and Guardianship Act 1956
+Key facts: Mother gets natural custody of children under 5. Best interest of child is paramount.
+Helpline: 15100
 """,
     "trafficking": """
-Primary law: IPC 366 (abduction for forced marriage), Immoral Traffic Prevention Act (ITPA), Prohibition of Child Marriage Act 2006.
-Key right: Any marriage of girl under 18 is voidable. Forced marriage at any age is criminal.
-Always mention: Anti-trafficking helpline 1800-419-8588 (free), CHILDLINE 1098.
-Today's action: Call 1800-419-8588 immediately, contact nearest police station.
+Key law: IPC 366, Immoral Traffic Prevention Act (ITPA), Prohibition of Child Marriage Act 2006
+Key facts: Any marriage of girl under 18 is voidable. Anti-trafficking helpline 1800-419-8588.
+Helpline: 1800-419-8588, 1098
 """,
 }
 
-ACTION_TIMELINE_INSTRUCTION = {
-    "hi": """Har response mein yeh timeline zaroor dein (Devanagari mein):
-**अभी (Right Now):** [1 immediate step]
-**आज (Today):** [1-2 steps within 24 hours]
-**इस हफ्ते (This Week):** [1 longer term step]""",
-    "en": """Include this timeline in every response:
-**Right Now:** [1 immediate step]
-**Today:** [1-2 steps within 24 hours]
-**This Week:** [1 longer term step]""",
-    "bn": """Protiti response e ei timeline diye dio:
-**এখনই (Right Now):** [1 immediate step]
-**আজ (Today):** [1-2 steps]
-**এই সপ্তাহে (This Week):** [1 step]""",
-}
-
+# ─── Follow-up words (detect short follow-up questions) ─────────────────────
 FOLLOWUP_WORDS = [
-    "han", "haan", "yes", "okay", "ok", "theek", "acha", "sure", "hmm",
-    "kaise", "aur", "phir", "batao", "explain", "matlab", "next",
-    "samjha nai", "details", "more", "aage", "then what",
+    "han", "haan", "yes", "okay", "ok", "theek", "acha", "sure",
+    "kaise", "aur", "phir", "batao", "explain", "matlab",
+    "samjha nai", "more", "aage", "then", "next", "details",
+    "NALSA", "vakeel", "kahan", "kitna", "how long", "what if",
 ]
+
+
+def _is_followup(last_user: str) -> bool:
+    text = last_user.lower().strip()
+    if len(text) < 60:
+        return any(w in text for w in FOLLOWUP_WORDS)
+    return False
+
+
+def _build_system(
+    case_file: dict,
+    rag_context: str,
+    history_text: str,
+    language: str,
+    is_followup: bool,
+) -> tuple[str, int]:
+    lang_instruction = LANGUAGE_INSTRUCTIONS.get(language, LANGUAGE_INSTRUCTIONS["en"])
+    crime_type = case_file.get("crime_type", "general")
+    guidance = CRIME_GUIDANCE.get(crime_type, "")
+    timeline = TIMELINE_FORMAT.get(language, TIMELINE_FORMAT["en"])
+
+    if is_followup:
+        system = f"""{lang_instruction}
+
+You are Kanoon Sakhi — answering a follow-up question.
+The user already received full legal advice. Answer ONLY their specific question in 2-4 sentences.
+Do NOT repeat the full legal advice. If they ask about free lawyer → give NALSA 15100 + 3 steps.
+
+CASE FILE: {json.dumps(case_file, ensure_ascii=False)}
+CONVERSATION: {history_text}
+
+FINAL REMINDER: {lang_instruction}"""
+        return system, 250
+
+    system = f"""{lang_instruction}
+
+You are a senior Indian legal advocate with 20 years of experience
+in district courts across India, specializing in women's rights.
+You speak like a knowledgeable older sister — warm but authoritative.
+
+CASE FILE: {json.dumps(case_file, ensure_ascii=False)}
+
+CRIME-SPECIFIC GUIDANCE:
+{guidance}
+
+LEGAL CONTEXT (USE ONLY THIS — never invent section numbers):
+{rag_context}
+
+CONVERSATION HISTORY:
+{history_text}
+
+YOU MUST RESPOND WITH ALL 5 BLOCKS BELOW. DO NOT SKIP ANY BLOCK.
+
+━━━ BLOCK 1: EMPATHY (1 sentence) ━━━
+Reference something specific from her case file. Make it personal, not generic.
+
+━━━ BLOCK 2: HER RIGHTS (2-3 rights) ━━━
+Each right on its own line:
+[Source: Act Name, Section X] explanation in simple words
+[Source: Act Name, Section Y] explanation in simple words
+ONLY cite sections present in LEGAL CONTEXT above. Never invent section numbers.
+
+━━━ BLOCK 3: ACTION TIMELINE (all 3 lines required) ━━━
+{timeline}
+
+━━━ BLOCK 4: FREE HELPLINE (exactly 1) ━━━
+📞 [NUMBER] — [what it does] ([hours])
+
+━━━ BLOCK 5: FOLLOW-UP QUESTION (exactly 1) ━━━
+End with one specific question relevant to her case.
+
+RULES:
+- Under 400 words total
+- Simple language — no legal jargon
+- Never say "consult a lawyer" without giving NALSA 15100 (free)
+- ALL 5 BLOCKS REQUIRED — a response missing any block is incomplete
+
+FINAL REMINDER: {lang_instruction}"""
+    return system, 900
 
 
 async def run_legal_expert_stream(
     case_file: dict,
     conversation_history: list,
-    language: str = "hi"
+    language: str = "hi",
 ) -> AsyncGenerator[dict, None]:
 
+    # RAG retrieval
     rag_context, citations = get_legal_context(case_file)
     yield {"type": "rag_retrieved", "citations": citations, "chunk_count": len(citations)}
 
-    lang_instruction = LANGUAGE_INSTRUCTIONS.get(language, LANGUAGE_INSTRUCTIONS["en"])
-    timeline_instruction = ACTION_TIMELINE_INSTRUCTION.get(language, ACTION_TIMELINE_INSTRUCTION["en"])
-    crime_type = case_file.get("crime_type", "general")
-    crime_guidance = CRIME_GUIDANCE.get(crime_type, "")
-
-    last_user = ""
-    for m in reversed(conversation_history):
-        if m.get("role") == "user":
-            last_user = m.get("content", "")
-            break
-
-    is_followup = (
-        any(w in last_user.lower() for w in FOLLOWUP_WORDS)
-        and len(last_user.strip()) < 50
+    last_user = next(
+        (m["content"] for m in reversed(conversation_history) if m.get("role") == "user"),
+        ""
     )
+    is_followup = _is_followup(last_user)
 
     history_text = "\n".join([
-        f"{'User' if m['role']=='user' else 'Sakhi'}: {m['content']}"
+        f"{'User' if m['role'] == 'user' else 'Sakhi'}: {m['content']}"
         for m in conversation_history[-8:]
         if m.get("content")
     ])
 
-    if is_followup:
-        system = f"""{lang_instruction}
-
-You are Kanoon Sakhi — legal companion for Indian women.
-The user is asking a follow-up question. Answer ONLY what they asked in 2-4 sentences.
-Do NOT repeat the full legal advice already given.
-If they say yes to free lawyer → give NALSA number 15100 and 3 steps to get it.
-
-Case: {json.dumps(case_file, ensure_ascii=False)}
-Conversation: {history_text}
-
-FINAL REMINDER: {lang_instruction}"""
-        max_tokens = 250
-    else:
-        system = f"""{lang_instruction}
-
-You are Kanoon Sakhi — a confident, warm legal advocate for Indian women.
-
-CRIME-SPECIFIC GUIDANCE:
-{crime_guidance}
-
-RESPONSE STRUCTURE (follow exactly):
-1. ONE empathy sentence — acknowledge her pain first
-2. HER RIGHTS — 2-3 most important rights, cite law: [Source: Act Name, Section X]
-3. ACTION TIMELINE:
-{timeline_instruction}
-4. ONE free helpline with number
-5. End with: offer of free lawyer
-
-CRITICAL RULES:
-- Use ONLY the legal context below — never invent section numbers
-- Under 350 words total
-- Simple language, NOT legal jargon
-- Never say "consult a lawyer" without also giving NALSA 15100 (it's free)
-
-LEGAL CONTEXT FROM RAG:
-{rag_context}
-
-CASE FILE: {json.dumps(case_file, ensure_ascii=False)}
-
-CONVERSATION:
-{history_text}
-
-FINAL REMINDER: {lang_instruction}"""
-        max_tokens = 700
-
-    # Generate follow-up questions via separate call
-    followup_prompt = f"""Based on this legal case:
-Case type: {crime_type}
-Last response was about: {case_file}
-Language: {language}
-
-Generate exactly 5 short follow-up questions this woman might ask next.
-Write them in {language} language.
-Output as JSON array only: ["question1", "question2", "question3", "question4", "question5"]
-Make them specific to her situation, not generic."""
+    system, max_tokens = _build_system(
+        case_file, rag_context, history_text, language, is_followup
+    )
 
     payload = {
         "model": "gemma4",
@@ -200,9 +224,7 @@ Make them specific to her situation, not generic."""
         "temperature": 0.2,
         "max_tokens": max_tokens,
         "top_p": 0.95,
-        # Enable thinking for expert agent — deeper reasoning = better legal advice
-        # Capped at ~15 seconds via frontend animation
-        "chat_template_kwargs": {"enable_thinking": not is_followup},
+        "chat_template_kwargs": {"enable_thinking": False},
     }
 
     full_response = ""
@@ -222,14 +244,9 @@ Make them specific to her situation, not generic."""
                 break
             try:
                 delta = json.loads(data_str)["choices"][0]["delta"]
-                # llama.cpp returns thinking in 'reasoning_content' field
-                thinking = delta.get("reasoning_content", "") or ""
+                # Filter reasoning_content (thinking tokens)
                 token = delta.get("content", "") or ""
-                if thinking:
-                    yield {"type": "thinking", "thinking": thinking}
                 if token:
-                    if "<think>" in token or "</think>" in token:
-                        continue
                     full_response += token
                     yield {"type": "token", "token": token, "agent": "expert"}
             except Exception:
@@ -239,42 +256,58 @@ Make them specific to her situation, not generic."""
         return
 
     if not full_response.strip():
-        fallback = {"hi": "Maafi chahti hoon, dobara try karein.", "en": "Sorry, please try again."}.get(language, "Please try again.")
+        fallback = {
+            "hi": "माफ करें, फिर से कोशिश करें।",
+            "en": "Sorry, please try again.",
+            "bn": "দুঃখিত, আবার চেষ্টা করুন।"
+        }.get(language, "Please try again.")
         full_response = fallback
         yield {"type": "token", "token": full_response, "agent": "expert"}
 
-    # Generate follow-up questions (non-streaming, quick call)
-    followup_questions = []
+    # Generate follow-up questions
+    follow_up_questions = []
     if not is_followup:
+        crime_type = case_file.get("crime_type", "general")
+        lang_instruction = LANGUAGE_INSTRUCTIONS.get(language, LANGUAGE_INSTRUCTIONS["en"])
+        fq_prompt = (
+            f"{lang_instruction}\n"
+            f"Based on this legal case: {crime_type} ({language} session)\n"
+            f"Generate 5 short follow-up questions this woman might ask next.\n"
+            f"Write in {'Devanagari Hindi' if language == 'hi' else language}.\n"
+            f"Output JSON array only: [\"q1\",\"q2\",\"q3\",\"q4\",\"q5\"]"
+        )
         try:
             fq_r = requests.post(
                 f"{settings.ollama_base_url}/v1/chat/completions",
                 json={
                     "model": "gemma4",
-                    "messages": [{"role": "user", "content": followup_prompt}],
+                    "messages": [{"role": "user", "content": fq_prompt}],
                     "stream": False,
                     "temperature": 0.4,
                     "max_tokens": 200,
+                    "chat_template_kwargs": {"enable_thinking": False},
                 },
                 timeout=30
             )
             fq_text = fq_r.json()["choices"][0]["message"]["content"].strip()
-            # Parse JSON array
-            match = __import__("re").search(r'\[.*?\]', fq_text, __import__("re").DOTALL)
+            match = re.search(r'\[.*?\]', fq_text, re.DOTALL)
             if match:
-                followup_questions = json.loads(match.group())[:5]
+                follow_up_questions = json.loads(match.group())[:5]
         except Exception:
-            # Hardcoded fallbacks if LLM call fails
+            pass
+
+        if not follow_up_questions:
+            # Hardcoded fallbacks
             if language == "hi":
-                followup_questions = [
-                    "Protection order kaise milega?",
-                    "FIR kaise file karein?",
-                    "Muft vakeel kahan milega?",
-                    "Ghar mein rehne ka hak kaise prove karein?",
-                    "Bacchon ki custody ke baare mein?",
+                follow_up_questions = [
+                    "Protection order कैसे मिलेगा?",
+                    "FIR कैसे file करें?",
+                    "मुफ्त वकील कहाँ मिलेगा?",
+                    "क्या मैं घर में रह सकती हूँ?",
+                    "बच्चों की custody के बारे में?",
                 ]
             else:
-                followup_questions = [
+                follow_up_questions = [
                     "How do I get a protection order?",
                     "How do I file an FIR?",
                     "Where can I get a free lawyer?",
@@ -287,5 +320,5 @@ Make them specific to her situation, not generic."""
         "full_response": full_response,
         "citations": citations,
         "agent": "expert",
-        "follow_up_questions": followup_questions,
+        "follow_up_questions": follow_up_questions,
     }

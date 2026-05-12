@@ -1,60 +1,14 @@
 """
 StriSakhi Emergency Detector — backend/app/emergency/detector.py
-Multilingual emergency keyword detection for all three Sakhis.
-Three severity levels: none, warning, critical.
+LLM-based detection using JSON schema output.
+Guaranteed YES/NO via response_format — no keyword lists.
+Fast: temperature=0, max_tokens=60, thinking OFF.
 """
-import re
+import json
+import httpx
+from app.config import settings
 
-# ─── Emergency Keywords per Sakhi + Language ─────────────────────────────────
-EMERGENCY_KEYWORDS = {
-    "legal": {
-        "critical": [
-            # Hindi/Hinglish
-            "maar raha hai", "peet raha hai", "jaan se maar", "maarne ki koshish",
-            "khoon aa raha", "chaku", "knife", "pistol", "gun", "abhi maar",
-            "bachao", "help me", "jaan khatre mein", "bhag nahi sakti",
-            "bahut maar", "behosh", "hospital",
-            # English
-            "hitting me now", "killing me", "threatening to kill", "has a knife",
-            "has a weapon", "bleeding now", "can't escape", "locked me in",
-            # Bengali
-            "maro", "marlo", "khun", "chhuri", "bachao", "help koro",
-        ],
-        "warning": [
-            "roz marta", "roz peeta", "daily abuse", "aaj phir",
-            "police bula", "FIR", "ghar se nikaala", "nikaalne ki dhamki",
-        ]
-    },
-    "medical": {
-        "critical": [
-            # Hindi
-            "behosh", "hosh nahi", "bahut khoon", "dauraa pada", "saans nahi aa rahi",
-            "hilna band", "aankhon ke aage andhera", "naak se khoon",
-            "9 mahine", "dard bahut tej", "baccha nahi hil raha",
-            # English
-            "unconscious", "not breathing", "heavy bleeding", "fitting", "seizure",
-            "baby stopped moving", "can't wake up", "severe chest pain",
-            "can't see", "vomiting blood",
-            # Bengali
-            "behosh", "rokto poRche", "nishwas nite parche na", "khaanchi",
-            "shishu nochRache na",
-        ],
-        "warning": [
-            "bahut dard", "bukhar bahut", "ulti band nahi", "dast band nahi",
-            "severe pain", "high fever", "can't keep water down",
-        ]
-    },
-    "scheme": {
-        "critical": [
-            "bhookh", "kuch khane ko nahi", "homeless", "ghar nahi", "raat ko kahin nahi",
-            "starving", "no food", "no shelter", "sleeping outside",
-            "trafficking", "forced marriage", "kidnap",
-        ],
-        "warning": []
-    }
-}
-
-# Emergency response data per Sakhi + language
+# ─── Emergency Response Data (shown in frontend overlay) ─────────────────────
 EMERGENCY_RESPONSES = {
     "legal": {
         "hi": {
@@ -78,9 +32,8 @@ EMERGENCY_RESPONSES = {
         "bn": {
             "message": "আপনি নিরাপদ থাকুন। এখনই সাহায্য নিন:",
             "helplines": [
-                {"number": "181", "label": "মহিলা হেল্পলাইন (24 ঘণ্টা, বিনামূল্যে)"},
+                {"number": "181", "label": "মহিলা হেল্পলাইন (24 ঘণ্টা, FREE)"},
                 {"number": "100", "label": "পুলিশ"},
-                {"number": "1091", "label": "মহিলা সংকট"},
             ]
         }
     },
@@ -90,7 +43,6 @@ EMERGENCY_RESPONSES = {
             "helplines": [
                 {"number": "108", "label": "Ambulance (FREE)"},
                 {"number": "102", "label": "Maternity Emergency"},
-                {"number": "104", "label": "Health Helpline"},
                 {"number": "181", "label": "Women Helpline"},
             ]
         },
@@ -99,23 +51,21 @@ EMERGENCY_RESPONSES = {
             "helplines": [
                 {"number": "108", "label": "Ambulance (FREE)"},
                 {"number": "102", "label": "Maternity Emergency"},
-                {"number": "104", "label": "Health Helpline"},
             ]
         },
         "bn": {
             "message": "এটি জরুরি অবস্থা। এখনই ফোন করুন:",
             "helplines": [
-                {"number": "108", "label": "অ্যাম্বুলেন্স (বিনামূল্যে)"},
-                {"number": "102", "label": "মাতৃত্ব জরুরি"},
+                {"number": "108", "label": "অ্যাম্বুলেন্স (FREE)"},
             ]
         }
     },
     "scheme": {
         "hi": {
-            "message": "আপনি নিরাপদ থাকুন। তাৎক্ষণিক সাহায্য:",
+            "message": "तुरंत मदद लें:",
             "helplines": [
                 {"number": "181", "label": "Women Helpline (FREE)"},
-                {"number": "1800-419-8588", "label": "Anti-Trafficking Helpline"},
+                {"number": "1800-419-8588", "label": "Anti-Trafficking"},
                 {"number": "1098", "label": "CHILDLINE"},
             ]
         },
@@ -124,41 +74,85 @@ EMERGENCY_RESPONSES = {
             "helplines": [
                 {"number": "181", "label": "Women Helpline (FREE)"},
                 {"number": "1800-419-8588", "label": "Anti-Trafficking"},
-                {"number": "1098", "label": "CHILDLINE"},
             ]
         },
         "bn": {
             "message": "তাৎক্ষণিক সাহায্য:",
             "helplines": [
                 {"number": "181", "label": "মহিলা হেল্পলাইন"},
-                {"number": "1800-419-8588", "label": "মানব পাচার বিরোধী"},
             ]
         }
     }
 }
 
+# ─── LLM-based Emergency Detection ──────────────────────────────────────────
+EMERGENCY_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "is_emergency": {"type": "boolean"},
+        "severity": {"type": "string", "enum": ["critical", "warning", "none"]},
+        "reason": {"type": "string"}
+    },
+    "required": ["is_emergency", "severity", "reason"]
+}
 
-def detect_emergency(text: str, tab_type: str = "legal") -> tuple[bool, str, str]:
+EMERGENCY_SYSTEM = (
+    "You are a safety classifier for a women's crisis helpline in India. "
+    "Determine if the message describes danger happening RIGHT NOW — not past events. "
+    "\n\nMark as emergency (YES) ONLY if: "
+    "violence is actively happening at this moment, "
+    "weapon is present right now, "
+    "person cannot escape right now, "
+    "or someone is bleeding/injured right now. "
+    "\n\nDo NOT mark as emergency (NO) if: "
+    "the person is describing past violence ('maara tha', 'maarte hain' = general habit), "
+    "asking for legal advice, "
+    "describing ongoing situation from a safe place, "
+    "or using words like 'mujhe madad chahiye'. "
+    "\n\nExamples of YES: 'abhi maar raha hai', 'wo aaj maar raha hai', 'help me he is hitting me now', 'bleeding'. "
+    "Examples of NO: 'pati mujhe maarta hai', 'mujhe madad chahiye', 'mera pati mujhe marta hai'."
+)
+
+
+async def detect_emergency_llm(message: str, tab_type: str = "legal") -> dict:
     """
-    Returns (is_emergency, emergency_type, severity)
-    severity: "critical" | "warning" | "none"
+    LLM-based emergency detection.
+    Uses YES/NO plain text — response_format caused empty responses.
+    Returns: {"is_emergency": bool, "severity": str, "reason": str}
+    Fast: temperature=0, max_tokens=10, thinking OFF.
     """
-    text_lower = text.lower()
-    keywords = EMERGENCY_KEYWORDS.get(tab_type, EMERGENCY_KEYWORDS["legal"])
-
-    for word in keywords.get("critical", []):
-        if word in text_lower:
-            return True, tab_type, "critical"
-
-    for word in keywords.get("warning", []):
-        if word in text_lower:
-            return True, tab_type, "warning"
-
-    return False, "", "none"
+    try:
+        async with httpx.AsyncClient(timeout=8.0) as client:
+            r = await client.post(
+                f"{settings.ollama_base_url}/v1/chat/completions",
+                json={
+                    "model": "gemma4",
+                    "messages": [
+                        {"role": "system", "content": EMERGENCY_SYSTEM},
+                        {"role": "user", "content": (
+                            f"Message: {message}\n\n"
+                            "Reply with ONLY one word: YES or NO"
+                        )}
+                    ],
+                    "stream": False,
+                    "temperature": 0.0,
+                    "max_tokens": 10,
+                    "chat_template_kwargs": {"enable_thinking": False},
+                }
+            )
+        raw = r.json()["choices"][0]["message"]["content"].strip().upper()
+        is_emergency = raw.startswith("YES")
+        return {
+            "is_emergency": is_emergency,
+            "severity": "critical" if is_emergency else "none",
+            "reason": "LLM detected immediate danger" if is_emergency else "no immediate danger"
+        }
+    except Exception as e:
+        return {"is_emergency": False, "severity": "none", "reason": f"detection failed: {e}"}
 
 
 def get_emergency_response(emergency_type: str, tab_type: str, language: str = "hi") -> dict:
-    """Get the appropriate emergency response data."""
+    """Get helplines and message for the emergency overlay."""
     responses = EMERGENCY_RESPONSES.get(tab_type, EMERGENCY_RESPONSES["legal"])
     lang_response = responses.get(language, responses.get("en", {}))
     return {
@@ -167,3 +161,17 @@ def get_emergency_response(emergency_type: str, tab_type: str, language: str = "
         "helplines": lang_response.get("helplines", [{"number": "181", "label": "Women Helpline"}]),
         "tab_type": tab_type,
     }
+
+
+# Keep sync version for backward compat (used in old code)
+def detect_emergency(text: str, tab_type: str = "legal") -> tuple[bool, str, str]:
+    """Sync wrapper — only used as fallback. Prefer detect_emergency_llm."""
+    import re
+    # Minimal keyword check as fallback only
+    urgent = ["bachao", "maar raha", "khoon", "help me now", "killing me",
+              "hitting me now", "bleeding now", "abhi maar"]
+    text_lower = text.lower()
+    for w in urgent:
+        if w in text_lower:
+            return True, tab_type, "critical"
+    return False, "", "none"

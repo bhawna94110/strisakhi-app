@@ -1,105 +1,139 @@
 """
-ModelRouter — Cactus Prize Component
-Routes between intake and expert agents based on:
-1. Turn count (most reliable)
-2. Confidence score from metadata
-3. Emergency detection
+StriSakhi — State Machine Router
+Clean 4-state machine: INTAKE → EXPERT → FOLLOW_UP (EMERGENCY from any state)
+Admin-configurable via config_runtime.json
 """
 from enum import Enum
-from app.config import settings
+from typing import Literal
 
+# ─── States ──────────────────────────────────────────────────────────────────
+class AgentState(str, Enum):
+    INTAKE    = "intake"
+    EXPERT    = "expert"
+    FOLLOW_UP = "follow_up"
+    EMERGENCY = "emergency"
+
+# Keep RouteDecision as alias for backward compat
 class RouteDecision(str, Enum):
     INTAKE    = "intake"
     EXPERT    = "expert"
     EMERGENCY = "emergency"
+    FOLLOW_UP = "follow_up"
 
-INTAKE_MODEL = settings.intake_model
-EXPERT_MODEL = settings.expert_model
+# ─── Runtime Config (read from config_runtime.json via settings) ──────────────
+def get_runtime_config() -> dict:
+    """Read live config. Falls back to defaults if file missing."""
+    try:
+        from app.runtime_config import get_config
+        return get_config()
+    except Exception:
+        return {
+            "intake_max_turns": 10,
+            "intake_min_score": 60,
+            "temperature": 0.2,
+            "expert_max_tokens": 700,
+        }
 
-# Lower threshold — just need to know the issue type
-CONFIDENCE_THRESHOLD = 4
-MUST_HAVE_FIELDS_LEGAL   = ["issue_type"]  # just needs problem identified
-MUST_HAVE_FIELDS_MEDICAL = ["primary_symptom"]
+# ─── Readiness Score ──────────────────────────────────────────────────────────
+def calculate_readiness_score(metadata: dict) -> int:
+    """
+    Score 0-100 based on collected parameters.
+    Mandatory params (30pts each): crime_type, urgency, relationship_to_accused
+    Optional params (5pts each): state, has_children, duration,
+                                 others_involved, previous_complaints, other_context
+    """
+    score = 0
 
-# Turn count threshold — switch to expert after this many user messages
-INTAKE_MAX_TURNS = 3
+    # Mandatory — 30 pts each (max 90)
+    if metadata.get("crime_type"):              score += 30
+    if metadata.get("urgency"):                 score += 30
+    if metadata.get("relationship_to_accused"): score += 30
 
+    # Optional — 5 pts each (max 30, but capped at 100 total)
+    optional = [
+        "state", "has_children", "duration",
+        "others_involved", "previous_complaints", "other_context"
+    ]
+    for field in optional:
+        if metadata.get(field) is not None:
+            score += 5
+
+    return min(score, 100)
+
+# ─── Immediate Expert Crimes ──────────────────────────────────────────────────
+# These bypass extended intake — too sensitive for long questioning
+IMMEDIATE_EXPERT_CRIMES = {"rape", "acid_attack", "trafficking"}
+
+# ─── Main Route Function ──────────────────────────────────────────────────────
 def route(
     agent_phase: str,
-    confidence_score: int,
+    confidence_score: int,      # kept for backward compat
     emergency_flagged: bool,
     metadata: dict,
     tab_type: str,
-    user_turn_count: int = 0          # NEW parameter
+    user_turn_count: int = 0,
 ) -> tuple[RouteDecision, str, str]:
     """
     Returns: (decision, model_name, reason)
-    Priority:
-    1. Emergency → emergency handler
-    2. Already expert → stay expert
-    3. Turn count >= 3 → force expert
-    4. Confidence + must-haves met → expert
-    5. Default → intake
+
+    State machine transitions:
+    EMERGENCY (from any state)  → emergency handler
+    INTAKE  → EXPERT when score >= 60 AND turn >= 2
+    INTAKE  → EXPERT when score >= 90 (immediately)
+    INTAKE  → EXPERT when turn >= intake_max_turns
+    INTAKE  → EXPERT when frustration detected (set in metadata)
+    INTAKE  → EXPERT when crime is rape/acid_attack/trafficking after turn 1
+    EXPERT  → stays EXPERT
+    FOLLOW_UP → stays FOLLOW_UP
     """
-    # Rule 1: Emergency override
-    if emergency_flagged:
-        return RouteDecision.EMERGENCY, "", "Emergency flagged"
+    cfg = get_runtime_config()
+    intake_max_turns = cfg.get("intake_max_turns", 10)
+    intake_min_score = cfg.get("intake_min_score", 60)
+    model_name = ""
 
-    # Rule 2: Already in expert phase
+    # ── Rule 1: Emergency — only on the turn it fires, not permanently ────────
+    # emergency_flagged in DB just means it happened once.
+    # After emergency response is sent, conversation should continue normally.
+    # The legal.py emergency handler runs BEFORE route() is called,
+    # so by the time route() is called, it's NOT an emergency turn.
+    # This rule is now intentionally disabled — emergency is handled upstream.
+    # if emergency_flagged:
+    #     return RouteDecision.EMERGENCY, model_name, "Emergency flagged"
+
+    # ── Rule 2: Already in expert or follow_up — stay there ───────────────────
     if agent_phase == "expert":
-        return RouteDecision.EXPERT, EXPERT_MODEL, "Session in expert phase"
+        return RouteDecision.EXPERT, model_name, "Session in expert phase"
+    if agent_phase == "follow_up":
+        return RouteDecision.FOLLOW_UP, model_name, "Session in follow_up phase"
 
-    # Rule 3: Turn count exceeded — force expert
-    if user_turn_count >= INTAKE_MAX_TURNS:
-        return RouteDecision.EXPERT, EXPERT_MODEL, f"Turn limit reached ({user_turn_count} turns) — switching to expert"
+    # ── Rule 3: Frustration — skip to expert immediately ─────────────────────
+    if metadata.get("frustrated"):
+        return RouteDecision.EXPERT, model_name, "Frustration detected — skipping to expert"
 
-    # Rule 4: Confidence threshold met
-    must_haves = MUST_HAVE_FIELDS_LEGAL if tab_type == "legal" else MUST_HAVE_FIELDS_MEDICAL
-    all_must_haves = all(metadata.get(field) for field in must_haves)
+    # ── Rule 4: Severe crime — expert after 1 turn ────────────────────────────
+    crime_type = metadata.get("crime_type", "")
+    if crime_type in IMMEDIATE_EXPERT_CRIMES and user_turn_count >= 1:
+        return RouteDecision.EXPERT, model_name, f"Severe crime ({crime_type}) — minimal intake"
 
-    if confidence_score >= CONFIDENCE_THRESHOLD and all_must_haves:
-        return RouteDecision.EXPERT, EXPERT_MODEL, f"Confidence {confidence_score}/24 — ready for expert"
+    # ── Rule 5: Readiness score ───────────────────────────────────────────────
+    score = calculate_readiness_score(metadata)
 
-    # Rule 5: Stay in intake
-    return RouteDecision.INTAKE, INTAKE_MODEL, f"Confidence {confidence_score}/24 — still gathering info"
+    if score >= 90:
+        return RouteDecision.EXPERT, model_name, f"Score {score}/100 — all mandatory params collected"
+
+    if score >= intake_min_score and user_turn_count >= 2:
+        return RouteDecision.EXPERT, model_name, f"Score {score}/100 >= {intake_min_score} and turn {user_turn_count} >= 2"
+
+    # ── Rule 6: Hard turn limit ────────────────────────────────────────────────
+    if user_turn_count >= intake_max_turns:
+        return RouteDecision.EXPERT, model_name, f"Turn limit {intake_max_turns} reached — forcing expert"
+
+    # ── Default: stay in intake ────────────────────────────────────────────────
+    return RouteDecision.INTAKE, model_name, f"Score {score}/100 — still collecting (turn {user_turn_count})"
 
 
-def calculate_confidence(metadata: dict, tab_type: str) -> int:
-    """Calculate confidence score from collected metadata"""
-    score = 0
+# Backward compat alias
+INTAKE_MAX_TURNS = 10
 
-    if tab_type == "legal":
-        must_have = {
-            "issue_type": 4, "location_state": 4,
-            "religion": 4, "urgency": 4
-        }
-        should_have = {
-            "marital_status": 2, "duration": 2,
-            "prior_police_action": 2, "other_party": 2
-        }
-        nice_to_have = {
-            "children_involved": 1, "has_medical_reports": 1,
-            "has_witnesses": 1, "property_involved": 1
-        }
-    else:
-        must_have = {
-            "patient_age": 4, "primary_symptom": 4,
-            "duration": 4, "red_flag_checked": 4
-        }
-        should_have = {
-            "associated_symptoms": 2, "existing_conditions": 2,
-            "travel_ability": 2, "pregnancy_status": 2
-        }
-        nice_to_have = {
-            "current_medications": 1, "prior_diagnosis": 1,
-            "distance_to_hospital": 1
-        }
-
-    for field, points in must_have.items():
-        if metadata.get(field): score += points
-    for field, points in should_have.items():
-        if metadata.get(field): score += points
-    for field, points in nice_to_have.items():
-        if metadata.get(field): score += points
-
-    return score
+def calculate_confidence(metadata: dict, tab_type: str = "legal") -> int:
+    return calculate_readiness_score(metadata)

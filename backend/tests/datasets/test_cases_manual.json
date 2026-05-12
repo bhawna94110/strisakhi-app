@@ -1,0 +1,1088 @@
+[
+  {
+  "id": "case_001",
+  "category": "domestic_violence",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "mere pati mujhe bahut marte hain aur ghar se nikaalne ki dhamki dete hain"
+  },
+  {
+  "role": "user",
+  "content": "haan main Uttar Pradesh mein hoon aur 2 bacche bhi hain"
+  },
+  {
+  "role": "user",
+  "content": "3 saal se ho raha hai pehle kabhi police nahi batayi"
+  }
+  ],
+  "expected_crime_type": "domestic_violence",
+  "expected_sections": [
+  "Section 17",
+  "Section 18",
+  "DV Act 2005"
+  ],
+  "expected_helplines": [
+  "181",
+  "15100"
+  ],
+  "ground_truth": "Under DV Act Section 17 woman cannot be evicted from shared household. Section 18 allows protection order from Magistrate. File complaint with Protection Officer free of cost. Call 181 Women Helpline. NALSA 15100 provides free legal aid.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_002",
+  "category": "workplace",
+  "language": "en",
+  "input_type": "english",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "my boss is sexually harassing me at work"
+  },
+  {
+  "role": "user",
+  "content": "it has been happening for 2 months he touches me inappropriately"
+  },
+  {
+  "role": "user",
+  "content": "our company has around 50 employees in Mumbai"
+  }
+  ],
+  "expected_crime_type": "workplace",
+  "expected_sections": [
+  "POSH Act 2013",
+  "Section 9",
+  "ICC"
+  ],
+  "expected_helplines": [
+  "15100"
+  ],
+  "ground_truth": "Under POSH Act 2013 company with 50 employees must have Internal Complaints Committee. File written complaint to ICC within 3 months. Cannot be fired for complaining. If no ICC file with District Officer. NALSA 15100 free legal aid.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_003",
+  "category": "domestic_violence",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "mere sasural wale mujhe bahut pareshaan karte hain aur mere pati bhi maarte hain"
+  },
+  {
+  "role": "user",
+  "content": "haan joint family hai hamara aur do chhote bacche bhi hain"
+  },
+  {
+  "role": "user",
+  "content": "main darr gayi hoon kuch samajh nahi aa raha kya karun"
+  }
+  ],
+  "expected_crime_type": "domestic_violence",
+  "expected_sections": [
+  "Section 17",
+  "Section 18",
+  "Section 19",
+  "DV Act 2005"
+  ],
+  "expected_helplines": [
+  "181",
+  "15100"
+  ],
+  "ground_truth": "DV Act Section 17 protects right to reside in shared household. Section 18 allows protection order. Section 19 prohibits violence and harassment. File complaint with Protection Officer. Call 181 Women Helpline. NALSA 15100 free legal aid.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_004",
+  "category": "domestic_violence",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "mere pati roz shaarab peeke mujhe maarte hain aur ghar mein tod phod karte hain"
+  },
+  {
+  "role": "user",
+  "content": "alag ghar mein rehte hain bacche nahi hain abhi"
+  },
+  {
+  "role": "user",
+  "content": "main bahut gussa hoon ab aur bardasht nahi karungi"
+  }
+  ],
+  "expected_crime_type": "domestic_violence",
+  "expected_sections": [
+  "Section 18",
+  "Section 20",
+  "IPC 498A",
+  "DV Act 2005"
+  ],
+  "expected_helplines": [
+  "181",
+  "100",
+  "15100"
+  ],
+  "ground_truth": "DV Act Section 18 allows protection order from Magistrate. Section 20 provides monetary relief including medical expenses. IPC 498A covers cruelty by husband or relatives. File complaint with Protection Officer. Call 181 or 100. NALSA 15100 free legal aid.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_005",
+  "category": "domestic_violence",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "meri saas aur nanad mujhe roz taana maarte hain aur pati bhi unka saath dete hain"
+  },
+  {
+  "role": "user",
+  "content": "haan teen bacche hain hamare main ghar chhod ke kahan jaungi"
+  },
+  {
+  "role": "user",
+  "content": "kya main police mein complaint kar sakti hoon mujhe kuch samajh nahi aa raha"
+  }
+  ],
+  "expected_crime_type": "domestic_violence",
+  "expected_sections": [
+  "Section 17",
+  "Section 18",
+  "IPC 498A",
+  "DV Act 2005"
+  ],
+  "expected_helplines": [
+  "181",
+  "15100"
+  ],
+  "ground_truth": "DV Act Section 17 right to reside in shared household. Section 18 protection order against all family members. IPC 498A applies to cruelty by husband and relatives. File complaint with Protection Officer. Call 181 Women Helpline. NALSA 15100 free legal aid.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_006",
+  "category": "domestic_violence",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "4 saal se yahi chal raha hai sab milke mujhe satate hain"
+  },
+  {
+  "role": "user",
+  "content": "joint family hai bacche nahi hain abhi tak"
+  },
+  {
+  "role": "user",
+  "content": "main thak gayi hoon kuch bhi kar lo koi farak nahi padta"
+  }
+  ],
+  "expected_crime_type": "domestic_violence",
+  "expected_sections": [
+  "Section 17",
+  "Section 18",
+  "DV Act 2005"
+  ],
+  "expected_helplines": [
+  "181",
+  "15100"
+  ],
+  "ground_truth": "DV Act Section 17 protects right to reside. Section 18 allows protection order. Protection Officer must assist free of cost. Can also seek residence order. Call 181 Women Helpline. NALSA 15100 free legal aid.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_007",
+  "category": "domestic_violence",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "mere pati mujhe aur mere bachchon ko ghar se nikaalne ki dhamki dete hain"
+  },
+  {
+  "role": "user",
+  "content": "alag rehte hain ham log ek ladka aur ek ladki hai"
+  },
+  {
+  "role": "user",
+  "content": "main bahut pareshaan hoon bachchon ka kya hoga kuch batao"
+  }
+  ],
+  "expected_crime_type": "domestic_violence",
+  "expected_sections": [
+  "Section 17",
+  "Section 19",
+  "DV Act 2005"
+  ],
+  "expected_helplines": [
+  "181",
+  "15100"
+  ],
+  "ground_truth": "DV Act Section 17 woman cannot be evicted from shared household. Section 19 prohibits dispossession from residence. Can seek residence order and custody of children. File complaint with Protection Officer. Call 181 Women Helpline. NALSA 15100 free legal aid.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_008",
+  "category": "domestic_violence",
+  "language": "en",
+  "input_type": "english",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "my husband beats me regularly and controls all my money"
+  },
+  {
+  "role": "user",
+  "content": "we live in Delhi and I have one daughter who is 8 years old"
+  },
+  {
+  "role": "user",
+  "content": "this has been going on for two years I am scared for my child"
+  }
+  ],
+  "expected_crime_type": "domestic_violence",
+  "expected_sections": [
+  "Section 17",
+  "Section 18",
+  "Section 20",
+  "DV Act 2005"
+  ],
+  "expected_helplines": [
+  "181",
+  "15100"
+  ],
+  "ground_truth": "DV Act Section 17 protects right to reside. Section 18 allows protection order. Section 20 provides monetary relief and child maintenance. File complaint with Protection Officer. Call 181 Women Helpline. NALSA 15100 free legal aid.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_009",
+  "category": "domestic_violence",
+  "language": "en",
+  "input_type": "english",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "my mother-in-law and sister-in-law abuse me verbally every day and my husband does nothing"
+  },
+  {
+  "role": "user",
+  "content": "we all live together in a joint family in Bangalore"
+  },
+  {
+  "role": "user",
+  "content": "I have been married for six years and I cannot take this anymore"
+  }
+  ],
+  "expected_crime_type": "domestic_violence",
+  "expected_sections": [
+  "Section 17",
+  "Section 18",
+  "IPC 498A",
+  "DV Act 2005"
+  ],
+  "expected_helplines": [
+  "181",
+  "15100"
+  ],
+  "ground_truth": "DV Act Section 17 right to reside in shared household. Section 18 protection order against all family members. IPC 498A covers cruelty by relatives. File complaint with Protection Officer. Call 181 Women Helpline. NALSA 15100 free legal aid.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_010",
+  "category": "domestic_violence",
+  "language": "en",
+  "input_type": "english",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "my husband hit me badly yesterday and I had to go to the hospital"
+  },
+  {
+  "role": "user",
+  "content": "we live separately in Hyderabad and I have two children"
+  },
+  {
+  "role": "user",
+  "content": "I have a medical report but I do not know what to do next"
+  }
+  ],
+  "expected_crime_type": "domestic_violence",
+  "expected_sections": [
+  "Section 18",
+  "Section 20",
+  "IPC 498A",
+  "DV Act 2005"
+  ],
+  "expected_helplines": [
+  "181",
+  "100",
+  "15100"
+  ],
+  "ground_truth": "DV Act Section 18 allows protection order. Section 20 provides medical expense relief. IPC 498A for cruelty. Medical report is important evidence. File complaint with Protection Officer. Call 181 or 100. NALSA 15100 free legal aid.",
+  "urgency": "recent",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_011",
+  "category": "property",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "mere papa ki property mein mera bhai mera hissa nahi de raha hai"
+  },
+  {
+  "role": "user",
+  "content": "papa ab nahi rahe koi will nahi likhi thi"
+  },
+  {
+  "role": "user",
+  "content": "main shaadi shuda hoon par mujhe apna haq chahiye"
+  }
+  ],
+  "expected_crime_type": "property",
+  "expected_sections": [
+  "Hindu Succession Act Section 6",
+  "Vineeta Sharma v Rakesh Sharma 2020 SC"
+  ],
+  "expected_helplines": [
+  "15100"
+  ],
+  "ground_truth": "Hindu Succession Act Section 6 daughter has equal right in ancestral property. Vineeta Sharma 2020 SC judgment applies retrospectively. Married daughter has equal share. Can file partition suit in civil court. NALSA 15100 free legal aid.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_012",
+  "category": "property",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "mere papa ki death ho gayi hai aur unhone koi will nahi banayi thi"
+  },
+  {
+  "role": "user",
+  "content": "ham do behan aur ek bhai hain property kaise batenge"
+  },
+  {
+  "role": "user",
+  "content": "mere bhai bol rahe hain ki betiyon ko kuch nahi milega"
+  }
+  ],
+  "expected_crime_type": "property",
+  "expected_sections": [
+  "Hindu Succession Act Section 6",
+  "Vineeta Sharma v Rakesh Sharma 2020 SC"
+  ],
+  "expected_helplines": [
+  "15100"
+  ],
+  "ground_truth": "Hindu Succession Act Section 6 daughters have equal share as sons in ancestral and self-acquired property. Vineeta Sharma 2020 SC judgment confirms equal coparcenary rights. Without will property divided equally among all legal heirs. Can file partition suit. NALSA 15100 free legal aid.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_013",
+  "category": "property",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "mere gaon mein kuch zameen hai jiska mujhe hissa chahiye"
+  },
+  {
+  "role": "user",
+  "content": "papa ki death ke baad mere bhai ne poori zameen apne naam karwa li"
+  },
+  {
+  "role": "user",
+  "content": "main kya kar sakti hoon kya beti ko zameen ka haq hai"
+  }
+  ],
+  "expected_crime_type": "property",
+  "expected_sections": [
+  "Hindu Succession Act Section 6",
+  "Vineeta Sharma v Rakesh Sharma 2020 SC"
+  ],
+  "expected_helplines": [
+  "15100"
+  ],
+  "ground_truth": "Hindu Succession Act Section 6 daughter has equal right in agricultural land. Vineeta Sharma 2020 SC judgment applies to all property including agricultural land. Can file partition suit or mutation correction. NALSA 15100 free legal aid.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_014",
+  "category": "property",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "mere pati ki death ke baad sasural wale mujhe ghar se nikaal rahe hain"
+  },
+  {
+  "role": "user",
+  "content": "koi bacche nahi hain aur property mein mera koi hissa nahi de rahe"
+  },
+  {
+  "role": "user",
+  "content": "main vidhwa hoon kya mujhe koi adhikar nahi hai"
+  }
+  ],
+  "expected_crime_type": "property",
+  "expected_sections": [
+  "Hindu Succession Act Section 6",
+  "Vineeta Sharma v Rakesh Sharma 2020 SC"
+  ],
+  "expected_helplines": [
+  "15100"
+  ],
+  "ground_truth": "Hindu Succession Act Section 6 widow has right in husband's property. Vineeta Sharma 2020 SC confirms equal rights. Class I heir under succession law. Cannot be evicted from matrimonial home. Can claim share in property. NALSA 15100 free legal aid.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_015",
+  "category": "property",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "mere papa 2 saal pehle guzar gaye the aur ab bhai property bechne ki baat kar raha hai"
+  },
+  {
+  "role": "user",
+  "content": "main bahut pareshaan hoon mujhe pata bhi nahi chala kab papers ban gaye"
+  },
+  {
+  "role": "user",
+  "content": "kya main ab bhi apna haq maang sakti hoon ya der ho gayi"
+  }
+  ],
+  "expected_crime_type": "property",
+  "expected_sections": [
+  "Hindu Succession Act Section 6",
+  "Vineeta Sharma v Rakesh Sharma 2020 SC"
+  ],
+  "expected_helplines": [
+  "15100"
+  ],
+  "ground_truth": "Hindu Succession Act Section 6 daughter has equal right. Vineeta Sharma 2020 SC judgment applies retrospectively even for deaths before 2005. Can file partition suit and challenge unauthorized sale. Limitation period may not apply for claiming fundamental right. NALSA 15100 free legal aid.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_016",
+  "category": "dowry",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "mere sasural wale aur pati mujhe roz dahej ke liye tang karte hain"
+  },
+  {
+  "role": "user",
+  "content": "bol rahe hain ki aur paise lao warna ghar se nikaal denge"
+  },
+  {
+  "role": "user",
+  "content": "shaadi ko 1 saal hua hai main kya karun"
+  }
+  ],
+  "expected_crime_type": "dowry",
+  "expected_sections": [
+  "Dowry Prohibition Act 1961",
+  "IPC 498A",
+  "IPC 304B"
+  ],
+  "expected_helplines": [
+  "181",
+  "100"
+  ],
+  "ground_truth": "Dowry Prohibition Act 1961 demands dowry is illegal. IPC 498A covers harassment for dowry. IPC 304B dowry death if severe consequences. File complaint with police or Dowry Prohibition Officer. Call 181 Women Helpline or 100. Can also file DV Act complaint.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_017",
+  "category": "dowry",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "mere pati ne meri shaadi ki jewellery aur samaan sab rakh liya hai"
+  },
+  {
+  "role": "user",
+  "content": "main apne maayke aa gayi hoon aur wapas jaane se mana kar diya"
+  },
+  {
+  "role": "user",
+  "content": "kya main apna samaan wapas le sakti hoon kaise"
+  }
+  ],
+  "expected_crime_type": "dowry",
+  "expected_sections": [
+  "Dowry Prohibition Act 1961",
+  "IPC 498A",
+  "Section 6 Dowry Prohibition Act"
+  ],
+  "expected_helplines": [
+  "181",
+  "100"
+  ],
+  "ground_truth": "Dowry Prohibition Act Section 6 dowry articles must be transferred to woman. IPC 498A for retaining stridhan. Can file police complaint for recovery of stridhan and jewellery. Call 181 Women Helpline or 100. Can file DV Act complaint for return of articles.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_018",
+  "category": "dowry",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "mere pati ke bade bhai aur unki biwi mujhe dahej ke liye tang karte hain"
+  },
+  {
+  "role": "user",
+  "content": "mere pati bhi unki baat maante hain aur mujhe maarte hain paise ke liye"
+  },
+  {
+  "role": "user",
+  "content": "main bahut darr gayi hoon koi madad karo"
+  }
+  ],
+  "expected_crime_type": "dowry",
+  "expected_sections": [
+  "Dowry Prohibition Act 1961",
+  "IPC 498A",
+  "IPC 304B"
+  ],
+  "expected_helplines": [
+  "181",
+  "100"
+  ],
+  "ground_truth": "Dowry Prohibition Act 1961 prohibits dowry demands. IPC 498A covers cruelty by husband and relatives for dowry. IPC 304B for dowry death. File police complaint against all harassers. Call 181 Women Helpline or 100. Can also seek protection under DV Act.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_019",
+  "category": "maintenance",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "mere pati ne mujhe chhod diya hai aur bachchon ka kharcha bhi nahi de rahe"
+  },
+  {
+  "role": "user",
+  "content": "maine abhi tak divorce nahi file kiya hai kya maintenance mil sakti hai"
+  },
+  {
+  "role": "user",
+  "content": "main ghar chalane ke liye bahut mushkil se kaam kar rahi hoon"
+  }
+  ],
+  "expected_crime_type": "maintenance",
+  "expected_sections": [
+  "CrPC Section 125"
+  ],
+  "expected_helplines": [
+  "15100"
+  ],
+  "ground_truth": "CrPC Section 125 maintenance can be claimed WITHOUT filing divorce. Wife and children entitled to maintenance if husband has sufficient means. File application before Magistrate. Maintenance amount depends on husband's income and wife's needs. NALSA 15100 free legal aid.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_020",
+  "category": "maintenance",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "mere pati ghar ka kharcha bilkul nahi dete hain 5 saal se aisa hi chal raha hai"
+  },
+  {
+  "role": "user",
+  "content": "main unke saath rehti hoon par divorce nahi chahti bas paise chahiye"
+  },
+  {
+  "role": "user",
+  "content": "kya bina divorce ke main unse paise le sakti hoon"
+  }
+  ],
+  "expected_crime_type": "maintenance",
+  "expected_sections": [
+  "CrPC Section 125"
+  ],
+  "expected_helplines": [
+  "15100"
+  ],
+  "ground_truth": "CrPC Section 125 wife can claim maintenance while living with husband without filing divorce. Must prove husband neglects or refuses to maintain. Magistrate can order monthly maintenance. No need for divorce proceedings. NALSA 15100 free legal aid.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_021",
+  "category": "maintenance",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "mere pati ne mujhe pregnant chhod diya hai aur kuch madad nahi kar rahe"
+  },
+  {
+  "role": "user",
+  "content": "main apne maayke mein hoon unhone shaadi bhi nahi todni hai bas bhool gaye hain"
+  },
+  {
+  "role": "user",
+  "content": "kya main unse bachche ke liye paise maang sakti hoon bina divorce ke"
+  }
+  ],
+  "expected_crime_type": "maintenance",
+  "expected_sections": [
+  "CrPC Section 125"
+  ],
+  "expected_helplines": [
+  "15100"
+  ],
+  "ground_truth": "CrPC Section 125 wife and child entitled to maintenance without divorce. Pregnant wife has strong claim. Can claim maintenance for herself and future child. File application before Magistrate under Section 125. NALSA 15100 free legal aid.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_022",
+  "category": "divorce",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "main apne pati se divorce lena chahti hoon wo mujhe bahut maarte hain"
+  },
+  {
+  "role": "user",
+  "content": "3 saal se cruelty ho rahi hai main aur nahi seh sakti"
+  },
+  {
+  "role": "user",
+  "content": "kya main Hindu Marriage Act ke under divorce le sakti hoon"
+  }
+  ],
+  "expected_crime_type": "divorce",
+  "expected_sections": [
+  "Hindu Marriage Act Section 13",
+  "CrPC Section 125"
+  ],
+  "expected_helplines": [
+  "15100"
+  ],
+  "ground_truth": "Hindu Marriage Act Section 13 cruelty is ground for divorce. Physical and mental cruelty both valid. Can file petition in Family Court. Can simultaneously claim maintenance under CrPC Section 125. NALSA 15100 free legal aid for court proceedings.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_023",
+  "category": "divorce",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "mere pati ne mujhe 2 saal pehle chhod diya tha aur abhi tak wapas nahi aaye"
+  },
+  {
+  "role": "user",
+  "content": "koi contact nahi hai unka main dobara shaadi karna chahti hoon"
+  },
+  {
+  "role": "user",
+  "content": "desertion ka ground pe divorce kaise milega"
+  }
+  ],
+  "expected_crime_type": "divorce",
+  "expected_sections": [
+  "Hindu Marriage Act Section 13",
+  "CrPC Section 125"
+  ],
+  "expected_helplines": [
+  "15100"
+  ],
+  "ground_truth": "Hindu Marriage Act Section 13 desertion for 2+ years is ground for divorce. Must prove continuous desertion without reasonable cause. File petition in Family Court. Can claim maintenance under CrPC Section 125. NALSA 15100 free legal aid.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_024",
+  "category": "divorce",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "main divorce chahti hoon par mujhe apne bachchon ki custody chahiye"
+  },
+  {
+  "role": "user",
+  "content": "mere pati bol rahe hain ki bachche unke paas rahenge"
+  },
+  {
+  "role": "user",
+  "content": "kya Hindu Marriage Act mein maa ko custody ka adhikar hai"
+  }
+  ],
+  "expected_crime_type": "divorce",
+  "expected_sections": [
+  "Hindu Marriage Act Section 13",
+  "Guardians and Wards Act 1890"
+  ],
+  "expected_helplines": [
+  "15100"
+  ],
+  "ground_truth": "Hindu Marriage Act Section 13 allows divorce on various grounds. Custody decided based on child welfare principle. Mother usually gets custody of children below 5 years. Guardians and Wards Act governs custody proceedings. File in Family Court. NALSA 15100 free legal aid.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_025",
+  "category": "domestic_violence",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "bachao mere pati abhi mujhe maar rahe hain darwaza tod rahe hain"
+  }
+  ],
+  "expected_crime_type": "domestic_violence",
+  "expected_sections": [
+  "Section 18",
+  "DV Act 2005"
+  ],
+  "expected_helplines": [
+  "181",
+  "100",
+  "1091"
+  ],
+  "ground_truth": "Emergency detected. Call 181 or 100 immediately. Women Helpline 1091 also available. If in immediate danger call police on 100. DV Act Section 18 protection order can be sought after immediate safety.",
+  "urgency": "immediate",
+  "should_trigger_expert": false,
+  "expected_emergency": true
+  },
+  {
+  "id": "case_026",
+  "category": "domestic_violence",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "help me mere sar se khoon aa raha hai pati ne bottle maari hai abhi"
+  }
+  ],
+  "expected_crime_type": "domestic_violence",
+  "expected_sections": [
+  "Section 18",
+  "IPC 498A",
+  "DV Act 2005"
+  ],
+  "expected_helplines": [
+  "181",
+  "100",
+  "1091"
+  ],
+  "ground_truth": "Emergency detected. Call 181 or 100 immediately. Women Helpline 1091 also available. Seek medical attention immediately. IPC 498A and DV Act can be filed after ensuring safety.",
+  "urgency": "immediate",
+  "should_trigger_expert": false,
+  "expected_emergency": true
+  },
+  {
+  "id": "case_027",
+  "category": "domestic_violence",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "bachao bachao mere ghar mein ghus ke mujhe maar rahe hain abhi koi madad karo"
+  }
+  ],
+  "expected_crime_type": "domestic_violence",
+  "expected_sections": [
+  "Section 18",
+  "DV Act 2005"
+  ],
+  "expected_helplines": [
+  "181",
+  "100",
+  "1091"
+  ],
+  "ground_truth": "Emergency detected. Call 181 or 100 immediately. Women Helpline 1091 also available. If unable to speak send SMS to 112. DV Act protection order can be sought after ensuring immediate safety.",
+  "urgency": "immediate",
+  "should_trigger_expert": false,
+  "expected_emergency": true
+  },
+  {
+  "id": "case_028",
+  "category": "domestic_violence",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "mere pati mujhe roz maarte hain aur ghar se nikaalne ki dhamki dete hain"
+  },
+  {
+  "role": "user",
+  "content": "haan main Bihar mein rehti hoon aur 3 bacche bhi hain"
+  },
+  {
+  "role": "user",
+  "content": "2 saal se yahi chal raha hai pehle dar ke chup thi"
+  },
+  {
+  "role": "user",
+  "content": "protection order mein kitna time lagta hai aur NALSA kaise contact karein"
+  }
+  ],
+  "expected_crime_type": "domestic_violence",
+  "expected_sections": [
+  "Section 17",
+  "Section 18",
+  "DV Act 2005"
+  ],
+  "expected_helplines": [
+  "181",
+  "15100"
+  ],
+  "ground_truth": "DV Act Section 17 right to reside. Section 18 protection order. Protection order typically issued within 60 days. NALSA 15100 toll-free legal aid. Call 181 Women Helpline. File complaint with Protection Officer.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false,
+  "has_followup": true
+  },
+  {
+  "id": "case_029",
+  "category": "property",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "mere papa ki property mein mera bhai mera hissa nahi de raha hai"
+  },
+  {
+  "role": "user",
+  "content": "papa ki 3 saal pehle death hui thi koi will nahi thi"
+  },
+  {
+  "role": "user",
+  "content": "main shaadi shuda hoon par mujhe apna haq chahiye"
+  },
+  {
+  "role": "user",
+  "content": "NALSA kaise contact karein aur kya fees lagegi case mein"
+  }
+  ],
+  "expected_crime_type": "property",
+  "expected_sections": [
+  "Hindu Succession Act Section 6",
+  "Vineeta Sharma v Rakesh Sharma 2020 SC"
+  ],
+  "expected_helplines": [
+  "15100"
+  ],
+  "ground_truth": "Hindu Succession Act Section 6 equal share. Vineeta Sharma 2020 SC judgment. NALSA 15100 toll-free legal aid completely free. No fees for legal aid services. Can file partition suit in civil court. Free lawyer provided by DLSA.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false,
+  "has_followup": true
+  },
+  {
+  "id": "case_030",
+  "category": "workplace",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "mere office mein mere boss mujhe galat tareeke se chhute hain"
+  },
+  {
+  "role": "user",
+  "content": "hamari company mein 60 log kaam karte hain aur yeh 3 mahine se chal raha hai"
+  },
+  {
+  "role": "user",
+  "content": "main darr gayi hoon kya main complaint kar sakti hoon"
+  }
+  ],
+  "expected_crime_type": "workplace",
+  "expected_sections": [
+  "POSH Act 2013",
+  "Section 4",
+  "Section 9"
+  ],
+  "expected_helplines": [
+  "15100"
+  ],
+  "ground_truth": "POSH Act 2013 company with 10+ employees must have ICC. Section 4 mandates ICC. Section 9 complaint within 3 months. Cannot be fired for complaining. If no ICC file with District Officer. NALSA 15100 free legal aid.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_031",
+  "category": "workplace",
+  "language": "hi",
+  "input_type": "hinglish",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "mere colleague mujhe roz phone pe pareshaan karte hain aur office mein bhi galat comments karte hain"
+  },
+  {
+  "role": "user",
+  "content": "hamari company Delhi mein hai aur 80 employees hain"
+  },
+  {
+  "role": "user",
+  "content": "main HR se baat karna chahti hoon par dar lag raha hai"
+  }
+  ],
+  "expected_crime_type": "workplace",
+  "expected_sections": [
+  "POSH Act 2013",
+  "Section 4",
+  "Section 9"
+  ],
+  "expected_helplines": [
+  "15100"
+  ],
+  "ground_truth": "POSH Act 2013 covers sexual harassment by colleagues and supervisors. Section 4 ICC mandatory in company with 10+ employees. Section 9 file written complaint to ICC within 3 months. Cannot be victimized for complaining. NALSA 15100 free legal aid.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_032",
+  "category": "stalking",
+  "language": "en",
+  "input_type": "english",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "someone is constantly sending me threatening messages on social media and email"
+  },
+  {
+  "role": "user",
+  "content": "this has been happening for three months and they created fake profiles of me"
+  },
+  {
+  "role": "user",
+  "content": "I live in Chennai and I have saved all the screenshots"
+  }
+  ],
+  "expected_crime_type": "stalking",
+  "expected_sections": [
+  "IPC 354D",
+  "IT Act Section 66E"
+  ],
+  "expected_helplines": [
+  "1930",
+  "181"
+  ],
+  "ground_truth": "IPC 354D criminalizes stalking including cyberstalking. IT Act Section 66E punishment for violation of privacy. Save all evidence screenshots. File complaint with cyber crime cell or local police. Call 1930 Cyber Crime Helpline or 181 Women Helpline.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  },
+  {
+  "id": "case_033",
+  "category": "stalking",
+  "language": "en",
+  "input_type": "english",
+  "conversation": [
+  {
+  "role": "user",
+  "content": "my ex-boyfriend is following me online and sharing my private photos without permission"
+  },
+  {
+  "role": "user",
+  "content": "he is tracking my location and sending me details of where I go every day"
+  },
+  {
+  "role": "user",
+  "content": "I am terrified and do not know how to stop this I live in Pune"
+  }
+  ],
+  "expected_crime_type": "stalking",
+  "expected_sections": [
+  "IPC 354D",
+  "IT Act Section 66E",
+  "IT Act Section 67"
+  ],
+  "expected_helplines": [
+  "1930",
+  "181"
+  ],
+  "ground_truth": "IPC 354D stalking including cyber monitoring. IT Act Section 66E violation of privacy. IT Act Section 67 publishing obscene material. File cyber crime complaint immediately. Call 1930 Cyber Crime Helpline or 181 Women Helpline. Preserve all digital evidence.",
+  "urgency": "ongoing",
+  "should_trigger_expert": true,
+  "expected_emergency": false
+  }
+  ]

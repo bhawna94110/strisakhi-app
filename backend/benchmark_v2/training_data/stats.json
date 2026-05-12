@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-05-12T04:12:49.071359",
+  "model": "gpt-4o",
+  "target": 700,
+  "accepted": 549,
+  "rejected": 151,
+  "acceptance_rate": 0.784,
+  "est_cost_usd": 2.0434,
+  "total_input_tokens": 253891,
+  "total_output_tokens": 140871
+}

@@ -11,9 +11,10 @@ CONFIG_FILE = Path("/app/config_runtime.json")
 DEFAULTS = {
     "tts_speed_hi": 1.2,
     "tts_speed_en": 1.0,
-    "intake_max_turns": 3,
-    "temperature": 0.3,
-    "expert_max_tokens": 600,
+    "intake_max_turns": 10,
+    "intake_min_score": 60,
+    "temperature": 0.2,
+    "expert_max_tokens": 700,
 }
 
 def get_config() -> dict:

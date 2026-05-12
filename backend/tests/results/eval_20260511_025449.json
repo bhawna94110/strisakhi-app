@@ -1,0 +1,192 @@
+{
+  "timestamp": "2026-05-11T02:54:49.350004",
+  "model": "gemma4-e2b-base",
+  "total_cases": 5,
+  "passed": 0,
+  "pass_rate": 0.0,
+  "avg_response_time_ms": 3101,
+  "avg_scores": {
+    "faithfulness": 0.2,
+    "answer_relevancy": 0.08,
+    "answer_correctness": 0.2,
+    "hindi_purity": 0.36,
+    "section_accuracy": 0.0,
+    "helpline_presence": 0.2,
+    "structure_score": 0.4,
+    "final_score": 0.268
+  },
+  "by_category": {
+    "domestic_violence": {
+      "pass_rate": 0.0,
+      "avg_score": 0.312,
+      "total_cases": 2
+    },
+    "property": {
+      "pass_rate": 0.0,
+      "avg_score": 0.155,
+      "total_cases": 1
+    },
+    "maintenance": {
+      "pass_rate": 0.0,
+      "avg_score": 0.155,
+      "total_cases": 1
+    },
+    "workplace": {
+      "pass_rate": 0.0,
+      "avg_score": 0.405,
+      "total_cases": 1
+    }
+  },
+  "detailed_results": [
+    {
+      "test_id": "critical_001",
+      "category": "domestic_violence",
+      "language": "hi",
+      "actual_response": "Main samajh sakti hoon aap kitni takleef mein hain. Kya aap mujhe bata sakti hain ki yeh ghatnayein kab se ho rahi hain?",
+      "scores": {
+        "faithfulness": 0.0,
+        "answer_relevancy": 0.1,
+        "answer_correctness": 0.0,
+        "hindi_purity": 0.0,
+        "section_accuracy": 0.0,
+        "helpline_presence": 0.0,
+        "structure_score": 0.4,
+        "structure_detail": {
+          "empathy": true,
+          "citation": false,
+          "timeline": false,
+          "helpline_number": false,
+          "followup_question": true,
+          "score": 0.4
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "final_score": 0.155,
+        "passed": false,
+        "response_time_ms": 5657
+      },
+      "passed": false,
+      "response_time_ms": 5657
+    },
+    {
+      "test_id": "critical_002",
+      "category": "property",
+      "language": "hi",
+      "actual_response": "Main samajh sakti hoon aap kitni takleef mein hain. Kripya mujhe batayein ki yeh kis tarah ki sthiti hai?",
+      "scores": {
+        "faithfulness": 0.0,
+        "answer_relevancy": 0.1,
+        "answer_correctness": 0.0,
+        "hindi_purity": 0.0,
+        "section_accuracy": 0.0,
+        "helpline_presence": 0.0,
+        "structure_score": 0.4,
+        "structure_detail": {
+          "empathy": true,
+          "citation": false,
+          "timeline": false,
+          "helpline_number": false,
+          "followup_question": true,
+          "score": 0.4
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "final_score": 0.155,
+        "passed": false,
+        "response_time_ms": 5605
+      },
+      "passed": false,
+      "response_time_ms": 5605
+    },
+    {
+      "test_id": "critical_003",
+      "category": "maintenance",
+      "language": "hi",
+      "actual_response": "Main samajh sakti hoon aap kitni takleef mein hain.\n\nAap kis tarah ke paise ki baat kar rahi hain aur kis sambandh mein?",
+      "scores": {
+        "faithfulness": 0.0,
+        "answer_relevancy": 0.1,
+        "answer_correctness": 0.0,
+        "hindi_purity": 0.0,
+        "section_accuracy": 0.0,
+        "helpline_presence": 0.0,
+        "structure_score": 0.4,
+        "structure_detail": {
+          "empathy": true,
+          "citation": false,
+          "timeline": false,
+          "helpline_number": false,
+          "followup_question": true,
+          "score": 0.4
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "final_score": 0.155,
+        "passed": false,
+        "response_time_ms": 1352
+      },
+      "passed": false,
+      "response_time_ms": 1352
+    },
+    {
+      "test_id": "critical_004",
+      "category": "workplace",
+      "language": "en",
+      "actual_response": "I'm so sorry you're going through this. That sounds like a very distressing situation.\n\nTo help you figure out the best steps, could you tell me a little more about the situation?",
+      "scores": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.1,
+        "answer_correctness": 0.0,
+        "hindi_purity": 1.0,
+        "section_accuracy": 0.0,
+        "helpline_presence": 0.0,
+        "structure_score": 0.4,
+        "structure_detail": {
+          "empathy": true,
+          "citation": false,
+          "timeline": false,
+          "helpline_number": false,
+          "followup_question": true,
+          "score": 0.4
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "final_score": 0.405,
+        "passed": false,
+        "response_time_ms": 1437
+      },
+      "passed": false,
+      "response_time_ms": 1437
+    },
+    {
+      "test_id": "critical_005",
+      "category": "domestic_violence",
+      "language": "hi",
+      "actual_response": "🆘 आपकी स्थिति बहुत गंभीर लग रही है।\n\n**अभी तुरंत करें:**\n📞 **181** — महिला हेल्पलाइन (24 घंटे, FREE)\n📞 **100** — Police\n📞 **1091** — Women in Distress\n\nआप सुरक्षित जगह जाएं। मैं यहाँ हूँ — बात जारी रखें।",
+      "scores": {
+        "faithfulness": 0.0,
+        "answer_relevancy": 0.0,
+        "answer_correctness": 1.0,
+        "hindi_purity": 0.8,
+        "section_accuracy": 0.0,
+        "helpline_presence": 1.0,
+        "structure_score": 0.4,
+        "structure_detail": {
+          "empathy": false,
+          "citation": false,
+          "timeline": true,
+          "helpline_number": true,
+          "followup_question": false,
+          "score": 0.4
+        },
+        "word_count_score": 1.0,
+        "no_hallucination": 1.0,
+        "final_score": 0.47,
+        "passed": false,
+        "response_time_ms": 1455
+      },
+      "passed": false,
+      "response_time_ms": 1455
+    }
+  ]
+}

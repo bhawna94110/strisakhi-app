@@ -1,0 +1,342 @@
+[
+  {
+    "id": "exp_hi_dv_01",
+    "agent_type": "expert",
+    "category": "domestic_violence",
+    "language": "hi",
+    "case_file": {
+      "crime_type": "domestic_violence",
+      "urgency": "ongoing",
+      "relationship_to_accused": "husband",
+      "state": "Uttar Pradesh",
+      "has_children": true
+    },
+    "rag_context": "[DV Act 2005, Section 17: Right to reside in shared household. Section 18: Magistrate may pass protection order. Section 20: Monetary relief may be awarded.]",
+    "history_text": "User: mere pati mujhe 3 saal se maar rahe hain",
+    "user_message": "mere pati mujhe 3 saal se maar rahe hain",
+    "is_followup": false,
+    "evaluation_rules": {
+      "min_citations": 2,
+      "max_words": 400,
+      "expected_sections": [
+        "DV Act 2005, Section 17",
+        "DV Act 2005, Section 18"
+      ]
+    }
+  },
+  {
+    "id": "exp_hi_dv_02",
+    "agent_type": "expert",
+    "category": "domestic_violence",
+    "language": "hi",
+    "case_file": {
+      "crime_type": "domestic_violence",
+      "urgency": "ongoing",
+      "relationship_to_accused": "husband",
+      "state": "Bihar",
+      "has_children": false,
+      "duration": "2 saal"
+    },
+    "rag_context": "[DV Act 2005, Section 18: Magistrate may pass protection order. Section 20: Monetary relief may be awarded. IPC 498A: Husband or relative of husband subjecting woman to cruelty.]",
+    "history_text": "User: mere pati roz shaarab peeke mujhe maarte hain",
+    "user_message": "mere pati roz shaarab peeke mujhe maarte hain",
+    "is_followup": false,
+    "evaluation_rules": {
+      "min_citations": 2,
+      "max_words": 400,
+      "expected_sections": [
+        "DV Act 2005, Section 18",
+        "IPC 498A"
+      ]
+    }
+  },
+  {
+    "id": "exp_en_wrk_03",
+    "agent_type": "expert",
+    "category": "workplace",
+    "language": "en",
+    "case_file": {
+      "crime_type": "workplace",
+      "urgency": "ongoing",
+      "relationship_to_accused": "employer",
+      "state": "Maharashtra",
+      "company_size": "50 employees"
+    },
+    "rag_context": "[POSH Act 2013, Section 4: Employer with 10+ employees must have ICC. Section 9: Complaint within 3 months. Section 11: No retaliation against complainant.]",
+    "history_text": "User: my boss has been harassing me for 2 months, 50 employees in company",
+    "user_message": "my boss has been harassing me for 2 months, 50 employees in company",
+    "is_followup": false,
+    "evaluation_rules": {
+      "min_citations": 2,
+      "max_words": 400,
+      "expected_sections": [
+        "POSH Act 2013, Section 4",
+        "POSH Act 2013, Section 9"
+      ]
+    }
+  },
+  {
+    "id": "exp_en_wrk_04",
+    "agent_type": "expert",
+    "category": "workplace",
+    "language": "en",
+    "case_file": {
+      "crime_type": "workplace",
+      "urgency": "ongoing",
+      "relationship_to_accused": "colleague",
+      "state": "Delhi",
+      "company_size": "80 employees"
+    },
+    "rag_context": "[POSH Act 2013, Section 4: Employer with 10+ employees must have ICC. Section 9: Complaint within 3 months. Section 11: No retaliation against complainant.]",
+    "history_text": "User: my colleague sends me inappropriate messages after work",
+    "user_message": "my colleague sends me inappropriate messages after work",
+    "is_followup": false,
+    "evaluation_rules": {
+      "min_citations": 2,
+      "max_words": 400,
+      "expected_sections": [
+        "POSH Act 2013, Section 4",
+        "POSH Act 2013, Section 11"
+      ]
+    }
+  },
+  {
+    "id": "exp_hi_prop_05",
+    "agent_type": "expert",
+    "category": "property",
+    "language": "hi",
+    "case_file": {
+      "crime_type": "property",
+      "urgency": "ongoing",
+      "relationship_to_accused": "family",
+      "state": "Rajasthan",
+      "has_children": false
+    },
+    "rag_context": "[Hindu Succession Act 1956, Section 6: Daughter has equal right in ancestral property. Vineeta Sharma v Rakesh Sharma 2020 SC: Equal coparcenary rights apply retrospectively.]",
+    "history_text": "User: mere papa ki property mein mera bhai mera hissa nahi de raha hai",
+    "user_message": "mere papa ki property mein mera bhai mera hissa nahi de raha hai",
+    "is_followup": false,
+    "evaluation_rules": {
+      "min_citations": 2,
+      "max_words": 400,
+      "expected_sections": [
+        "Hindu Succession Act 1956, Section 6",
+        "Vineeta Sharma v Rakesh Sharma 2020 SC"
+      ]
+    }
+  },
+  {
+    "id": "exp_hi_maint_06",
+    "agent_type": "expert",
+    "category": "maintenance",
+    "language": "hi",
+    "case_file": {
+      "crime_type": "maintenance",
+      "urgency": "ongoing",
+      "relationship_to_accused": "husband",
+      "state": "Uttar Pradesh",
+      "has_children": true
+    },
+    "rag_context": "[CrPC Section 125: If any person having sufficient means neglects to maintain his wife, the Magistrate may order monthly allowance. Section 125(2): Interim maintenance can be ordered pending final order.]",
+    "history_text": "User: kya main bina divorce ke paise maang sakti hoon",
+    "user_message": "kya main bina divorce ke paise maang sakti hoon",
+    "is_followup": false,
+    "evaluation_rules": {
+      "min_citations": 1,
+      "max_words": 400,
+      "expected_sections": [
+        "CrPC Section 125"
+      ]
+    }
+  },
+  {
+    "id": "exp_en_stalk_07",
+    "agent_type": "expert",
+    "category": "stalking",
+    "language": "en",
+    "case_file": {
+      "crime_type": "stalking",
+      "urgency": "ongoing",
+      "relationship_to_accused": "stranger",
+      "state": "Tamil Nadu",
+      "has_children": false
+    },
+    "rag_context": "[IPC 354D: Stalking including cyberstalking. IT Act Section 66E: Punishment for violation of privacy. IT Act Section 67: Publishing or transmitting obscene material.]",
+    "history_text": "User: someone is constantly sending me threatening messages on social media",
+    "user_message": "someone is constantly sending me threatening messages on social media",
+    "is_followup": false,
+    "evaluation_rules": {
+      "min_citations": 2,
+      "max_words": 400,
+      "expected_sections": [
+        "IPC 354D",
+        "IT Act Section 66E"
+      ]
+    }
+  },
+  {
+    "id": "exp_hi_dowry_08",
+    "agent_type": "expert",
+    "category": "dowry",
+    "language": "hi",
+    "case_file": {
+      "crime_type": "dowry",
+      "urgency": "ongoing",
+      "relationship_to_accused": "husband",
+      "state": "Maharashtra",
+      "has_children": false
+    },
+    "rag_context": "[Dowry Prohibition Act 1961, Section 3: Penalty for giving or taking dowry. IPC 498A: Husband or relative of husband subjecting woman to cruelty. IPC 304B: Dowry death.]",
+    "history_text": "User: mere sasural wale mujhe roz dahej ke liye tang karte hain",
+    "user_message": "mere sasural wale mujhe roz dahej ke liye tang karte hain",
+    "is_followup": false,
+    "evaluation_rules": {
+      "min_citations": 2,
+      "max_words": 400,
+      "expected_sections": [
+        "Dowry Prohibition Act 1961, Section 3",
+        "IPC 498A"
+      ]
+    }
+  },
+  {
+    "id": "exp_en_div_09",
+    "agent_type": "expert",
+    "category": "divorce",
+    "language": "en",
+    "case_file": {
+      "crime_type": "divorce",
+      "urgency": "ongoing",
+      "relationship_to_accused": "husband",
+      "state": "Karnataka",
+      "has_children": true
+    },
+    "rag_context": "[Hindu Marriage Act 1955, Section 13: Grounds for divorce include cruelty and desertion. CrPC Section 125: Maintenance without divorce is possible.]",
+    "history_text": "User: my husband has been cruel to me for 3 years I want a divorce",
+    "user_message": "my husband has been cruel to me for 3 years I want a divorce",
+    "is_followup": false,
+    "evaluation_rules": {
+      "min_citations": 2,
+      "max_words": 400,
+      "expected_sections": [
+        "Hindu Marriage Act 1955, Section 13",
+        "CrPC Section 125"
+      ]
+    }
+  },
+  {
+    "id": "exp_hi_follow_10",
+    "agent_type": "expert",
+    "category": "domestic_violence",
+    "language": "hi",
+    "case_file": {
+      "crime_type": "domestic_violence",
+      "urgency": "ongoing",
+      "relationship_to_accused": "husband",
+      "state": "Uttar Pradesh",
+      "has_children": true
+    },
+    "rag_context": "[DV Act 2005, Section 17: Right to reside in shared household. Section 18: Magistrate may pass protection order.]",
+    "history_text": "User: mere pati mujhe 3 saal se maar rahe hain\nSakhi: (previous 5-block response)\nUser: protection order kaise milega",
+    "user_message": "protection order kaise milega",
+    "is_followup": true,
+    "evaluation_rules": {
+      "min_citations": 0,
+      "max_words": 100,
+      "expected_sections": []
+    }
+  },
+  {
+    "id": "int_hi_t1_11",
+    "agent_type": "intake",
+    "category": "domestic_violence",
+    "language": "hi",
+    "metadata": {},
+    "turn": 1,
+    "max_turns": 10,
+    "user_message": "mere pati mujhe bahut marte hain",
+    "evaluation_rules": {
+      "expected_extracted": {
+        "relationship_to_accused": "husband"
+      },
+      "expected_ready_for_expert": false
+    }
+  },
+  {
+    "id": "int_hi_t2_12",
+    "agent_type": "intake",
+    "category": "domestic_violence",
+    "language": "hi",
+    "metadata": {
+      "crime_type": "domestic_violence",
+      "relationship_to_accused": "husband"
+    },
+    "turn": 2,
+    "max_turns": 10,
+    "user_message": "2 saal se ho raha hai bacche bhi hain",
+    "evaluation_rules": {
+      "expected_extracted": {
+        "crime_type": "domestic_violence",
+        "relationship_to_accused": "husband",
+        "has_children": true
+      },
+      "expected_ready_for_expert": false
+    }
+  },
+  {
+    "id": "int_hi_t3_13",
+    "agent_type": "intake",
+    "category": "domestic_violence",
+    "language": "hi",
+    "metadata": {
+      "crime_type": "domestic_violence",
+      "urgency": "ongoing",
+      "relationship_to_accused": "husband",
+      "state": "Uttar Pradesh",
+      "has_children": true
+    },
+    "turn": 3,
+    "max_turns": 10,
+    "user_message": "haan UP mein hoon",
+    "evaluation_rules": {
+      "expected_extracted": {
+        "state": "Uttar Pradesh"
+      },
+      "expected_ready_for_expert": true
+    }
+  },
+  {
+    "id": "int_en_t1_14",
+    "agent_type": "intake",
+    "category": "workplace",
+    "language": "en",
+    "metadata": {},
+    "turn": 1,
+    "max_turns": 10,
+    "user_message": "my boss is sexually harassing me at work",
+    "evaluation_rules": {
+      "expected_extracted": {
+        "crime_type": "workplace",
+        "relationship_to_accused": "employer"
+      },
+      "expected_ready_for_expert": false
+    }
+  },
+  {
+    "id": "int_hi_em_15",
+    "agent_type": "intake",
+    "category": "domestic_violence",
+    "language": "hi",
+    "metadata": {},
+    "turn": 1,
+    "max_turns": 10,
+    "user_message": "bachao mere pati abhi mujhe maar rahe hain darwaza tod rahe hain",
+    "evaluation_rules": {
+      "expected_extracted": {
+        "crime_type": "domestic_violence",
+        "urgency": "immediate"
+      },
+      "expected_ready_for_expert": true
+    }
+  }
+]

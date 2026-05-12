@@ -1,0 +1,330 @@
+{
+  "timestamp": "2026-05-12T02:41:28.053674",
+  "model": "gemma4",
+  "total_cases": 15,
+  "passed": 9,
+  "pass_rate": 0.6,
+  "avg_scores": {
+    "final_score": 0.674,
+    "structure_score": 0.64,
+    "section_accuracy": 0.25,
+    "hindi_purity": 1.0
+  },
+  "detailed_results": [
+    {
+      "test_id": "exp_hi_dv_01",
+      "agent_type": "expert",
+      "language": "hi",
+      "passed": false,
+      "scores": {
+        "all_5_blocks": false,
+        "citation_format_exact": false,
+        "citation_count": 0,
+        "timeline_all_3": false,
+        "helpline_present": false,
+        "ends_with_question": true,
+        "word_count_ok": true,
+        "word_count": 142,
+        "hindi_purity": 1.0,
+        "no_hallucination": true,
+        "no_bare_lawyer_advice": true,
+        "structure_score": 0.2,
+        "section_accuracy": 0.0,
+        "final_score": 0.38
+      },
+      "actual_response": "━━━ ब्लॉक १: सहानुभूति ━━━\nयह सुनकर मुझे बहुत दुःख हुआ कि आपके पति आपको तीन साल से मार रहे हैं।\n\n━━━ ब्लॉक २: आपके अधिकार ━━━\n[स्रोत: घरेलू हिंसा अधिनियम २००५, धारा १७] आपके साझा घर में रहने का अधिकार है।\n[स्रोत: घरेलू हिंसा अधिनियम २००५, धारा १८] मजिस्ट्रेट सुरक्षा आदेश पारित कर सकते हैं।\n[स्रोत: घरेलू हिंसा अधिनियम २००५, धारा २०] आपको मौद्रिक राहत मिल सकती है।\n\n━━━ ब्लॉक ३: कार्रवाई की समयरेखा ━━━\n**अभी:** तुरंत सुरक्षा के लिए पुलिस या मजिस्ट्रेट के पास जाएँ।\n**आज:** निकटतम मजिस्ट्रेट के पास आवेदन करें।\n**इस हफ्ते:** सुरक्षा आदेश और अन्य राहतों की प्रक्रिया पूरी करवाएँ।\n\n━━━ ब्लॉक ४: निःशुल्क हेल्पलाइन ━━━\n📞 १८१ — यह सहायता प्रदान करती है। (२४x७)\n\n━━━ ब्लॉक ५: अनुवर्ती प्रश्न ━━━\nक्या आपने किसी पुलिस स्टेशन या मजिस्ट्रेट के समक्ष सुरक्षा आदेश के लिए आवेदन किया है?"
+    },
+    {
+      "test_id": "exp_hi_dv_02",
+      "agent_type": "expert",
+      "language": "hi",
+      "passed": false,
+      "scores": {
+        "all_5_blocks": false,
+        "citation_format_exact": false,
+        "citation_count": 0,
+        "timeline_all_3": false,
+        "helpline_present": false,
+        "ends_with_question": true,
+        "word_count_ok": true,
+        "word_count": 151,
+        "hindi_purity": 1.0,
+        "no_hallucination": true,
+        "no_bare_lawyer_advice": true,
+        "structure_score": 0.2,
+        "section_accuracy": 0.0,
+        "final_score": 0.38
+      },
+      "actual_response": "━━━ ब्लॉक १: सहानुभूति\nआपकी स्थिति सुनकर मुझे बहुत दुःख हो रहा है, खासकर जब आपके पति आपको शारीरिक कष्ट दे रहे हैं।\n\n━━━ ब्लॉक २: आपके अधिकार\n[स्रोत: दिवास्य हिंसा अधिनियम २००५, धारा १७] आपको साझा आवास से बेदखल नहीं किया जा सकता।\n[स्रोत: दिवास्य हिंसा अधिनियम २००५, धारा १८] मजिस्ट्रेट सुरक्षा आदेश पारित कर सकते हैं।\n[स्रोत: दिवास्य हिंसा अधिनियम २००५, धारा २०] आपको मौद्रिक राहत मिल सकती है।\n\n━━━ ब्लॉक ३: कार्रवाई की समयरेखा\n**अभी:** आप तुरंत सुरक्षा के लिए पुलिस या सुरक्षा अधिकारी से संपर्क कर सकती हैं।\n**आज:** आप जिला मजिस्ट्रेट के कार्यालय जाकर सुरक्षा आदेश के लिए आवेदन कर सकती हैं।\n**इस हफ्ते:** आप सुरक्षा अधिकारी से संपर्क करके सहायता प्राप्त कर सकती हैं।\n\n━━━ ब्लॉक ४: निःशुल्क हेल्पलाइन\n📞 १८१ — यह सहायता महिलाओं के लिए है। (२४x७)\n\n━━━ ब्लॉक ५: अनुवर्ती प्रश्न\nक्या आपने किसी सुरक्षा अधि"
+    },
+    {
+      "test_id": "exp_en_wrk_03",
+      "agent_type": "expert",
+      "language": "en",
+      "passed": true,
+      "scores": {
+        "all_5_blocks": true,
+        "citation_format_exact": false,
+        "citation_count": 0,
+        "timeline_all_3": true,
+        "helpline_present": true,
+        "ends_with_question": true,
+        "word_count_ok": true,
+        "word_count": 168,
+        "hindi_purity": 1.0,
+        "no_hallucination": true,
+        "no_bare_lawyer_advice": true,
+        "structure_score": 0.8,
+        "section_accuracy": 0.0,
+        "final_score": 0.67
+      },
+      "actual_response": "━━━ BLOCK 1: EMPATHY ━━━\nI understand this must be a very stressful and difficult situation you are facing with your employer.\n\n━━━ BLOCK 2: HER RIGHTS ━━━\nYou have the right to file a complaint under the Act if your company has ten or more employees.\nYou have the right to protection against any form of retaliation from your employer.\nYou have the right to file your complaint within three months of the incident.\n\n━━━ BLOCK 3: ACTION TIMELINE ━━━\n**Right Now:** Document every instance of harassment, including dates and details.\n**Today:** Decide if you want to file a formal complaint and gather any supporting evidence.\n**This Week:** Consider approaching the helpline or seeking guidance on the next formal step.\n\n━━━ BLOCK 4: FREE HELPLINE ━━━\n📞 15100 — This is the free helpline where you ca"
+    },
+    {
+      "test_id": "exp_en_wrk_04",
+      "agent_type": "expert",
+      "language": "en",
+      "passed": true,
+      "scores": {
+        "all_5_blocks": true,
+        "citation_format_exact": true,
+        "citation_count": 3,
+        "timeline_all_3": true,
+        "helpline_present": true,
+        "ends_with_question": true,
+        "word_count_ok": true,
+        "word_count": 193,
+        "hindi_purity": 1.0,
+        "no_hallucination": true,
+        "no_bare_lawyer_advice": true,
+        "structure_score": 1.0,
+        "section_accuracy": 1.0,
+        "final_score": 1.0
+      },
+      "actual_response": "━━━ BLOCK 1: EMPATHY ━━━\nI understand this situation is deeply upsetting, especially when it involves a colleague, and I want you to know that what is happening is wrong.\n\n━━━ BLOCK 2: HER RIGHTS ━━━\n[Source: POSH Act 2013, Section 4] The company must have an Internal Complaints Committee if they have ten or more employees.\n[Source: POSH Act 2013, Section 9] You have three months from the date of the incident to file a complaint.\n[Source: POSH Act 2013, Section 11] The company cannot take any action against you because you complained.\n\n━━━ BLOCK 3: ACTION TIMELINE ━━━\n**Right Now:** Document every message, save screenshots, and note down the dates and times.\n**Today:** Decide if you want to file a formal complaint and gather any supporting evidence.\n**This Week:** Consider approaching the "
+    },
+    {
+      "test_id": "exp_hi_prop_05",
+      "agent_type": "expert",
+      "language": "hi",
+      "passed": false,
+      "scores": {
+        "all_5_blocks": false,
+        "citation_format_exact": false,
+        "citation_count": 0,
+        "timeline_all_3": false,
+        "helpline_present": false,
+        "ends_with_question": true,
+        "word_count_ok": true,
+        "word_count": 147,
+        "hindi_purity": 1.0,
+        "no_hallucination": true,
+        "no_bare_lawyer_advice": true,
+        "structure_score": 0.2,
+        "section_accuracy": 0.0,
+        "final_score": 0.38
+      },
+      "actual_response": "━━━ ब्लॉक १: सहानुभूति\nयह सुनकर मुझे बहुत दुःख हुआ कि आपके भाई आपकी संपत्ति में आपका हिस्सा नहीं दे रहे हैं।\n\n━━━ ब्लॉक २: आपके अधिकार\n[हिंदू उत्तराधिकार अधिनियम १९५६, धारा ६] के अनुसार, आपको पैतृक संपत्ति में बराबर का अधिकार है।\n[हिंदू उत्तराधिकार अधिनियम १९५६, धारा ६] के अनुसार, यह अधिकार जन्म से ही आपके पास है।\n\n━━━ ब्लॉक ३: कार्रवाई की समयरेखा\n**अभी:** संपत्ति के कागजात और उत्तराधिकार के संबंध में सभी दस्तावेज़ इकट्ठा करें।\n**आज:** अपने भाई से शांतिपूर्ण तरीके से बात करने का प्रयास करें और लिखित में मांग करें।\n**इस हफ्ते:** यदि बात न बने, तो कानूनी सलाह लेने के लिए आगे बढ़ें।\n\n━━━ ब्लॉक ४: निःशुल्क हेल्पलाइन\n📞 १५१०0 — यह कानूनी सहायता प्रदान करता है (२४x७)\n\n━━━ ब्लॉक ५: अनुवर्ती प्रश्न\nक्या आपके पास संपत्ति से संबंधित कोई कानूनी दस्तावेज़ या वसीयत है जिसे आप मुझे दिखा सकती हैं?"
+    },
+    {
+      "test_id": "exp_hi_maint_06",
+      "agent_type": "expert",
+      "language": "hi",
+      "passed": false,
+      "scores": {
+        "all_5_blocks": false,
+        "citation_format_exact": false,
+        "citation_count": 0,
+        "timeline_all_3": false,
+        "helpline_present": false,
+        "ends_with_question": true,
+        "word_count_ok": true,
+        "word_count": 150,
+        "hindi_purity": 1.0,
+        "no_hallucination": true,
+        "no_bare_lawyer_advice": true,
+        "structure_score": 0.2,
+        "section_accuracy": 0.0,
+        "final_score": 0.38
+      },
+      "actual_response": "━━━ ब्लॉक १: सहानुभूति\nआप बिना तलाक के भी अपने भरण-पोषण के अधिकार के लिए पैसे मांग सकती हैं।\n\n━━━ ब्लॉक २: आपके अधिकार\n[स्रोत: दंड प्रक्रिया संहिता, धारा १२५] यदि कोई व्यक्ति अपनी पत्नी का भरण-पोषण करने में पर्याप्त साधन होने के बावजूद उपेक्षा करता है, तो मजिस्ट्रेट मासिक भत्ता आदेश दे सकता है।\n[स्रोत: दंड प्रक्रिया संहिता, धारा १२५(२)] अंतिम आदेश लंबित रहने तक अंतरिम भरण-पोषण का आदेश दिया जा सकता है।\n\n━━━ ब्लॉक ३: कार्रवाई की समयरेखा\n**अभी:** आपको तुरंत अपने स्थानीय मजिस्ट्रेट के पास आवेदन करना चाहिए।\n**आज:** आपको आवश्यक दस्तावेज़ों के साथ आवेदन तैयार करना चाहिए।\n**इस हफ्ते:** आपको आवेदन की प्रतियां संबंधित अधिकारी को भेजनी चाहिए।\n\n━━━ ब्लॉक ४: निःशुल्क हेल्पलाइन\n📞 १५१०० — यह सहायता आपको कानूनी मार्गदर्शन प्रदान करती है (सभी समय)।\n\n━━━ ब्लॉक ५: अनुवर्ती प्रश्न\nक्या आपके पास अपने पति की आय"
+    },
+    {
+      "test_id": "exp_en_stalk_07",
+      "agent_type": "expert",
+      "language": "en",
+      "passed": true,
+      "scores": {
+        "all_5_blocks": true,
+        "citation_format_exact": false,
+        "citation_count": 0,
+        "timeline_all_3": true,
+        "helpline_present": true,
+        "ends_with_question": true,
+        "word_count_ok": true,
+        "word_count": 162,
+        "hindi_purity": 1.0,
+        "no_hallucination": true,
+        "no_bare_lawyer_advice": true,
+        "structure_score": 0.8,
+        "section_accuracy": 0.0,
+        "final_score": 0.67
+      },
+      "actual_response": "━━━ BLOCK 1: EMPATHY ━━━\nI understand this situation is incredibly distressing, and please know that what is happening to you is wrong and you do not have to face this alone.\n\n━━━ BLOCK 2: HER RIGHTS ━━━\n[Source: IPC 354D] This law protects you from being harassed or followed by someone.\n[Source: IT Act Section 66E] This protects your right to privacy online.\n[Source: IT Act Section 67] This deals with the sharing of inappropriate content.\n\n━━━ BLOCK 3: ACTION TIMELINE ━━━\n**Right Now:** Take screenshots of all threatening messages immediately.\n**Today:** Report the messages and screenshots to the police and use the helpline.\n**This Week:** Follow up with the police regarding the complaint filed.\n\n━━━ BLOCK 4: FREE HELPLINE ━━━\n📞 1930 — This is the national helpline for cybercrime reportin"
+    },
+    {
+      "test_id": "exp_hi_dowry_08",
+      "agent_type": "expert",
+      "language": "hi",
+      "passed": false,
+      "scores": {
+        "all_5_blocks": false,
+        "citation_format_exact": false,
+        "citation_count": 0,
+        "timeline_all_3": false,
+        "helpline_present": false,
+        "ends_with_question": true,
+        "word_count_ok": true,
+        "word_count": 140,
+        "hindi_purity": 1.0,
+        "no_hallucination": true,
+        "no_bare_lawyer_advice": true,
+        "structure_score": 0.2,
+        "section_accuracy": 0.0,
+        "final_score": 0.38
+      },
+      "actual_response": "━━━ ब्लॉक १: सहानुभूति ━━━\nयह सुनकर मुझे बहुत दुःख हुआ कि आपके ससुराल वाले आपको दहेज के लिए परेशान कर रहे हैं।\n\n━━━ ब्लॉक २: आपके अधिकार ━━━\n[दहेज निषेध अधिनियम १९६१, धारा ३] दहेज देने या लेने पर दंड का प्रावधान है।\n[आईपीसी ४९८ए] पति या पति के रिश्तेदार द्वारा महिला को क्रूरता का सामना करने पर कार्रवाई हो सकती है।\n\n━━━ ब्लॉक ३: कार्रवाई की समयरेखा ━━━\n**अभी:** तुरंत पुलिस को सूचित करें या हेल्पलाइन पर कॉल करें।\n**आज:** यदि संभव हो तो किसी भरोसेमंद व्यक्ति या रिश्तेदार को स्थिति बताएं।\n**इस हफ्ते:** कानूनी सहायता के लिए आगे की योजना बनाएं।\n\n━━━ ब्लॉक ४: निःशुल्क हेल्पलाइन ━━━\n📞 १८१ — यह सहायता प्रदान करता है (२४x७)\n\n━━━ ब्लॉक ५: अनुवर्ती प्रश्न ━━━\nक्या आपने कभी पुलिस स्टेशन में या किसी महिला हेल्पलाइन में शिकायत दर्ज कराई है?"
+    },
+    {
+      "test_id": "exp_en_div_09",
+      "agent_type": "expert",
+      "language": "en",
+      "passed": true,
+      "scores": {
+        "all_5_blocks": true,
+        "citation_format_exact": false,
+        "citation_count": 1,
+        "timeline_all_3": true,
+        "helpline_present": true,
+        "ends_with_question": true,
+        "word_count_ok": true,
+        "word_count": 177,
+        "hindi_purity": 1.0,
+        "no_hallucination": true,
+        "no_bare_lawyer_advice": true,
+        "structure_score": 0.8,
+        "section_accuracy": 0.5,
+        "final_score": 0.795
+      },
+      "actual_response": "━━━ BLOCK 1: EMPATHY ━━━\nIt sounds incredibly painful to endure cruelty for three years, and I understand why you are seeking a divorce now.\n\n━━━ BLOCK 2: HER RIGHTS ━━━\n[Source: Hindu Marriage Act 1955, Section 13] This section gives the legal grounds for divorce, which includes cruelty and desertion.\n[Source: CrPC Section 125] This allows you to claim maintenance from your husband even if the divorce process is ongoing.\n\n━━━ BLOCK 3: ACTION TIMELINE ━━━\n**Right Now:** Start keeping a detailed diary of every incident of cruelty you have faced.\n**Today:** Gather any evidence, such as medical reports or witness statements, related to the cruelty.\n**This Week:** Decide if you want to pursue divorce based on cruelty or if you want to seek maintenance separately.\n\n━━━ BLOCK 4: FREE HELPLINE ━━"
+    },
+    {
+      "test_id": "exp_hi_follow_10",
+      "agent_type": "expert",
+      "language": "hi",
+      "passed": false,
+      "scores": {
+        "all_5_blocks": false,
+        "citation_format_exact": true,
+        "citation_count": 0,
+        "timeline_all_3": false,
+        "helpline_present": false,
+        "ends_with_question": false,
+        "word_count_ok": true,
+        "word_count": 36,
+        "hindi_purity": 1.0,
+        "no_hallucination": true,
+        "no_bare_lawyer_advice": true,
+        "structure_score": 0.2,
+        "section_accuracy": 1.0,
+        "final_score": 0.63
+      },
+      "actual_response": "आप अपने जिले के सक्षम न्यायालय में आवेदन कर सकती हैं। इसके लिए आपको पुलिस स्टेशन या किसी वकील की सहायता लेनी चाहिए। न्यायालय आपकी स्थिति का मूल्यांकन करके आपको सुरक्षा आदेश प्रदान कर सकता है।"
+    },
+    {
+      "test_id": "int_hi_t1_11",
+      "agent_type": "intake",
+      "language": "hi",
+      "passed": true,
+      "scores": {
+        "valid_json": true,
+        "has_all_fields": true,
+        "no_extra_text": true,
+        "one_question": true,
+        "extraction_accuracy": 1.0,
+        "ready_correct": true,
+        "structure_score": 1.0,
+        "final_score": 1.0
+      },
+      "actual_response": "{\n  \"message\": \"मुझे सुनकर बहुत दुःख हुआ। मैं समझ सकती हूँ कि आप किस दौर से गुज़र रही हैं। क्या आप मुझे बता सकती हैं कि यह घटनाएँ कब से हो रही हैं?\",\n  \"extracted\": {\n    \"crime_type\": null,\n    \"urgency\": null,\n    \"relationship_to_accused\": \"husband\",\n    \"state\": null,\n    \"has_children\": null,\n    \"duration\": null,\n    \"others_involved\": null,\n    \"previous_complaints\": null,\n    \"other_context\": null,\n    \"marriage_date\": null,\n    \"property_type\": null,\n    \"company_size_over_10\": null\n  },\n  \"ready_for_expert\": false,\n  \"frustrated\": false,\n  \"readiness_score\": 10\n}"
+    },
+    {
+      "test_id": "int_hi_t2_12",
+      "agent_type": "intake",
+      "language": "hi",
+      "passed": true,
+      "scores": {
+        "valid_json": true,
+        "has_all_fields": true,
+        "no_extra_text": true,
+        "one_question": true,
+        "extraction_accuracy": 1.0,
+        "ready_correct": true,
+        "structure_score": 1.0,
+        "final_score": 1.0
+      },
+      "actual_response": "{\n  \"message\": \"मुझे सुनकर बहुत दुःख हो रहा है कि आपको दो साल से यह सब सहना पड़ रहा है और आपके बच्चे भी हैं। क्या आप मुझे बता सकती हैं कि आप किस राज्य में रहती हैं?\",\n  \"extracted\": {\n    \"crime_type\": \"domestic_violence\",\n    \"urgency\": \"ongoing\",\n    \"relationship_to_accused\": \"husband\",\n    \"state\": null,\n    \"has_children\": true,\n    \"duration\": \"2 साल\",\n    \"others_involved\": null,\n    \"previous_complaints\": null,\n    \"other_context\": null,\n    \"marriage_date\": null,\n    \"property_type\": null,\n    \"company_size_over_10\": null\n  },\n  \"ready_for_expert\": false,\n  \"frustrated\": false,\n  \"readiness_score\": 60\n}"
+    },
+    {
+      "test_id": "int_hi_t3_13",
+      "agent_type": "intake",
+      "language": "hi",
+      "passed": true,
+      "scores": {
+        "valid_json": true,
+        "has_all_fields": true,
+        "no_extra_text": true,
+        "one_question": true,
+        "extraction_accuracy": 1.0,
+        "ready_correct": false,
+        "structure_score": 1.0,
+        "final_score": 0.8
+      },
+      "actual_response": "{\n  \"message\": \"मुझे सुनकर बहुत दुःख हो रहा है कि आप इस मुश्किल समय से गुज़र रही हैं। क्या आप मुझे बता सकती हैं कि यह सब कब से हो रहा है?\",\n  \"extracted\": {\n    \"crime_type\": \"domestic_violence\",\n    \"urgency\": \"ongoing\",\n    \"relationship_to_accused\": \"husband\",\n    \"state\": \"Uttar Pradesh\",\n    \"has_children\": true,\n    \"duration\": null,\n    \"others_involved\": null,\n    \"previous_complaints\": null,\n    \"other_context\": null,\n    \"marriage_date\": null,\n    \"property_type\": null,\n    \"company_size_over_10\": null\n  },\n  \"ready_for_expert\": false,\n  \"frustrated\": false,\n  \"readiness_score\": 100\n}"
+    },
+    {
+      "test_id": "int_en_t1_14",
+      "agent_type": "intake",
+      "language": "en",
+      "passed": true,
+      "scores": {
+        "valid_json": true,
+        "has_all_fields": true,
+        "no_extra_text": true,
+        "one_question": true,
+        "extraction_accuracy": 1.0,
+        "ready_correct": true,
+        "structure_score": 1.0,
+        "final_score": 1.0
+      },
+      "actual_response": "{\n  \"message\": \"I am so sorry that you are going through this difficult experience at work. I want to listen and help you figure out the next steps, but to make sure I can connect you with the right support, could you tell me which Indian state you are currently in?\",\n  \"extracted\": {\n    \"crime_type\": \"workplace\",\n    \"urgency\": null,\n    \"relationship_to_accused\": \"employer\",\n    \"state\": null,\n    \"has_children\": null,\n    \"duration\": null,\n    \"others_involved\": null,\n    \"previous_complaints\": null,\n    \"other_context\": null,\n    \"marriage_date\": null,\n    \"property_type\": null,\n    \"company_size_over_10\": null\n  },\n  \"ready_for_expert\": false,\n  \"frustrated\": false,\n  \"readiness_score\": 10\n}"
+    },
+    {
+      "test_id": "int_hi_em_15",
+      "agent_type": "intake",
+      "language": "hi",
+      "passed": true,
+      "scores": {
+        "valid_json": true,
+        "has_all_fields": true,
+        "no_extra_text": true,
+        "one_question": true,
+        "extraction_accuracy": 0.5,
+        "ready_correct": false,
+        "structure_score": 1.0,
+        "final_score": 0.65
+      },
+      "actual_response": "{\n  \"message\": \"मुझे सुनकर बहुत दुःख हो रहा है कि आप इस समय इतनी भयानक स्थिति का सामना कर रही हैं। कृपया शांत रहने की कोशिश करें। क्या आप मुझे बता सकती हैं कि आप किस राज्य में हैं?\",\n  \"extracted\": {\n    \"crime_type\": null,\n    \"urgency\": \"immediate\",\n    \"relationship_to_accused\": \"husband\",\n    \"state\": null,\n    \"has_children\": null,\n    \"duration\": null,\n    \"others_involved\": null,\n    \"previous_complaints\": null,\n    \"other_context\": null,\n    \"marriage_date\": null,\n    \"property_type\": null,\n    \"company_size_over_10\": null\n  },\n  \"ready_for_expert\": false,\n  \"frustrated\": false,\n  \"readiness_score\": 0\n}"
+    }
+  ]
+}
