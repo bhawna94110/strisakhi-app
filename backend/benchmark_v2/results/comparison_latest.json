@@ -1,0 +1,42 @@
+{
+  "timestamp": "2026-05-15T03:22:28.631891",
+  "base_model": "gemma4",
+  "finetuned_model": "gemma4",
+  "metrics": {
+    "pass_rate": {
+      "base": 0.6,
+      "finetuned": 0.93,
+      "delta": 0.33
+    },
+    "expert_pass_rate": {
+      "base": 0.4,
+      "finetuned": 0.9,
+      "delta": 0.5
+    },
+    "intake_pass_rate": {
+      "base": 1.0,
+      "finetuned": 1.0,
+      "delta": 0.0
+    },
+    "final_score": {
+      "base": 0.71,
+      "finetuned": 0.889,
+      "delta": 0.179
+    },
+    "structure_score": {
+      "base": 0.667,
+      "finetuned": 0.917,
+      "delta": 0.25
+    },
+    "section_accuracy": {
+      "base": 0.4,
+      "finetuned": 0.9,
+      "delta": 0.5
+    },
+    "hindi_purity": {
+      "base": 1.0,
+      "finetuned": 0.869,
+      "delta": -0.131
+    }
+  }
+}
