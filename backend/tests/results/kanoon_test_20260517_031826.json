@@ -1,0 +1,483 @@
+{
+  "timestamp": "2026-05-17T03:18:26.047799",
+  "api": "http://localhost:8000",
+  "total": 3,
+  "passed": 2,
+  "pass_rate": 0.67,
+  "avg_scores": {
+    "final_score": 0.676,
+    "section_accuracy": 0.89,
+    "structure_score": 0.0,
+    "hindi_purity": 0.867
+  },
+  "results": [
+    {
+      "test_id": "demo_01_domestic_violence",
+      "name": "Domestic Violence — Hindi (Hinglish input)",
+      "session_id": "9efd6b59-326f-4ebb-8ed5-9b51c28d26f4",
+      "language": "hi",
+      "conversation_turns": [
+        {
+          "message_sent": "mere pati mujhe bahut marte hain",
+          "agent_used": "expert",
+          "full_response": "━━━ ब्लॉक १: सहानुभूति\nतीन साल से यह सहना और फिर भी हिम्मत करके पूछना — यह आसान नहीं है।\n\n━━━ ब्लॉक २: आपके अधिकार\n*   निवास का अधिकार: आपको साझा घर में रहने का अधिकार है, चाहे संपत्ति का कोई अधिकार हो या न हो। [Source: Protection of Women from Domestic Violence Act, 2005, Section 17]\n*   सुरक्षा आदेश का अधिकार: मजिस्ट्रेट आपको और आपके पति को सुनने के बाद सुरक्षा आदेश पारित कर सकता है। [Source: Protection of Women from Domestic Violence Act, 2005, Section 18]\n*   निवास आदेश का अधिकार: मजिस्ट्रेट यह आदेश दे सकता है कि पति आपको साझा घर से बाहर न निकाले। [Source: Protection of Women from Domestic Violence Act, 2005, Section 19]\n\n━━━ ब्लॉक ३: कार्रवाई की समयरेखा\n**अभी (Right Now):** अपने जिले के सुरक्षा अधिकारी से संपर्क करें।\n**आज (Today):** निकटतम मजिस्ट्रेट के पास आवेदन लेकर जाएं।\n**इस हफ्ते (This Week):** सुरक्षा अधिकारी की मदद से आवेदन दाखिल करवाएं।\n\n━━━ ब्लॉक ४: निःशुल्क हेल्पलाइन\n📞 181 (महिला हेल्पलाइन) — यह सहायता प्रदान करती है (24x7)\n\n━━━ ब्लॉक ५: अनुवर्ती प्रश्न\nक्या आपके पास अपने पति द्वारा किए गए शारीरिक हिंसा के कोई सबूत (जैसे चोटों की तस्वीरें या गवाह) मौजूद हैं?",
+          "response_preview": "━━━ ब्लॉक १: सहानुभूति\nतीन साल से यह सहना और फिर भी हिम्मत करके पूछना — यह आसान नहीं है।\n\n━━━ ब्लॉक २: आपके अधिकार\n*   निवास का अधिकार: आपको साझा घर में रहने का अधिकार है, चाहे संपत्ति का कोई अधिकार ह",
+          "citations": [
+            {
+              "source": "Protection of Women from Domestic Violence Act 2005",
+              "section": "Sections 12, 17, 18, 19",
+              "relevance": 0.4108
+            },
+            {
+              "source": "Dv Act 2005",
+              "section": "Page chunk 1",
+              "relevance": 0.2391
+            },
+            {
+              "source": "Dv Act 2005",
+              "section": "Page chunk 34",
+              "relevance": 0.2306
+            },
+            {
+              "source": "Dv Act 2005",
+              "section": "Page chunk 28",
+              "relevance": 0.1811
+            },
+            {
+              "source": "Dv Act 2005",
+              "section": "Page chunk 16",
+              "relevance": 0.1775
+            }
+          ],
+          "follow_up_questions": [
+            "क्या मैंने पुलिस में शिकायत दर्ज कराई है?",
+            "क्या मेरे पास कोई मेडिकल प्रमाण है?",
+            "क्या मैं किसी आश्रय गृह में रह सकती हूँ?",
+            "क्या मेरे बच्चों की सुरक्षा सुनिश्चित है?",
+            "आगे क्या कानूनी कदम उठाने होंगे?"
+          ],
+          "metadata_updates": [
+            {
+              "type": "metadata_update",
+              "confidence_score": 75,
+              "crime_type": "domestic_violence",
+              "metadata": {
+                "crime_type": "domestic_violence",
+                "urgency": "ongoing",
+                "relationship_to_accused": "pati (husband)",
+                "other_context": "पति द्वारा शारीरिक हिंसा का उल्लेख किया गया है।",
+                "current_question": "यह सुनकर मुझे बहुत दुःख हुआ कि आपके पति आपको मारते हैं।\n\nक्या आप मुझे विस्तार से बता सकती हैं कि वे आपको किस प्रकार मारते हैं और यह कब से हो रहा है?",
+                "fields_collected": [
+                  "urgency",
+                  "relationship_to_accused",
+                  "other_context"
+                ],
+                "readiness_score": 75,
+                "fields_pending": [
+                  "type_of_violence",
+                  "living_situation",
+                  "has_children",
+                  "financial_dependence",
+                  "previous_complaints",
+                  "house_ownership"
+                ],
+                "go_to_expert": true
+              }
+            }
+          ],
+          "routing_events": [
+            {
+              "type": "routing",
+              "step": "emergency_check",
+              "detected": false
+            }
+          ],
+          "phase_changes": [
+            {
+              "type": "phase_change",
+              "from": "intake",
+              "to": "expert"
+            }
+          ],
+          "score_at_turn": 75,
+          "crime_detected": "domestic_violence",
+          "error": null
+        }
+      ],
+      "expert_response": "━━━ ब्लॉक १: सहानुभूति\nतीन साल से यह सहना और फिर भी हिम्मत करके पूछना — यह आसान नहीं है।\n\n━━━ ब्लॉक २: आपके अधिकार\n*   निवास का अधिकार: आपको साझा घर में रहने का अधिकार है, चाहे संपत्ति का कोई अधिकार हो या न हो। [Source: Protection of Women from Domestic Violence Act, 2005, Section 17]\n*   सुरक्षा आदेश का अधिकार: मजिस्ट्रेट आपको और आपके पति को सुनने के बाद सुरक्षा आदेश पारित कर सकता है। [Source: Protection of Women from Domestic Violence Act, 2005, Section 18]\n*   निवास आदेश का अधिकार: मजिस्ट्रेट यह आदेश दे सकता है कि पति आपको साझा घर से बाहर न निकाले। [Source: Protection of Women from Domestic Violence Act, 2005, Section 19]\n\n━━━ ब्लॉक ३: कार्रवाई की समयरेखा\n**अभी (Right Now):** अपने जिले के सुरक्षा अधिकारी से संपर्क करें।\n**आज (Today):** निकटतम मजिस्ट्रेट के पास आवेदन लेकर जाएं।\n**इस हफ्ते (This Week):** सुरक्षा अधिकारी की मदद से आवेदन दाखिल करवाएं।\n\n━━━ ब्लॉक ४: निःशुल्क हेल्पलाइन\n📞 181 (महिला हेल्पलाइन) — यह सहायता प्रदान करती है (24x7)\n\n━━━ ब्लॉक ५: अनुवर्ती प्रश्न\nक्या आपके पास अपने पति द्वारा किए गए शारीरिक हिंसा के कोई सबूत (जैसे चोटों की तस्वीरें या गवाह) मौजूद हैं?",
+      "expert_response_preview": "━━━ ब्लॉक १: सहानुभूति\nतीन साल से यह सहना और फिर भी हिम्मत करके पूछना — यह आसान नहीं है।\n\n━━━ ब्लॉक २: आपके अधिकार\n*   निवास का अधिकार: आपको साझा घर में रहने का अधिकार है, चाहे संपत्ति का कोई अधिकार हो या न हो। [Source: Protection of Women from Domestic Violence Act, 2005, Section 17]\n*   सुरक्षा आदेश का अधिकार: मजिस्ट्रेट आपको और आपके पति को सुनने के बाद सुरक्षा आदेश पारित कर सकता है। [Source: Protection of Women from Domestic Violence Act, 2005, Section 18]\n*   निवास आदेश का अधिकार: मजिस्ट्रेट",
+      "scores": {
+        "crime_detected_correctly": true,
+        "detected_crime": "domestic_violence",
+        "routed_to_expert": true,
+        "intake_turns": 0,
+        "intake_turns_ok": true,
+        "max_readiness_score": 75,
+        "score_threshold_reached": true,
+        "section_accuracy": 0.67,
+        "sections_found": [
+          "Section 17",
+          "Section 18"
+        ],
+        "sections_missing": [
+          "DV Act"
+        ],
+        "helpline_accuracy": 0.5,
+        "structure_score": 0.0,
+        "blocks_found": 0,
+        "hindi_purity": 0.77,
+        "timeline_present": true,
+        "final_score": 0.645,
+        "passed": false
+      },
+      "passed": false
+    },
+    {
+      "test_id": "demo_02_property_rights",
+      "name": "Property Rights — Hindi (RAG power: Vineeta Sharma 2020)",
+      "session_id": "bbd5426b-904c-49e0-b43e-730aacc83c62",
+      "language": "hi",
+      "conversation_turns": [
+        {
+          "message_sent": "mere bhai keh rahe hain ki mujhe papa ki zameen mein koi hissa nahi milega",
+          "agent_used": "intake",
+          "full_response": "यह सुनकर मुझे बहुत दुःख हुआ कि आपको अपने पिता की ज़मीन के संबंध में ऐसी परेशानी का सामना करना पड़ रहा है।\n\nक्या आप कृपया विस्तार से बता सकती हैं कि यह ज़मीन किस प्रकार की है और आपके पिता का क्या संबंध है?",
+          "response_preview": "यह सुनकर मुझे बहुत दुःख हुआ कि आपको अपने पिता की ज़मीन के संबंध में ऐसी परेशानी का सामना करना पड़ रहा है।\n\nक्या आप कृपया विस्तार से बता सकती हैं कि यह ज़मीन किस प्रकार की है और आपके पिता का क्या संबंध",
+          "citations": [],
+          "follow_up_questions": [],
+          "metadata_updates": [
+            {
+              "type": "metadata_update",
+              "confidence_score": 55,
+              "crime_type": "property",
+              "metadata": {
+                "crime_type": "property",
+                "urgency": "ongoing",
+                "relationship_to_accused": "bhai (brother)",
+                "other_context": "एक भाई संपत्ति के बंटवारे या विरासत से संबंधित हिस्से के बारे में बात कर रहा है।",
+                "current_question": "यह सुनकर मुझे बहुत दुःख हुआ कि आपको अपने पिता की ज़मीन के संबंध में ऐसी परेशानी का सामना करना पड़ रहा है।\n\nक्या आप कृपया विस्तार से बता सकती हैं कि यह ज़मीन किस प्रकार की है और आपके पिता का क्या संबंध है?",
+                "fields_collected": [
+                  "urgency",
+                  "relationship_to_accused",
+                  "other_context"
+                ],
+                "readiness_score": 55,
+                "fields_pending": [
+                  "property_type",
+                  "father_alive",
+                  "religion",
+                  "will_exists",
+                  "who_blocking",
+                  "already_sold",
+                  "property_registered"
+                ]
+              }
+            }
+          ],
+          "routing_events": [
+            {
+              "type": "routing",
+              "step": "emergency_check",
+              "detected": false
+            },
+            {
+              "type": "routing",
+              "decision": "intake",
+              "score": 55,
+              "crime": "property"
+            }
+          ],
+          "phase_changes": [],
+          "score_at_turn": 55,
+          "crime_detected": "property",
+          "error": null
+        },
+        {
+          "message_sent": "hamare papa 2 saal pehle guzar gaye, zameen unke naam thi, hum sab Hindu hain",
+          "agent_used": "expert",
+          "full_response": "━━━ ब्लॉक १: सहानुभूति\nदो वर्ष पूर्व पिता जी के देहांत के बाद संपत्ति के बँटवारे को लेकर भाई-बहनों के बीच यह तनाव होना बहुत कष्टदायक है।\n\n━━━ ब्लॉक २: आपके अधिकार\n*   आप सभी बेटियों को जन्म से ही पैतृक संपत्ति में बराबर अधिकार प्राप्त हैं। [Source: Hindu Succession Act 1956 Amendment 2005, Section 6]\n*   यह अधिकार विवाह से नहीं, बल्कि जन्म से प्राप्त होता है।\n*   यह अधिकार पिता के देहांत के बाद भी बना रहता है, जैसा कि सर्वोच्च न्यायालय ने पुष्टि की है। [Source: SC Judgment Vineeta Sharma 2020]\n\n━━━ ब्लॉक ३: कार्रवाई की समयरेखा\n**अभी:** संपत्ति के बंटवारे के लिए सभी कागजात (जन्म प्रमाण पत्र, पिता की मृत्यु प्रमाण पत्र, ज़मीन के दस्तावेज़) इकट्ठा करें।\n**आज:** जिला न्यायालय में संपत्ति के बँटवारे के लिए दीवानी मुकदमा (Partition Suit) दायर करने की तैयारी करें।\n**इस हफ्ते:** जिला कानूनी सेवा प्राधिकरण (DLSA) से मुफ्त कानूनी सहायता के लिए आवेदन करें।\n\n━━━ ब्लॉक ४: निःशुल्क हेल्पलाइन\n📞 १८००-१३६-११११ — यह कानूनी सहायता प्रदान करता है (समय उपलब्ध)\n\n━━━ ब्लॉक ५: अनुवर्ती प्रश्न\nक्या आपके पास पिता जी के नाम पर ज़मीन से संबंधित कोई मूल दस्तावेज़ या खसरा-खतौनी की प्रतियाँ उपलब्ध हैं?",
+          "response_preview": "━━━ ब्लॉक १: सहानुभूति\nदो वर्ष पूर्व पिता जी के देहांत के बाद संपत्ति के बँटवारे को लेकर भाई-बहनों के बीच यह तनाव होना बहुत कष्टदायक है।\n\n━━━ ब्लॉक २: आपके अधिकार\n*   आप सभी बेटियों को जन्म से ही पैतृ",
+          "citations": [
+            {
+              "source": "Hindu Succession Act 1956 Amendment 2005",
+              "section": "Section 6, SC Judgment Vineeta Sharma 2020",
+              "relevance": 0.734
+            },
+            {
+              "source": "Hindu Succession Act",
+              "section": "Page chunk 58",
+              "relevance": 0.5755
+            },
+            {
+              "source": "Hindu Succession Act",
+              "section": "Page chunk 18",
+              "relevance": 0.5431
+            },
+            {
+              "source": "Hindu Succession Act",
+              "section": "Page chunk 45",
+              "relevance": 0.5032
+            },
+            {
+              "source": "Hindu Succession Act",
+              "section": "Page chunk 56",
+              "relevance": 0.4933
+            }
+          ],
+          "follow_up_questions": [
+            "पिता का वसीयतनामा है क्या?",
+            "संपत्ति का बंटवारा कैसे होगा?",
+            "विरासत में मिली ज़मीन का क्या कानूनी अधिकार है?",
+            "क्या कोई अन्य उत्तराधिकारी है?",
+            "संपत्ति के कागजात कहाँ रखे हैं?"
+          ],
+          "metadata_updates": [
+            {
+              "type": "metadata_update",
+              "confidence_score": 65,
+              "crime_type": "property",
+              "metadata": {
+                "relationship_to_accused": "bhai",
+                "religion": "Hindu",
+                "other_context": "एक भाई संपत्ति के बंटवारे या विरासत से संबंधित हिस्से के बारे में बात कर रहा है। पिता का देहांत दो वर्ष पूर्व हो चुका है और ज़मीन उनके नाम पर थी।",
+                "current_question": "यह संपत्ति कैसी है — पुरखों की (ancestral) है, या पिताजी ने खुद कमाई?",
+                "fields_collected": [
+                  "urgency",
+                  "relationship_to_accused",
+                  "other_context",
+                  "religion"
+                ],
+                "readiness_score": 65,
+                "fields_pending": [
+                  "property_type",
+                  "father_alive",
+                  "will_exists",
+                  "who_blocking",
+                  "already_sold",
+                  "property_registered"
+                ],
+                "go_to_expert": true
+              }
+            }
+          ],
+          "routing_events": [
+            {
+              "type": "routing",
+              "step": "emergency_check",
+              "detected": false
+            }
+          ],
+          "phase_changes": [
+            {
+              "type": "phase_change",
+              "from": "intake",
+              "to": "expert"
+            }
+          ],
+          "score_at_turn": 65,
+          "crime_detected": "property",
+          "error": null
+        }
+      ],
+      "expert_response": "━━━ ब्लॉक १: सहानुभूति\nदो वर्ष पूर्व पिता जी के देहांत के बाद संपत्ति के बँटवारे को लेकर भाई-बहनों के बीच यह तनाव होना बहुत कष्टदायक है।\n\n━━━ ब्लॉक २: आपके अधिकार\n*   आप सभी बेटियों को जन्म से ही पैतृक संपत्ति में बराबर अधिकार प्राप्त हैं। [Source: Hindu Succession Act 1956 Amendment 2005, Section 6]\n*   यह अधिकार विवाह से नहीं, बल्कि जन्म से प्राप्त होता है।\n*   यह अधिकार पिता के देहांत के बाद भी बना रहता है, जैसा कि सर्वोच्च न्यायालय ने पुष्टि की है। [Source: SC Judgment Vineeta Sharma 2020]\n\n━━━ ब्लॉक ३: कार्रवाई की समयरेखा\n**अभी:** संपत्ति के बंटवारे के लिए सभी कागजात (जन्म प्रमाण पत्र, पिता की मृत्यु प्रमाण पत्र, ज़मीन के दस्तावेज़) इकट्ठा करें।\n**आज:** जिला न्यायालय में संपत्ति के बँटवारे के लिए दीवानी मुकदमा (Partition Suit) दायर करने की तैयारी करें।\n**इस हफ्ते:** जिला कानूनी सेवा प्राधिकरण (DLSA) से मुफ्त कानूनी सहायता के लिए आवेदन करें।\n\n━━━ ब्लॉक ४: निःशुल्क हेल्पलाइन\n📞 १८००-१३६-११११ — यह कानूनी सहायता प्रदान करता है (समय उपलब्ध)\n\n━━━ ब्लॉक ५: अनुवर्ती प्रश्न\nक्या आपके पास पिता जी के नाम पर ज़मीन से संबंधित कोई मूल दस्तावेज़ या खसरा-खतौनी की प्रतियाँ उपलब्ध हैं?",
+      "expert_response_preview": "━━━ ब्लॉक १: सहानुभूति\nदो वर्ष पूर्व पिता जी के देहांत के बाद संपत्ति के बँटवारे को लेकर भाई-बहनों के बीच यह तनाव होना बहुत कष्टदायक है।\n\n━━━ ब्लॉक २: आपके अधिकार\n*   आप सभी बेटियों को जन्म से ही पैतृक संपत्ति में बराबर अधिकार प्राप्त हैं। [Source: Hindu Succession Act 1956 Amendment 2005, Section 6]\n*   यह अधिकार विवाह से नहीं, बल्कि जन्म से प्राप्त होता है।\n*   यह अधिकार पिता के देहांत के बाद भी बना रहता है, जैसा कि सर्वोच्च न्यायालय ने पुष्टि की है। [Source: SC Judgment Vineeta Sharma 2020]\n\n",
+      "scores": {
+        "crime_detected_correctly": true,
+        "detected_crime": "property",
+        "routed_to_expert": true,
+        "intake_turns": 1,
+        "intake_turns_ok": true,
+        "max_readiness_score": 65,
+        "score_threshold_reached": true,
+        "section_accuracy": 1.0,
+        "sections_found": [
+          "Section 6",
+          "Hindu Succession Act",
+          "Vineeta Sharma"
+        ],
+        "sections_missing": [],
+        "helpline_accuracy": 0.0,
+        "structure_score": 0.0,
+        "blocks_found": 0,
+        "hindi_purity": 0.89,
+        "timeline_present": true,
+        "final_score": 0.689,
+        "passed": true
+      },
+      "passed": true
+    },
+    {
+      "test_id": "demo_03_maintenance",
+      "name": "Maintenance Without Divorce — Hindi (Common misconception corrected)",
+      "session_id": "1b74f6df-029c-4455-90db-a000383f2cdd",
+      "language": "hi",
+      "conversation_turns": [
+        {
+          "message_sent": "kya main bina divorce ke pati se paise maang sakti hoon",
+          "agent_used": "intake",
+          "full_response": "मैं समझ सकती हूँ कि आप इस समय किस भावनात्मक उथल-पुथल से गुज़र रही हैं।\n\nक्या आप अपने वैवाहिक संबंध और कानूनी स्थिति के बारे में कुछ और जानकारी दे सकती हैं?",
+          "response_preview": "मैं समझ सकती हूँ कि आप इस समय किस भावनात्मक उथल-पुथल से गुज़र रही हैं।\n\nक्या आप अपने वैवाहिक संबंध और कानूनी स्थिति के बारे में कुछ और जानकारी दे सकती हैं?",
+          "citations": [],
+          "follow_up_questions": [],
+          "metadata_updates": [
+            {
+              "type": "metadata_update",
+              "confidence_score": 55,
+              "crime_type": "maintenance",
+              "metadata": {
+                "crime_type": "maintenance",
+                "urgency": "ongoing",
+                "relationship_to_accused": "pati",
+                "other_context": "प्रश्न गुजरो तलाक के बिना पति से धन मांगने के बारे में है।",
+                "current_question": "मैं समझ सकती हूँ कि आप इस समय किस भावनात्मक उथल-पुथल से गुज़र रही हैं।\n\nक्या आप अपने वैवाहिक संबंध और कानूनी स्थिति के बारे में कुछ और जानकारी दे सकती हैं?",
+                "fields_collected": [
+                  "urgency",
+                  "relationship_to_accused",
+                  "other_context"
+                ],
+                "readiness_score": 55,
+                "fields_pending": [
+                  "marital_status_current",
+                  "husband_income",
+                  "has_children",
+                  "your_income",
+                  "husband_paying_anything",
+                  "how_long_separated",
+                  "reason_for_separation"
+                ]
+              }
+            }
+          ],
+          "routing_events": [
+            {
+              "type": "routing",
+              "step": "emergency_check",
+              "detected": false
+            },
+            {
+              "type": "routing",
+              "decision": "intake",
+              "score": 55,
+              "crime": "maintenance"
+            }
+          ],
+          "phase_changes": [],
+          "score_at_turn": 55,
+          "crime_detected": "maintenance",
+          "error": null
+        },
+        {
+          "message_sent": "main 8 mahine se alag hoon, pati ne chhod diya, wo dono bacchon ke saath hain",
+          "agent_used": "expert",
+          "full_response": "━━━ ब्लॉक १: सहानुभूति ━━━\nआठ महीने से अलग रहना और बच्चों के साथ रहना आपके लिए बहुत कठिन समय रहा होगा।\n\n━━━ ब्लॉक २: आपके अधिकार ━━━\n*   आप धारा १२५ दंड प्रक्रिया संहिता, १९७३ के तहत गुजारा भत्ता पाने की हकदार हैं, भले ही तलाक न हुआ हो। [Source: CrPC Section 125]\n*   अदालत पति को गुजारा भत्ता देने का आदेश दे सकती है, भले ही आप अलग रह रही हों। [Source: CrPC Section 125]\n*   आप बिना तलाक के भी गुजारा भत्ता के लिए आवेदन कर सकती हैं।\n\n━━━ ब्लॉक ३: कार्रवाई की समयरेखा ━━━\n**अभी:** तुरंत जिला मजिस्ट्रेट के समक्ष धारा १२५ के तहत आवेदन करें।\n**आज:** जिला कानूनी सेवा प्राधिकरण (DLSA) से संपर्क करें ताकि मुफ्त कानूनी सहायता मिल सके।\n**इस हफ्ते:** अपने मामले की जानकारी के लिए हेल्पलाइन पर संपर्क करें।\n\n━━━ ब्लॉक ४: मुफ्त हेल्पलाइन ━━━\n📞 १८१ — महिलाओं की हेल्पलाइन (२४x७)\n\n━━━ ब्लॉक ५: अनुवर्ती प्रश्न ━━━\nक्या आपके पास पति के आय और बच्चों की देखभाल से संबंधित कोई दस्तावेज़ है जो आप अदालत में प्रस्तुत कर सकें?",
+          "response_preview": "━━━ ब्लॉक १: सहानुभूति ━━━\nआठ महीने से अलग रहना और बच्चों के साथ रहना आपके लिए बहुत कठिन समय रहा होगा।\n\n━━━ ब्लॉक २: आपके अधिकार ━━━\n*   आप धारा १२५ दंड प्रक्रिया संहिता, १९७३ के तहत गुजारा भत्ता पाने",
+          "citations": [
+            {
+              "source": "Hindu Marriage Act 1955",
+              "section": "Section 13, CrPC Section 125",
+              "relevance": 0.2275
+            },
+            {
+              "source": "Dv Act 2005",
+              "section": "Page chunk 41",
+              "relevance": -0.2634
+            },
+            {
+              "source": "Dv Act 2005",
+              "section": "Page chunk 36",
+              "relevance": -0.306
+            },
+            {
+              "source": "Dv Act 2005",
+              "section": "Page chunk 29",
+              "relevance": -0.3235
+            },
+            {
+              "source": "Hindu Succession Act",
+              "section": "Page chunk 24",
+              "relevance": -0.3276
+            }
+          ],
+          "follow_up_questions": [
+            "पति ने गुजारा भत्ता देने से मना कर दिया है तो क्या कानूनी कार्रवाई हो सकती है?",
+            "बच्चों की शिक्षा और भरण-पोषण का खर्च कौन उठाएगा?",
+            "क्या पति ने गुजारा भत्ता देने से इनकार करने के लिए कोई कारण बताया है?",
+            "अलग रहने के दौरान बच्चों के लिए मासिक खर्च कितना होना चाहिए?",
+            "यदि पति सहयोग नहीं करता है तो न्यायालय से क्या आदेश प्राप्त किया जा सकता है?"
+          ],
+          "metadata_updates": [
+            {
+              "type": "metadata_update",
+              "confidence_score": 75,
+              "crime_type": "maintenance",
+              "metadata": {
+                "marital_status_current": "alag",
+                "relationship_to_accused": "pati",
+                "other_context": "प्रश्न गुजरो तलाक के बिना पति से धन मांगने के बारे में है। उपयोगकर्ता ने बताया कि वह पति से आठ महीने से अलग रह रही हैं और पति दोनों बच्चों के साथ हैं।",
+                "current_question": "आप अभी पति के साथ हैं, अलग रह रही हैं, या तलाक हो गया?",
+                "fields_collected": [
+                  "urgency",
+                  "relationship_to_accused",
+                  "other_context",
+                  "marital_status_current"
+                ],
+                "readiness_score": 75,
+                "fields_pending": [
+                  "husband_income",
+                  "has_children",
+                  "your_income",
+                  "husband_paying_anything",
+                  "how_long_separated",
+                  "reason_for_separation"
+                ],
+                "go_to_expert": true
+              }
+            }
+          ],
+          "routing_events": [
+            {
+              "type": "routing",
+              "step": "emergency_check",
+              "detected": false
+            }
+          ],
+          "phase_changes": [
+            {
+              "type": "phase_change",
+              "from": "intake",
+              "to": "expert"
+            }
+          ],
+          "score_at_turn": 75,
+          "crime_detected": "maintenance",
+          "error": null
+        }
+      ],
+      "expert_response": "━━━ ब्लॉक १: सहानुभूति ━━━\nआठ महीने से अलग रहना और बच्चों के साथ रहना आपके लिए बहुत कठिन समय रहा होगा।\n\n━━━ ब्लॉक २: आपके अधिकार ━━━\n*   आप धारा १२५ दंड प्रक्रिया संहिता, १९७३ के तहत गुजारा भत्ता पाने की हकदार हैं, भले ही तलाक न हुआ हो। [Source: CrPC Section 125]\n*   अदालत पति को गुजारा भत्ता देने का आदेश दे सकती है, भले ही आप अलग रह रही हों। [Source: CrPC Section 125]\n*   आप बिना तलाक के भी गुजारा भत्ता के लिए आवेदन कर सकती हैं।\n\n━━━ ब्लॉक ३: कार्रवाई की समयरेखा ━━━\n**अभी:** तुरंत जिला मजिस्ट्रेट के समक्ष धारा १२५ के तहत आवेदन करें।\n**आज:** जिला कानूनी सेवा प्राधिकरण (DLSA) से संपर्क करें ताकि मुफ्त कानूनी सहायता मिल सके।\n**इस हफ्ते:** अपने मामले की जानकारी के लिए हेल्पलाइन पर संपर्क करें।\n\n━━━ ब्लॉक ४: मुफ्त हेल्पलाइन ━━━\n📞 १८१ — महिलाओं की हेल्पलाइन (२४x७)\n\n━━━ ब्लॉक ५: अनुवर्ती प्रश्न ━━━\nक्या आपके पास पति के आय और बच्चों की देखभाल से संबंधित कोई दस्तावेज़ है जो आप अदालत में प्रस्तुत कर सकें?",
+      "expert_response_preview": "━━━ ब्लॉक १: सहानुभूति ━━━\nआठ महीने से अलग रहना और बच्चों के साथ रहना आपके लिए बहुत कठिन समय रहा होगा।\n\n━━━ ब्लॉक २: आपके अधिकार ━━━\n*   आप धारा १२५ दंड प्रक्रिया संहिता, १९७३ के तहत गुजारा भत्ता पाने की हकदार हैं, भले ही तलाक न हुआ हो। [Source: CrPC Section 125]\n*   अदालत पति को गुजारा भत्ता देने का आदेश दे सकती है, भले ही आप अलग रह रही हों। [Source: CrPC Section 125]\n*   आप बिना तलाक के भी गुजारा भत्ता के लिए आवेदन कर सकती हैं।\n\n━━━ ब्लॉक ३: कार्रवाई की समयरेखा ━━━\n**अभी:** तुरंत जिला मजिस्ट्र",
+      "scores": {
+        "crime_detected_correctly": true,
+        "detected_crime": "maintenance",
+        "routed_to_expert": true,
+        "intake_turns": 1,
+        "intake_turns_ok": true,
+        "max_readiness_score": 75,
+        "score_threshold_reached": true,
+        "section_accuracy": 1.0,
+        "sections_found": [
+          "CrPC Section 125",
+          "Section 125"
+        ],
+        "sections_missing": [],
+        "helpline_accuracy": 0.0,
+        "structure_score": 0.0,
+        "blocks_found": 0,
+        "hindi_purity": 0.94,
+        "timeline_present": true,
+        "final_score": 0.694,
+        "passed": true
+      },
+      "passed": true
+    }
+  ]
+}
