@@ -219,39 +219,44 @@ async def intake_node(state: KanoonState) -> dict:
             if result:
                 # Extract the target field
                 extracted_val = result.get("extracted_value")
-                if extracted_val and extracted_val != "null":
+                if extracted_val and extracted_val not in ("null", "None", ""):
                     updates[next_field] = extracted_val
                     if next_field not in fields_collected:
                         fields_collected.append(next_field)
 
                 # Extract any bonus fields mentioned
                 also_mentioned = result.get("also_mentioned", {})
-                for bonus_field, bonus_val in also_mentioned.items():
-                    if bonus_val and bonus_val != "null" and bonus_field in state:
-                        updates[bonus_field] = bonus_val
-                        if bonus_field not in fields_collected:
+                if isinstance(also_mentioned, dict):
+                    for bonus_field, bonus_val in also_mentioned.items():
+                        if (bonus_val and bonus_val not in ("null", "None", "")
+                                and bonus_field in state
+                                and bonus_field not in fields_collected):
+                            updates[bonus_field] = bonus_val
                             fields_collected.append(bonus_field)
 
                 # Append to other_context if new info
                 oc_addition = result.get("other_context_addition")
-                if oc_addition:
+                if oc_addition and oc_addition not in ("null", "None", ""):
                     existing_oc = state.get("other_context", "") or ""
                     updates["other_context"] = (existing_oc + " " + oc_addition).strip()
+                    if "other_context" not in fields_collected:
+                        fields_collected.append("other_context")
 
                 # Frustration detection
                 if result.get("frustrated"):
                     updates["frustrated"] = True
 
-                # Next question to ask
-                q_key = f"next_question_{lang}"
-                next_q = result.get(q_key, "")
-                if not next_q:
-                    # Fallback to question bank
-                    merged2 = {**state, **updates, "fields_collected": fields_collected}
-                    nf2 = get_next_field(merged2)
-                    if nf2 and nf2 in INTAKE_QUESTIONS:
-                        qdata = INTAKE_QUESTIONS[nf2]
-                        next_q = qdata[1] if lang == "hi" else qdata[2]
+                # Get next question AFTER applying updates
+                merged_for_next = {**state, **updates, "fields_collected": fields_collected}
+                next_next_field = get_next_field(merged_for_next)
+
+                if next_next_field and next_next_field in INTAKE_QUESTIONS:
+                    qdata = INTAKE_QUESTIONS[next_next_field]
+                    next_q = qdata[1] if lang == "hi" else qdata[2]
+                else:
+                    # No more fields — will route to expert
+                    next_q = ""
+                    updates["go_to_expert"] = True
 
                 updates["current_question"] = next_q
 

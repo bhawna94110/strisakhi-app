@@ -386,29 +386,36 @@ Reference something SPECIFIC from her case file. Not generic.
 Example: "3 साल से यह सहना और फिर भी हिम्मत करके पूछना — यह आसान नहीं है।"
 
 ━━━ BLOCK 2: HER RIGHTS (2-3 rights) ━━━
-Each right on its own line with citation:
-[Source: Act Name YYYY, Section X] explanation in simple words
-ONLY cite sections present in LEGAL CONTEXT above. Never invent.
+List 2-3 legal rights. Each right on its own line. ALWAYS start each line with the source citation.
+Pattern: [Source: LAW_NAME, SECTION] then simple Hindi explanation.
+Use sections from LEGAL CONTEXT above — do not invent.
+Example pattern (use this structure, not these exact words):
+[Source: Act Name, Section X] one sentence explanation of the right.
+[Source: Case Name, Court Year] one sentence about what court decided.
 
 ━━━ BLOCK 3: ACTION TIMELINE (all 3 lines required) ━━━
 {timeline}
 
 ━━━ BLOCK 4: FREE HELPLINE (exactly 1) ━━━
-📞 [NUMBER] — [what it does] ([hours])
+Pick the CORRECT helpline based on crime_type in case file:
+- crime_type = domestic_violence → 📞 181 — महिला हेल्पलाइन (24x7, FREE)
+- crime_type = property OR maintenance OR divorce → 📞 15100 — NALSA मुफ्त कानूनी सहायता (सोमवार-शनिवार)
+- crime_type = workplace → 📞 15100 — NALSA मुफ्त कानूनी सहायता
+- crime_type = stalking → 📞 1930 — साइबर क्राइम हेल्पलाइन
+- crime_type = rape → 📞 181 — महिला हेल्पलाइन (24x7, FREE)
+Write exactly: 📞 [NUMBER] — [description] ([hours])
 
 ━━━ BLOCK 5: FOLLOW-UP QUESTION (exactly 1) ━━━
-One specific question about her situation.
+One specific question relevant to her case. Write in {lang_name}.
 
 RULES:
-- Under 400 words
+- Under 400 words total
 - Simple language — no legal jargon
-- Never say "consult a lawyer" without giving NALSA 15100
 - ALL 5 BLOCKS REQUIRED
-- BLOCK HEADERS must stay exactly as written above in English — do NOT translate them
-- Content inside each block should be in {lang_name}
-- For Hindi: use Devanagari for legal terms:
-  Protection Order=सुरक्षा आदेश, Section=धारा, Magistrate=मजिस्ट्रेट,
-  Court=न्यायालय, Complaint=शिकायत, FIR=प्राथमिकी, Lawyer=वकील
+- BLOCK HEADERS stay in English exactly as written — do NOT translate
+- Content inside blocks in {lang_name}
+- For Hindi Devanagari: Protection Order=सुरक्षा आदेश, Section=धारा, Magistrate=मजिस्ट्रेट,
+  Court=न्यायालय, FIR=प्राथमिकी, Lawyer=वकील, Maintenance=भरण-पोषण
 
 {lang_instruction}"""
 
@@ -432,6 +439,9 @@ Key facts:
 - IPC 498A if in-laws also involved (cognizable — police can arrest without warrant)
 - If dowry angle confirmed: also cite Dowry Prohibition Act Section 3
 NEVER say: "talk to husband first", "it's a family matter", "try to compromise"
+MANDATORY citations for Block 2:
+[Source: Protection of Women from Domestic Violence Act 2005, Section 17] + explanation
+[Source: Protection of Women from Domestic Violence Act 2005, Section 18] + explanation
 """,
     "property": """
 Key law: Hindu Succession Act 1956 (Amendment 2005)
@@ -446,7 +456,9 @@ Key facts:
 - If will exists for self-acquired property: different challenge needed
 - Partition suit in District Court is the legal remedy
 - NALSA 15100 provides free lawyer for partition suits
-Citation format: [Source: Hindu Succession Act 1956, Section 6] and [Source: Vineeta Sharma v Rakesh Sharma, Supreme Court 2020]
+MANDATORY citations for Block 2:
+[Source: Hindu Succession Act 1956, Section 6] + explanation about daughters' equal rights
+[Source: Vineeta Sharma v Rakesh Sharma, Supreme Court 2020] + explanation about father dying before 2005
 """,
     "maintenance": """
 Key law: CrPC Section 125
@@ -457,6 +469,10 @@ Key facts:
 - Amount based on husband's income and wife's needs
 - Wife who left due to cruelty still entitled to maintenance
 - NALSA 15100 provides free lawyer for maintenance cases
+
+MANDATORY citations for Block 2 — use exactly this format:
+[Source: CrPC, Section 125] + explanation
+[Source: CrPC, Section 125(2)] + explanation about 60 days
 """,
     "workplace": """
 Key law: POSH Act 2013

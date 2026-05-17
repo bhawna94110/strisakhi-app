@@ -16,14 +16,24 @@ from app.config import settings
 def clean_response_for_user(response: str) -> str:
     """
     Remove internal block headers before streaming to user.
-    Keeps content, strips ━━━ BLOCK X: LABEL ━━━ markers in all variants.
+    Catches all variants: with ━━━, without ━━━, with/without spaces.
     """
     import re
-    # Remove all ━━━ ... ━━━ lines (catches all block header variants)
+    # Remove ━━━ ... ━━━ lines (standard format)
     response = re.sub(r'━+[^━\n]*━+\n?', '', response)
-    # Remove leading bullet/asterisk from lines
+    # Remove BLOCK N: LABEL lines without ━━━ (model sometimes omits separators)
+    response = re.sub(
+        r'^(?:━*\s*)?BLOCK\s+\d+[:\s][^\n]*\n?',
+        '', response, flags=re.MULTILINE | re.IGNORECASE
+    )
+    # Remove ब्लॉक N: Hindi headers
+    response = re.sub(
+        r'^(?:━*\s*)?ब्लॉक\s*[१२३४५\d]+[:\s][^\n]*\n?',
+        '', response, flags=re.MULTILINE
+    )
+    # Remove leading bullet/asterisk
     response = re.sub(r'^\*\s+', '', response, flags=re.MULTILINE)
-    # Collapse 3+ blank lines into 2
+    # Collapse 3+ blank lines
     response = re.sub(r'\n{3,}', '\n\n', response)
     return response.strip()
 
