@@ -20,7 +20,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .nb{padding:14px;border-radius:10px;border:1px solid #2e3347;background:#242838;color:#e8eaf6;font-size:18px;font-weight:600;cursor:pointer;transition:all .2s}
 .nb:hover{background:#2e3347}.nb:active{transform:scale(.95)}
 .errtxt{font-size:12px;color:#ef4444;margin-top:10px;height:16px}
-#dash{height:100vh;flex-direction:column}
+#dash{display:none;flex-direction:column;height:100vh}
 .topper{background:#1a1d27;border-bottom:1px solid #2e3347;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .brand{display:flex;align-items:center;gap:10px}
 .brand-icon{width:32px;height:32px;background:linear-gradient(135deg,#06b6d4,#3b82f6);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px}
@@ -35,19 +35,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .lout:hover{color:#e8eaf6;background:#242838}
 .tabs{display:flex;border-bottom:1px solid #2e3347;background:#1a1d27;flex-shrink:0}
 .tab{padding:10px 18px;font-size:13px;font-weight:600;color:#5f6688;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
-.tab:hover{color:#9ca3c9}
-.tab.on{color:#06b6d4;border-bottom-color:#06b6d4}
+.tab:hover{color:#9ca3c9}.tab.on{color:#06b6d4;border-bottom-color:#06b6d4}
 .tab-content{flex:1;overflow-y:auto;padding:20px}
 .tab-content::-webkit-scrollbar{width:5px}
 .tab-content::-webkit-scrollbar-thumb{background:#2e3347;border-radius:3px}
-.tab-panel{display:none}
-.tab-panel.on{display:block}
+.tab-panel{display:none}.tab-panel.on{display:block}
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
 .sc{background:#1a1d27;border:1px solid #2e3347;border-radius:12px;padding:16px}
 .slbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#5f6688;margin-bottom:7px}
 .sval{font-size:26px;font-weight:700;line-height:1}
 .ssub{font-size:11px;color:#5f6688;margin-top:3px}
-.sbar{height:4px;background:#242838;border-radius:2px;margin-top:9px}
+.sbar{height:4px;background:#242838;border-radius:2px;margin-top:9px;overflow:hidden}
 .sfill{height:100%;border-radius:2px;transition:width .5s}
 .sec{background:#1a1d27;border:1px solid #2e3347;border-radius:12px;margin-bottom:14px;overflow:hidden}
 .sechdr{padding:13px 16px;border-bottom:1px solid #2e3347;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:space-between}
@@ -59,17 +57,54 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .ok{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.2)}
 .err{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.2)}
 .warn{background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.2)}
-.flow-wrap{padding:16px;overflow-x:auto}
-.flow-row{display:flex;align-items:flex-start;gap:0;min-width:600px}
-.fnode{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0}
-.fbox{border-radius:11px;padding:11px 13px;text-align:center;min-width:90px;border:1.5px solid #2e3347;background:#242838;transition:all .3s}
-.fbox.ok{border-color:#22c55e;background:rgba(34,197,94,.08)}
-.fbox.error{border-color:#ef4444;background:rgba(239,68,68,.08)}
-.fbox.active{border-color:#06b6d4;background:rgba(6,182,212,.08)}
-.fbox-ico{font-size:20px;margin-bottom:3px}
-.fbox-name{font-size:11px;font-weight:700;color:#e8eaf6;white-space:pre-line}
-.fbox-sub{font-size:9px;color:#5f6688;margin-top:2px;line-height:1.3;white-space:pre-line}
-.farrow{display:flex;align-items:center;padding:0 5px;flex-shrink:0;margin-top:18px;color:#3d4460;font-size:16px}
+/* FLOW */
+.flow-canvas{padding:20px;overflow-x:auto}
+.flow-nodes{display:flex;align-items:center;gap:0;min-width:700px;margin-bottom:20px}
+.fnode{display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0}
+.fbox{border-radius:12px;padding:12px 10px;text-align:center;min-width:88px;border:2px solid #2e3347;background:#242838;transition:all .4s;cursor:default}
+.fbox.st-ok{border-color:#22c55e;background:rgba(34,197,94,.08)}
+.fbox.st-err{border-color:#ef4444;background:rgba(239,68,68,.08)}
+.fbox.st-active{border-color:#06b6d4;background:rgba(6,182,212,.1);box-shadow:0 0 12px rgba(6,182,212,.2)}
+.fbox.st-live{border-color:#a855f7;background:rgba(168,85,247,.1);box-shadow:0 0 14px rgba(168,85,247,.3);animation:livePulse 1.5s ease-in-out infinite}
+@keyframes livePulse{0%,100%{box-shadow:0 0 14px rgba(168,85,247,.3)}50%{box-shadow:0 0 24px rgba(168,85,247,.5)}}
+.fbox-ico{font-size:22px;margin-bottom:4px}
+.fbox-name{font-size:11px;font-weight:700;color:#e8eaf6;line-height:1.3}
+.fbox-sub{font-size:9px;color:#5f6688;margin-top:3px;line-height:1.4}
+.farrow{display:flex;align-items:center;padding:0 4px;flex-shrink:0;margin-bottom:20px;font-size:18px;color:#3d4460}
+/* SM nodes */
+.sm-row{display:flex;align-items:center;justify-content:center;gap:12px;padding:16px;flex-wrap:wrap}
+.sm-node{border-radius:12px;padding:12px 16px;text-align:center;min-width:100px;border:2px solid #2e3347;background:#1e2235;transition:all .3s;font-size:12px;font-weight:700}
+.sm-node.sm-active{transform:scale(1.08)}
+.sm-node.sm-intake{border-color:#3b82f6;background:rgba(59,130,246,.1);color:#93c5fd}
+.sm-node.sm-expert{border-color:#22c55e;background:rgba(34,197,94,.1);color:#86efac}
+.sm-node.sm-followup{border-color:#a855f7;background:rgba(168,85,247,.1);color:#d8b4fe}
+.sm-node.sm-emergency{border-color:#ef4444;background:rgba(239,68,68,.1);color:#fca5a5}
+.sm-node.sm-idle{border-color:#2e3347;background:#1e2235;color:#5f6688}
+.sm-arr{color:#3d4460;font-size:16px}
+/* Session panel */
+.sess-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:14px 16px}
+.sess-cell{background:#242838;border-radius:10px;padding:12px}
+.sess-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#5f6688;margin-bottom:5px}
+.sess-val{font-size:18px;font-weight:700;color:#e8eaf6}
+.score-bar-wrap{padding:0 16px 14px}
+.score-bar-lbl{display:flex;justify-content:space-between;font-size:11px;color:#94a3b8;margin-bottom:4px}
+.score-bar-bg{height:8px;background:#1e293b;border-radius:4px;overflow:hidden}
+.score-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#3b82f6,#8b5cf6);transition:width .6s ease}
+.fields-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 14px}
+.field-chip{padding:3px 9px;border-radius:12px;font-size:10px;font-weight:600}
+.chip-done{background:#166534;color:#86efac}
+.chip-pend{border:1px dashed #334155;color:#64748b}
+/* Routing log */
+.route-log{background:#0d1117;border-radius:10px;padding:12px;font-family:monospace;font-size:11px;line-height:1.8;max-height:160px;overflow-y:auto;margin:0 16px 14px;border:1px solid #2e3347}
+/* Benchmark table */
+.bench-table{width:100%;border-collapse:collapse;font-size:13px}
+.bench-table th{text-align:left;padding:8px 14px;color:#5f6688;font-size:10px;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid #2e3347}
+.bench-table td{padding:10px 14px;border-bottom:1px solid #1e293b}
+.bench-pill{padding:3px 10px;border-radius:4px;font-weight:700;font-size:12px}
+.pill-red{background:#7f1d1d;color:#fca5a5}
+.pill-green{background:#166534;color:#86efac}
+.pill-blue{background:#1e3a5f;color:#93c5fd}
+/* Routing logic */
 .rd-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
 .rd-cond{background:#242838;border:1px solid #2e3347;border-radius:7px;padding:7px 11px;font-size:11px;color:#9ca3c9;font-family:monospace}
 .rd-arr{color:#5f6688;font-size:13px}
@@ -77,7 +112,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .rd-intake{background:rgba(59,130,246,.15);color:#3b82f6;border:1px solid rgba(59,130,246,.2)}
 .rd-expert{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.2)}
 .rd-emerg{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.2)}
-.log-box{background:#0d1117;border-radius:10px;padding:14px;font-family:monospace;font-size:11px;line-height:1.7;max-height:380px;overflow-y:auto;border:1px solid #2e3347}
+/* Logs */
+.log-box{background:#0d1117;border-radius:10px;padding:14px;font-family:monospace;font-size:11px;line-height:1.7;max-height:360px;overflow-y:auto;border:1px solid #2e3347}
 .log-box::-webkit-scrollbar{width:4px}
 .log-box::-webkit-scrollbar-thumb{background:#2e3347}
 .le{display:flex;gap:8px;align-items:flex-start;margin-bottom:2px}
@@ -87,6 +123,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .lm{color:#9ca3c9;word-break:break-word}
 .lm.hl{color:#e8eaf6;font-weight:600}
 .log-empty{color:#3d4460;text-align:center;padding:24px;font-size:12px}
+/* Settings */
 .setting-row{display:flex;align-items:center;justify-content:space-between;padding:12px;background:#242838;border-radius:10px}
 .sl{flex:1}
 .sl-name{font-size:13px;font-weight:600}
@@ -95,19 +132,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 input[type=range]{width:115px;height:4px;appearance:none;background:#3d4460;border-radius:2px;outline:none;cursor:pointer}
 input[type=range]::-webkit-slider-thumb{appearance:none;width:14px;height:14px;border-radius:50%;background:#06b6d4;cursor:pointer}
 .sv{font-size:12px;font-weight:700;color:#06b6d4;min-width:34px;text-align:right}
+/* Toggle switch */
+.toggle-wrap{display:flex;align-items:center;gap:8px}
+.toggle{width:46px;height:26px;border-radius:13px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
+.toggle.on{background:#22c55e}
+.toggle.off{background:#ef4444}
+.toggle-knob{width:22px;height:22px;border-radius:50%;background:white;position:absolute;top:2px;transition:left .2s}
+.toggle.on .toggle-knob{left:22px}
+.toggle.off .toggle-knob{left:2px}
+.toggle-label{font-size:12px;font-weight:700}
+.toggle.on + .toggle-label{color:#22c55e}
+.toggle.off + .toggle-label{color:#ef4444}
 .save-btn{background:#06b6d4;border:none;color:white;padding:8px 18px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:12px;transition:all .2s}
 .save-btn:hover{background:#0891b2}
 .savedmsg{font-size:12px;margin-top:7px;height:16px}
-.errbox{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:10px;padding:12px;text-align:center;color:#ef4444;font-size:13px;margin-bottom:14px;display:none}
 .raggrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:14px 16px}
 .ragitem{background:#242838;border-radius:10px;padding:12px;text-align:center}
 .ragnum{font-size:22px;font-weight:700;color:#06b6d4}
 .raglbl{font-size:11px;color:#5f6688;margin-top:3px}
 .badge-pill{background:#a855f7;color:white;font-size:9px;padding:1px 6px;border-radius:99px;margin-left:5px}
+.errbox{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:10px;padding:12px;text-align:center;color:#ef4444;font-size:13px;margin-bottom:14px;display:none}
 </style>
 </head>
 <body>
 
+<!-- LOGIN -->
 <div id="login">
   <div class="lbox">
     <div class="lico">🔐</div>
@@ -129,8 +178,8 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:14px;height:14px;b
   </div>
 </div>
 
-<div id="dash" style="display:none;flex-direction:column;height:100vh">
-
+<!-- DASHBOARD -->
+<div id="dash">
   <div class="topper">
     <div class="brand">
       <div class="brand-icon">⚡</div>
@@ -158,7 +207,7 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:14px;height:14px;b
 
   <div class="tab-content">
 
-    <!-- SYSTEM -->
+    <!-- ── SYSTEM ── -->
     <div class="tab-panel on" id="panel-system">
       <div class="errbox" id="errbox"></div>
       <div class="cards">
@@ -173,46 +222,144 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:14px;height:14px;b
       <div class="sec" id="ragsec" style="display:none"><div class="sechdr">📚 RAG Knowledge Base</div><div class="raggrid" id="ragdata"></div></div>
     </div>
 
-    <!-- AI FLOW -->
+    <!-- ── AI FLOW ── -->
     <div class="tab-panel" id="panel-flow">
+
+      <!-- Architecture flow -->
       <div class="sec">
-        <div class="sechdr">🧠 Request Architecture</div>
-        <div class="flow-wrap"><div class="flow-row" id="flow-row"></div></div>
-      </div>
-      <div class="sec">
-        <div class="sechdr">🔀 Routing Logic</div>
-        <div style="padding:14px 16px">
-          <div style="font-size:12px;color:#5f6688;margin-bottom:12px">How StriSakhi decides which agent handles each message:</div>
-          <div class="rd-row"><div class="rd-cond">Emergency keywords detected</div><div class="rd-arr">→</div><div class="rd-r rd-emerg">🆘 EMERGENCY — show helplines + short response</div></div>
-          <div class="rd-row"><div class="rd-cond">user_turns ≥ intake_max_turns (4)</div><div class="rd-arr">→</div><div class="rd-r rd-expert">⚡ EXPERT agent forced</div></div>
-          <div class="rd-row"><div class="rd-cond">agent_phase === "expert" already</div><div class="rd-arr">→</div><div class="rd-r rd-expert">⚡ EXPERT agent continues</div></div>
-          <div class="rd-row"><div class="rd-cond">confidence_score ≥ 0.65 (has location + crime)</div><div class="rd-arr">→</div><div class="rd-r rd-expert">⚡ EXPERT early switch</div></div>
-          <div class="rd-row"><div class="rd-cond">Frustration detected ("bas karo", short replies)</div><div class="rd-arr">→</div><div class="rd-r rd-expert">⚡ EXPERT skip intake</div></div>
-          <div class="rd-row"><div class="rd-cond">Otherwise (turns 1–4)</div><div class="rd-arr">→</div><div class="rd-r rd-intake">🔍 INTAKE agent</div></div>
+        <div class="sechdr">🔁 Request Pipeline</div>
+        <div class="flow-canvas">
+          <div class="flow-nodes" id="flow-row"></div>
         </div>
       </div>
+
+      <!-- Live State Machine -->
+      <div class="sec">
+        <div class="sechdr">⚡ Live State Machine — Kanoon Sakhi <span id="sm-session-id" style="font-size:10px;color:#5f6688;font-weight:400;margin-left:8px">waiting...</span></div>
+        <div class="sm-row">
+          <div class="sm-node sm-emergency sm-idle" id="sm-emergency">🚨 Emergency<br><small style="font-weight:400;opacity:.7">admin toggle</small></div>
+          <div class="sm-arr">↕</div>
+          <div class="sm-node sm-intake" id="sm-intake">🔍 Intake<br><small style="font-weight:400;opacity:.7">collecting</small></div>
+          <div class="sm-arr">→</div>
+          <div class="sm-node sm-idle" id="sm-expert">⚡ Expert<br><small style="font-weight:400;opacity:.7">RAG + LLM</small></div>
+          <div class="sm-arr">→</div>
+          <div class="sm-node sm-idle" id="sm-followup">💬 Follow-up<br><small style="font-weight:400;opacity:.7">short answers</small></div>
+        </div>
+
+        <!-- Session stats -->
+        <div class="sess-grid">
+          <div class="sess-cell"><div class="sess-lbl">Phase</div><div class="sess-val" id="sm-phase" style="font-size:14px">—</div></div>
+          <div class="sess-cell"><div class="sess-lbl">Crime Type</div><div class="sess-val" id="sm-crime" style="font-size:13px">—</div></div>
+          <div class="sess-cell"><div class="sess-lbl">Turn</div><div class="sess-val" id="sm-turn" style="color:#f59e0b">—</div></div>
+        </div>
+
+        <!-- Score bar -->
+        <div class="score-bar-wrap">
+          <div class="score-bar-lbl"><span>Readiness Score</span><span id="sm-score-label" style="color:#f59e0b;font-weight:700">0 / 100</span></div>
+          <div class="score-bar-bg"><div class="score-bar-fill" id="sm-score-bar" style="width:0%"></div></div>
+        </div>
+
+        <!-- Fields -->
+        <div class="fields-row">
+          <div>
+            <div style="font-size:9px;color:#5f6688;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">✅ Collected</div>
+            <div id="sm-collected" style="display:flex;flex-wrap:wrap;gap:4px"><span style="font-size:11px;color:#475569">none yet</span></div>
+          </div>
+          <div>
+            <div style="font-size:9px;color:#5f6688;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">⏳ Pending</div>
+            <div id="sm-pending" style="display:flex;flex-wrap:wrap;gap:4px"><span style="font-size:11px;color:#475569">none yet</span></div>
+          </div>
+        </div>
+
+        <!-- Routing log -->
+        <div style="font-size:9px;color:#5f6688;text-transform:uppercase;letter-spacing:1px;padding:0 16px 6px">Recent Routing Decisions</div>
+        <div class="route-log" id="sm-routing-log"><span style="color:#475569">Waiting for conversation...</span></div>
+      </div>
+
+      <!-- Benchmark table -->
+      <div class="sec">
+        <div class="sechdr">📈 Benchmark — Base vs Fine-tuned vs LangGraph v2</div>
+        <div style="padding:14px 16px;overflow-x:auto">
+          <table class="bench-table">
+            <tr>
+              <th>Metric</th>
+              <th style="color:#ef4444;text-align:center">Base Gemma 4</th>
+              <th style="color:#22c55e;text-align:center">Fine-tuned LoRA</th>
+              <th style="color:#06b6d4;text-align:center">LangGraph v2</th>
+            </tr>
+            <tr>
+              <td style="color:#e2e8f0">Pass Rate</td>
+              <td style="text-align:center"><span class="bench-pill pill-red">60%</span></td>
+              <td style="text-align:center"><span class="bench-pill pill-green">93%</span></td>
+              <td style="text-align:center"><span class="bench-pill pill-blue">3/3 ✓</span></td>
+            </tr>
+            <tr>
+              <td style="color:#e2e8f0">Structure (5 blocks)</td>
+              <td style="text-align:center"><span class="bench-pill pill-red">0.67</span></td>
+              <td style="text-align:center"><span class="bench-pill pill-green">0.92</span></td>
+              <td style="text-align:center"><span class="bench-pill pill-blue">1.00</span></td>
+            </tr>
+            <tr>
+              <td style="color:#e2e8f0">Section Accuracy</td>
+              <td style="text-align:center"><span class="bench-pill pill-red">0.40</span></td>
+              <td style="text-align:center"><span class="bench-pill pill-green">0.90</span></td>
+              <td style="text-align:center"><span class="bench-pill pill-blue">1.00</span></td>
+            </tr>
+            <tr>
+              <td style="color:#e2e8f0">Hindi Purity</td>
+              <td style="text-align:center"><span class="bench-pill pill-green">1.00</span></td>
+              <td style="text-align:center"><span class="bench-pill pill-green">0.87</span></td>
+              <td style="text-align:center"><span class="bench-pill pill-green">0.87</span></td>
+            </tr>
+            <tr>
+              <td style="color:#e2e8f0;font-weight:700">Overall Score</td>
+              <td style="text-align:center"><span class="bench-pill pill-red" style="font-size:14px">0.71</span></td>
+              <td style="text-align:center"><span class="bench-pill pill-green" style="font-size:14px">0.89</span></td>
+              <td style="text-align:center"><span class="bench-pill pill-blue" style="font-size:14px">0.94</span></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Routing logic -->
+      <div class="sec">
+        <div class="sechdr">🔀 Score-Based Routing Logic</div>
+        <div style="padding:14px 16px">
+          <div style="font-size:12px;color:#5f6688;margin-bottom:12px">LangGraph routes based on crime type + collected fields score (0-100):</div>
+          <div class="rd-row"><div class="rd-cond">crime ∈ {rape, acid_attack, trafficking} + turn ≥ 1</div><div class="rd-arr">→</div><div class="rd-r rd-expert">⚡ EXPERT immediately</div></div>
+          <div class="rd-row"><div class="rd-cond">frustrated = true</div><div class="rd-arr">→</div><div class="rd-r rd-expert">⚡ EXPERT skip intake</div></div>
+          <div class="rd-row"><div class="rd-cond">score ≥ 95 AND turn ≥ 2</div><div class="rd-arr">→</div><div class="rd-r rd-expert">⚡ EXPERT (all fields)</div></div>
+          <div class="rd-row"><div class="rd-cond">score ≥ 85 AND turn ≥ 3</div><div class="rd-arr">→</div><div class="rd-r rd-expert">⚡ EXPERT (strong context)</div></div>
+          <div class="rd-row"><div class="rd-cond">score ≥ 70 AND turn ≥ 4</div><div class="rd-arr">→</div><div class="rd-r rd-expert">⚡ EXPERT (sufficient)</div></div>
+          <div class="rd-row"><div class="rd-cond">turn ≥ max_turns (admin setting)</div><div class="rd-arr">→</div><div class="rd-r rd-expert">⚡ EXPERT forced</div></div>
+          <div class="rd-row"><div class="rd-cond">Otherwise</div><div class="rd-arr">→</div><div class="rd-r rd-intake">🔍 INTAKE — next question</div></div>
+        </div>
+      </div>
+
+      <!-- Three Sakhis -->
       <div class="sec">
         <div class="sechdr">🌸 Three Sakhi Pipelines</div>
         <div class="secbody">
-          <div class="row"><div><div class="rlbl">⚖️ Kanoon Sakhi — Legal</div><div class="rsub">intake → legal_agent → ChromaDB (194 chunks: DV Act, IPC, POSH, Hindu Succession) → 10 crime types</div></div><span class="bdg ok" id="kanoon-st">● Active</span></div>
-          <div class="row"><div><div class="rlbl">🌿 Sehat Sakhi — Medical</div><div class="rsub">intake → medical_agent → ChromaDB (medical_documents) → 8 health categories → never diagnoses</div></div><span class="bdg ok" id="sehat-st">● Active</span></div>
-          <div class="row"><div><div class="rlbl">📜 Yojana Sakhi — Schemes</div><div class="rsub">intake → scheme_agent → scheme_documents + 14-scheme hardcoded database → PMAY, Ayushman, MGNREGS...</div></div><span class="bdg ok" id="yojana-st">● Active</span></div>
+          <div class="row"><div><div class="rlbl">⚖️ Kanoon Sakhi — Legal</div><div class="rsub">LangGraph v2 · intake → RAG → expert → follow_up · 10 crime types · 197 legal chunks</div></div><span class="bdg ok">● Active</span></div>
+          <div class="row"><div><div class="rlbl">🌿 Sehat Sakhi — Medical</div><div class="rsub">Single LLM call · RAG from medical_documents · ASHA worker style · /api/medical</div></div><span class="bdg ok">● Active</span></div>
+          <div class="row"><div><div class="rlbl">📜 Yojana Sakhi — Schemes</div><div class="rsub">Single LLM call · 13 hardcoded schemes · PM Awas, Ayushman, MGNREGS · /api/scheme</div></div><span class="bdg ok">● Active</span></div>
         </div>
       </div>
+
+      <!-- Language system -->
       <div class="sec">
         <div class="sechdr">🌐 Language System</div>
         <div class="secbody">
-          <div class="row"><div><div class="rlbl">हिंदी (Hindi)</div><div class="rsub">Session-locked · Devanagari forced in system prompt · Piper priyamvada (61MB, offline)</div></div><span class="bdg ok">● TTS Ready</span></div>
-          <div class="row"><div><div class="rlbl">English</div><div class="rsub">Session-locked · English forced in system prompt · Piper Amy (60MB, offline)</div></div><span class="bdg ok">● TTS Ready</span></div>
-          <div class="row"><div><div class="rlbl">বাংলা (Bengali)</div><div class="rsub">Session-locked · Bengali forced in system prompt · No TTS (no Bengali Piper voice)</div></div><span class="bdg warn">● Text Only</span></div>
-          <div class="row" style="opacity:.5"><div><div class="rlbl">Tamil · Telugu · Marathi + more</div><div class="rsub">Coming soon — Gemma 4 supports 140+ languages natively</div></div><span class="bdg" style="background:#1a1d27;color:#5f6688;border:1px solid #2e3347">● Soon</span></div>
+          <div class="row"><div><div class="rlbl">हिंदी (Hindi)</div><div class="rsub">Session-locked · Devanagari forced · Piper priyamvada (61MB, offline)</div></div><span class="bdg ok">● TTS Ready</span></div>
+          <div class="row"><div><div class="rlbl">English</div><div class="rsub">Session-locked · English forced · Piper Amy (60MB, offline)</div></div><span class="bdg ok">● TTS Ready</span></div>
+          <div class="row"><div><div class="rlbl">বাংলা (Bengali)</div><div class="rsub">Session-locked · Bengali forced · No TTS available</div></div><span class="bdg warn">● Text Only</span></div>
         </div>
       </div>
     </div>
 
-    <!-- LOGS -->
+    <!-- ── LOGS ── -->
     <div class="tab-panel" id="panel-logs">
-      <div style="font-size:12px;color:#5f6688;margin-bottom:14px">Live activity log — routing decisions, RAG retrievals, TTS calls, errors. Polls every 5 seconds.</div>
+      <div style="font-size:12px;color:#5f6688;margin-bottom:14px">Live activity log. Polls every 5 seconds.</div>
       <div class="cards" style="margin-bottom:14px">
         <div class="sc"><div class="slbl">Total Events</div><div class="sval" id="log-total" style="color:#a855f7">0</div></div>
         <div class="sc"><div class="slbl">Emergencies</div><div class="sval" id="log-emerg" style="color:#ef4444">0</div></div>
@@ -225,7 +372,7 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:14px;height:14px;b
           <button class="rbtn" onclick="clearLogs()" style="font-size:11px;padding:4px 10px">Clear</button>
         </div>
         <div style="padding:12px 14px">
-          <div class="log-box" id="log-box"><div class="log-empty">No events yet — start a conversation in the app to see live logs here</div></div>
+          <div class="log-box" id="log-box"><div class="log-empty">No events yet — start a conversation to see live logs</div></div>
         </div>
       </div>
       <div class="sec" style="margin-top:14px">
@@ -234,28 +381,53 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:14px;height:14px;b
       </div>
     </div>
 
-    <!-- SETTINGS -->
+    <!-- ── SETTINGS ── -->
     <div class="tab-panel" id="panel-settings">
       <div style="font-size:12px;color:#5f6688;margin-bottom:14px">Changes apply immediately — saved to <code style="color:#06b6d4">config_runtime.json</code>. No restart needed.</div>
+
+      <!-- Emergency toggle — prominent at top -->
+      <div class="sec" style="border-color:#ef4444;margin-bottom:14px">
+        <div class="sechdr" style="color:#ef4444">🆘 Emergency Detection</div>
+        <div class="secbody">
+          <div class="setting-row">
+            <div class="sl">
+              <div class="sl-name">Emergency LLM Check</div>
+              <div class="sl-sub">LLM checks if user is in immediate danger each turn. Disable only for demos/testing.</div>
+            </div>
+            <div class="sc-ctrl">
+              <div class="toggle-wrap">
+                <div class="toggle on" id="emerg-toggle" onclick="toggleEmergency()">
+                  <div class="toggle-knob"></div>
+                </div>
+                <span class="toggle-label" id="emerg-label" style="color:#22c55e">ON</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="sec">
         <div class="sechdr">🔊 TTS Settings</div>
         <div class="secbody">
-          <div class="setting-row"><div class="sl"><div class="sl-name">Hindi TTS Speed (Priyamvada)</div><div class="sl-sub">Lower = slower · 1.2× recommended for rural women</div></div><div class="sc-ctrl"><input type="range" id="hi-speed" min="0.7" max="1.8" step="0.1" value="1.2" oninput="document.getElementById('hi-spv').textContent=this.value+'×'"><span class="sv" id="hi-spv">1.2×</span></div></div>
+          <div class="setting-row"><div class="sl"><div class="sl-name">Hindi TTS Speed (Priyamvada)</div><div class="sl-sub">1.2× recommended for rural women</div></div><div class="sc-ctrl"><input type="range" id="hi-speed" min="0.7" max="1.8" step="0.1" value="1.2" oninput="document.getElementById('hi-spv').textContent=this.value+'×'"><span class="sv" id="hi-spv">1.2×</span></div></div>
           <div class="setting-row"><div class="sl"><div class="sl-name">English TTS Speed (Amy)</div><div class="sl-sub">Normal speed for English users</div></div><div class="sc-ctrl"><input type="range" id="en-speed" min="0.7" max="1.8" step="0.1" value="1.0" oninput="document.getElementById('en-spv').textContent=this.value+'×'"><span class="sv" id="en-spv">1.0×</span></div></div>
         </div>
       </div>
+
       <div class="sec">
         <div class="sechdr">🧩 Agent Settings</div>
         <div class="secbody">
-          <div class="setting-row"><div class="sl"><div class="sl-name">Intake Max Turns</div><div class="sl-sub">Switch to expert after N user messages</div></div><div class="sc-ctrl"><input type="range" id="intake-turns" min="1" max="7" step="1" value="4" oninput="document.getElementById('itv').textContent=this.value"><span class="sv" id="itv">4</span></div></div>
+          <div class="setting-row"><div class="sl"><div class="sl-name">Intake Max Turns</div><div class="sl-sub">Force expert after N turns regardless of score</div></div><div class="sc-ctrl"><input type="range" id="intake-turns" min="1" max="10" step="1" value="10" oninput="document.getElementById('itv').textContent=this.value"><span class="sv" id="itv">10</span></div></div>
           <div class="setting-row"><div class="sl"><div class="sl-name">LLM Temperature</div><div class="sl-sub">0.2 recommended · higher = more creative</div></div><div class="sc-ctrl"><input type="range" id="temp" min="0.1" max="0.9" step="0.1" value="0.2" oninput="document.getElementById('tmpv').textContent=this.value"><span class="sv" id="tmpv">0.2</span></div></div>
-          <div class="setting-row"><div class="sl"><div class="sl-name">Expert Max Tokens</div><div class="sl-sub">600 = ~350 words response</div></div><div class="sc-ctrl"><input type="range" id="max-tok" min="200" max="900" step="50" value="600" oninput="document.getElementById('tokv').textContent=this.value"><span class="sv" id="tokv">600</span></div></div>
+          <div class="setting-row"><div class="sl"><div class="sl-name">Expert Max Tokens</div><div class="sl-sub">600 = ~350 words</div></div><div class="sc-ctrl"><input type="range" id="max-tok" min="200" max="900" step="50" value="600" oninput="document.getElementById('tokv').textContent=this.value"><span class="sv" id="tokv">600</span></div></div>
         </div>
       </div>
-      <button class="save-btn" onclick="saveSettings()">💾 Save to Backend</button>
+
+      <button class="save-btn" onclick="saveSettings()">💾 Save All Settings</button>
       <div class="savedmsg" id="savedmsg"></div>
+
       <div class="sec" style="margin-top:14px">
-        <div class="sechdr">📋 Current config_runtime.json</div>
+        <div class="sechdr">📋 config_runtime.json</div>
         <pre id="config-json" style="font-family:monospace;font-size:11px;color:#9ca3c9;padding:14px 16px;white-space:pre-wrap">Loading...</pre>
       </div>
     </div>
@@ -267,26 +439,31 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:14px;height:14px;b
 const CORRECT='1234', API='http://localhost:8000';
 let pin='', timer=null, logTimer=null;
 let eventLog=[], logStats={total:0,emergencies:0,expert:0,tts:0};
-let prevMessages=0;
+let prevMessages=0, emergencyEnabled=true;
+let currentSession=null;
 
+// ── LOGIN ─────────────────────────────────────────────────────────────────────
 function press(k){
-  if(k==='del')pin=pin.slice(0,-1);
-  else if(k==='clr')pin='';
-  else if(pin.length<4)pin+=k;
+  if(k==='del') pin=pin.slice(0,-1);
+  else if(k==='clr') pin='';
+  else if(pin.length<4) pin+=k;
   document.getElementById('perr').textContent='';
-  for(let i=0;i<4;i++){const d=document.getElementById('p'+i);d.className='pd'+(i<pin.length?' f':'');d.textContent=i<pin.length?'●':'';}
+  for(let i=0;i<4;i++){
+    const d=document.getElementById('p'+i);
+    d.className='pd'+(i<pin.length?' f':'');
+    d.textContent=i<pin.length?'●':'';
+  }
   if(pin.length===4){
     setTimeout(()=>{
       if(pin===CORRECT){
         document.getElementById('login').style.display='none';
-        const d=document.getElementById('dash');d.style.display='flex';
+        document.getElementById('dash').style.display='flex';
         setTimeout(()=>{load();loadSettings();},50);
         timer=setInterval(load,15000);
         logTimer=setInterval(pollLogs,5000);
-        addLog('INFO','StriSakhi Admin connected',false);
-        addLog('INFO','Monitoring: llama.cpp · ChromaDB · SQLite · Piper TTS',false);
+        addLog('INFO','Admin connected — monitoring all services',false);
       } else {
-        for(let i=0;i<4;i++){const d=document.getElementById('p'+i);d.className='pd e';}
+        for(let i=0;i<4;i++) document.getElementById('p'+i).className='pd e';
         document.getElementById('perr').textContent='Wrong PIN';
         setTimeout(()=>{pin='';for(let i=0;i<4;i++){const d=document.getElementById('p'+i);d.className='pd';d.textContent='';}},700);
       }
@@ -295,10 +472,12 @@ function press(k){
 }
 
 function logout(){
-  if(timer)clearInterval(timer);if(logTimer)clearInterval(logTimer);
+  if(timer) clearInterval(timer);
+  if(logTimer) clearInterval(logTimer);
   document.getElementById('dash').style.display='none';
   document.getElementById('login').style.display='flex';
-  pin='';for(let i=0;i<4;i++){const d=document.getElementById('p'+i);d.className='pd';d.textContent='';}
+  pin='';
+  for(let i=0;i<4;i++){const d=document.getElementById('p'+i);d.className='pd';d.textContent='';}
 }
 
 function switchTab(name){
@@ -308,38 +487,44 @@ function switchTab(name){
   document.getElementById('panel-'+name).classList.add('on');
 }
 
+// ── HELPERS ──────────────────────────────────────────────────────────────────
 function bdg(st){
   const ok=['connected','ok','loaded','ready','found'].includes(st);
   const err=['error','NOT FOUND','missing','not loaded'].includes(st);
   const cls=ok?'ok':err?'err':'warn';
   return`<span class="bdg ${cls}">${ok?'● Ready':err?'● Error':'● '+st}</span>`;
 }
+function row(lbl,sub,st){
+  return`<div class="row"><div><div class="rlbl">${lbl}</div><div class="rsub">${sub}</div></div>${bdg(st)}</div>`;
+}
 
-function row(lbl,sub,st){return`<div class="row"><div><div class="rlbl">${lbl}</div><div class="rsub">${sub}</div></div>${bdg(st)}</div>`;}
-
+// ── LOAD HEALTH ───────────────────────────────────────────────────────────────
 async function load(){
   addHealthLog('INFO','Fetching /api/health...');
   try{
     const r=await fetch(API+'/api/health');
-    if(!r.ok)throw new Error('HTTP '+r.status);
+    if(!r.ok) throw new Error('HTTP '+r.status);
     const d=await r.json();
     document.getElementById('errbox').style.display='none';
-    addHealthLog('OK',`OK — ${d.status} · sessions:${d.services?.database?.total_sessions||0} · msgs:${d.services?.database?.total_messages||0}`);
-    setTimeout(()=>render(d),50);
+    addHealthLog('OK',`${d.status} · sessions:${d.services?.database?.total_sessions||0} · msgs:${d.services?.database?.total_messages||0}`);
+    render(d);
   }catch(e){
     addHealthLog('ERR','Cannot reach backend: '+e.message);
-    const eb=document.getElementById('errbox');eb.style.display='block';eb.textContent='⚠️ '+e.message;
+    const eb=document.getElementById('errbox');
+    eb.style.display='block'; eb.textContent='⚠️ Cannot reach backend: '+e.message;
   }
 }
 
 function render(d){
-  const sys=d.system||{},svc=d.services||{},tts=d.tts||{};
-  const llm=svc.llamacpp||{},db=svc.database||{},chroma=svc.chromadb||{};
+  const sys=d.system||{}, svc=d.services||{}, tts=d.tts||{};
+  const llm=svc.llamacpp||{}, db=svc.database||{}, chroma=svc.chromadb||{};
+
   document.getElementById('lupdated').textContent='Updated: '+new Date().toLocaleTimeString();
   const ok=d.status==='ok';
   document.getElementById('odot').style.background=ok?'#22c55e':'#f59e0b';
   document.getElementById('ostatus').textContent=ok?'All Systems OK':'Degraded';
   document.getElementById('ostatus').style.color=ok?'#22c55e':'#f59e0b';
+
   const cpu=sys.cpu_percent||0;
   document.getElementById('cpu').textContent=cpu+'%';
   document.getElementById('cpub').style.cssText=`width:${cpu}%;background:${cpu>80?'#ef4444':'#22c55e'}`;
@@ -348,101 +533,241 @@ function render(d){
   document.getElementById('ramb').style.width=(sys.ram_percent||0)+'%';
   document.getElementById('sess').textContent=db.total_sessions??'—';
   document.getElementById('msgs').textContent=db.total_messages??'—';
+
   const dc=Object.values(chroma.document_counts||{}).reduce((a,b)=>a+b,0);
   document.getElementById('svc').innerHTML=[
-    row('llama.cpp server',(llm.url||'host.docker.internal:8080')+' · Metal GPU · thinking:disabled',llm.status||'error'),
-    row('ChromaDB (RAG)',dc+' docs in '+(chroma.collections||[]).length+' collections',chroma.status||'error'),
-    row('SQLite database',(db.total_sessions||0)+' sessions · '+(db.total_messages||0)+' messages',db.status||'error'),
-    row('Piper TTS binary','/usr/local/piper · offline',tts.binary||'NOT FOUND'),
+    row('llama.cpp',(llm.url||'host.docker.internal:8080')+' · Metal GPU · thinking:disabled',llm.status||'error'),
+    row('ChromaDB',dc+' docs in '+(chroma.collections||[]).length+' collections',chroma.status||'error'),
+    row('SQLite',(db.total_sessions||0)+' sessions · '+(db.total_messages||0)+' messages',db.status||'error'),
+    row('Piper TTS','/usr/local/piper · offline',tts.binary||'NOT FOUND'),
   ].join('');
-  const hi=tts.voices?.hindi||{},en=tts.voices?.english||{};
+
+  const hi=tts.voices?.hindi||{}, en=tts.voices?.english||{};
   document.getElementById('mdls').innerHTML=[
-    row('Gemma 4 E2B (Q4_K_M)','3.2GB · LLM + STT · 140+ languages · native audio',llm.status==='connected'?'loaded':'not loaded'),
-    row('mmproj-gemma4-e2b','557MB · audio projector for STT',llm.status==='connected'?'loaded':'not loaded'),
+    row('Gemma 4 E2B Q4_K_M — Fine-tuned','3.2GB · Metal GPU · 41 tok/s · 140+ languages',llm.status==='connected'?'loaded':'not loaded'),
+    row('mmproj-gemma4-e2b','557MB · audio projector for native STT',llm.status==='connected'?'loaded':'not loaded'),
     row('Piper hi_IN-priyamvada',(hi.size_mb||0)+'MB · Hindi female · offline',hi.status||'missing'),
     row('Piper en_US-amy',(en.size_mb||0)+'MB · English female · offline',en.status||'missing'),
   ].join('');
+
   const sk=llm.status==='connected'?'ok':'error';
   document.getElementById('sakhis').innerHTML=[
-    row('⚖️ Kanoon Sakhi','Legal · 10 crime types · DV Act, IPC, POSH, Succession · /api/legal',sk),
-    row('🌿 Sehat Sakhi','Medical · 8 health categories · pregnancy, mental, child · /api/medical',sk),
-    row('📜 Yojana Sakhi','Schemes · 14 govt schemes + RAG · PMAY, Ayushman, MGNREGS · /api/scheme',sk),
+    row('⚖️ Kanoon Sakhi','LangGraph v2 · 10 crime types · 197 RAG chunks · /api/legal',sk),
+    row('🌿 Sehat Sakhi','Direct LLM · medical RAG · ASHA style · /api/medical',sk),
+    row('📜 Yojana Sakhi','Direct LLM · 13 schemes hardcoded · /api/scheme',sk),
   ].join('');
-  // Flow
-  const llmOk=llm.status==='connected',chromaOk=chroma.status==='connected',piperOk=tts.binary==='found';
+
+  // Pipeline flow
+  const llmOk=llm.status==='connected', chromaOk=chroma.status==='connected', piperOk=tts.binary==='found';
   const steps=[
-    {ico:'🎤',name:'Voice\nInput',sub:'WebM→WAV\n16kHz mono',st:'active'},
-    null,
-    {ico:'⚡',name:'Gemma 4\nSTT',sub:'Native audio\ntranscription',st:llmOk?'ok':'error'},
-    null,
-    {ico:'🔍',name:'Intake\nAgent',sub:'6 params\n4 turns max',st:'active'},
-    null,
-    {ico:'📚',name:'RAG\nChromaDB',sub:'Top-5 chunks\nsemantic search',st:chromaOk?'ok':'error'},
-    null,
-    {ico:'⚖️',name:'Expert\nAgent',sub:'5-block response\nfollow-ups',st:llmOk?'ok':'error'},
-    null,
-    {ico:'🔊',name:'Piper\nTTS',sub:'Offline\nHindi/English',st:piperOk?'ok':'error'},
+    {ico:'🎤',name:'Voice Input',sub:'WebM→WAV\n16kHz mono',st:'st-active'},null,
+    {ico:'⚡',name:'Gemma 4 STT',sub:'Native audio\ntranscription',st:llmOk?'st-ok':'st-err'},null,
+    {ico:'🔍',name:'LangGraph\nIntake',sub:'Score-based\n2-5 turns',st:'st-active'},null,
+    {ico:'📚',name:'ChromaDB\nRAG',sub:'197 legal\nchunks',st:chromaOk?'st-ok':'st-err'},null,
+    {ico:'⚖️',name:'Expert\nAgent',sub:'5-block response\n+ citations',st:llmOk?'st-ok':'st-err'},null,
+    {ico:'🔊',name:'Piper TTS',sub:'Hindi/English\noffline',st:piperOk?'st-ok':'st-err'},
   ];
   document.getElementById('flow-row').innerHTML=steps.map(s=>
-    s===null?'<div class="farrow">→</div>':
+    s===null ? '<div class="farrow">→</div>' :
     `<div class="fnode"><div class="fbox ${s.st}"><div class="fbox-ico">${s.ico}</div><div class="fbox-name">${s.name}</div><div class="fbox-sub">${s.sub}</div></div></div>`
   ).join('');
+
+  // RAG counts
   const counts=chroma.document_counts||{};
   if(Object.keys(counts).length>0){
     document.getElementById('ragsec').style.display='block';
-    document.getElementById('ragdata').innerHTML=Object.entries(counts).map(([n,c])=>`<div class="ragitem"><div class="ragnum">${c}</div><div class="raglbl">${n}</div></div>`).join('');
+    document.getElementById('ragdata').innerHTML=Object.entries(counts).map(([n,c])=>
+      `<div class="ragitem"><div class="ragnum">${c}</div><div class="raglbl">${n}</div></div>`
+    ).join('');
   }
-  // Check for new messages → log event
+
+  // New messages event
   const msgs=db.total_messages||0;
   if(msgs>prevMessages&&prevMessages>0){
-    const diff=msgs-prevMessages;
-    addLog('EVENT',`${diff} new message(s) · total: ${msgs} messages in ${db.total_sessions||0} sessions`,true);
+    addLog('EVENT',`${msgs-prevMessages} new message(s) · total ${msgs}`,true);
   }
   prevMessages=msgs;
 }
 
+// ── LIVE STATE MACHINE ────────────────────────────────────────────────────────
+function updateSM(events){
+  if(!events||!events.length) return;
+
+  // Detect new session
+  const routeEvents=events.filter(e=>e.type==='ROUTE'||e.type==='PARAM');
+  if(!routeEvents.length) return;
+  const latestSession=routeEvents[routeEvents.length-1].session;
+  if(latestSession && latestSession!==currentSession){
+    currentSession=latestSession;
+    resetSM();
+    document.getElementById('sm-session-id').textContent='Session: '+latestSession.slice(0,8);
+  }
+
+  const sessionEvts=currentSession ? events.filter(e=>e.session===currentSession||!e.session) : events;
+  if(!sessionEvts.length) return;
+
+  const paramLogs=sessionEvts.filter(e=>e.type==='PARAM');
+  const phaseLogs=sessionEvts.filter(e=>e.type==='PHASE');
+  const routeLogs=sessionEvts.filter(e=>e.type==='ROUTE');
+  const latestParam=paramLogs[paramLogs.length-1];
+  const latestPhase=phaseLogs[phaseLogs.length-1];
+
+  // Current phase
+  let phase='intake';
+  if(latestPhase) phase=latestPhase.detail?.to_phase||'intake';
+
+  // Highlight nodes
+  ['sm-intake','sm-expert','sm-followup'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.className='sm-node sm-idle';
+    if(id==='sm-intake') el.classList.add('sm-intake');
+    else if(id==='sm-expert') el.classList.add('sm-expert');
+    else el.classList.add('sm-followup');
+  });
+
+  const activeMap={intake:'sm-intake',expert:'sm-expert',follow_up:'sm-followup',emergency:'sm-emergency'};
+  const activeId=activeMap[phase]||'sm-intake';
+  const activeEl=document.getElementById(activeId);
+  if(activeEl){
+    activeEl.classList.add('sm-active');
+    if(activeId==='sm-intake') activeEl.style.boxShadow='0 0 16px rgba(59,130,246,.5)';
+    else if(activeId==='sm-expert') activeEl.style.boxShadow='0 0 16px rgba(34,197,94,.5)';
+    else if(activeId==='sm-followup') activeEl.style.boxShadow='0 0 16px rgba(168,85,247,.5)';
+    else activeEl.style.boxShadow='0 0 16px rgba(239,68,68,.5)';
+  }
+
+  // Phase label
+  const phaseLabels={intake:'INTAKE',expert:'EXPERT',follow_up:'FOLLOW UP',emergency:'EMERGENCY'};
+  const phaseColors={intake:'#93c5fd',expert:'#86efac',follow_up:'#d8b4fe',emergency:'#fca5a5'};
+  const phaseEl=document.getElementById('sm-phase');
+  phaseEl.textContent=phaseLabels[phase]||phase.toUpperCase();
+  phaseEl.style.color=phaseColors[phase]||'#e8eaf6';
+
+  // Score + crime
+  if(latestParam){
+    const d=latestParam.detail||{};
+    document.getElementById('sm-crime').textContent=(d.crime||'—').replace(/_/g,' ');
+    const score=parseInt(d.score)||0;
+    document.getElementById('sm-score-bar').style.width=Math.min(score,100)+'%';
+    const sl=document.getElementById('sm-score-label');
+    sl.textContent=score+' / 100';
+    sl.style.color=score>=80?'#4ade80':score>=60?'#f59e0b':'#94a3b8';
+
+    // Fields
+    const crime=d.crime||'';
+    const chips=[];
+    if(crime) chips.push(`<span class="field-chip chip-done">${crime.replace(/_/g,' ')}</span>`);
+    if(score>=50) chips.push(`<span class="field-chip chip-done">urgency</span>`);
+    if(score>=70) chips.push(`<span class="field-chip chip-done">relationship</span>`);
+    if(score>=80) chips.push(`<span class="field-chip chip-done">violence type</span>`);
+    if(score>=90) chips.push(`<span class="field-chip chip-done">living situation</span>`);
+    document.getElementById('sm-collected').innerHTML=chips.length?chips.join(' '):'<span style="font-size:11px;color:#475569">none yet</span>';
+
+    const pending=[];
+    if(score<95&&phase==='intake'){
+      if(score<80) pending.push('violence type');
+      if(score<85) pending.push('living situation');
+      if(score<90) pending.push('children');
+      if(score<95) pending.push('financial status');
+    }
+    document.getElementById('sm-pending').innerHTML=pending.length
+      ? pending.map(f=>`<span class="field-chip chip-pend">${f}</span>`).join(' ')
+      : '<span style="font-size:11px;color:#4ade80">all collected ✓</span>';
+  }
+
+  // Turn count
+  document.getElementById('sm-turn').textContent='Turn '+routeLogs.length;
+
+  // Routing log
+  const recent=[...routeLogs,...phaseLogs].slice(-8).reverse();
+  const logEl=document.getElementById('sm-routing-log');
+  if(recent.length){
+    const colors={expert:'#4ade80',follow_up:'#c084fc',intake:'#60a5fa',emergency:'#f87171',PHASE:'#f59e0b',DONE:'#4ade80'};
+    logEl.innerHTML=recent.map(ev=>{
+      const d=ev.detail||{};
+      const decision=d.decision||d.to_phase||ev.type.toLowerCase();
+      const detail=[d.score?`score=${d.score}`:'',d.crime||'',d.reason?d.reason.slice(0,40):''].filter(Boolean).join(' · ');
+      return`<div style="display:flex;gap:8px;padding:3px 0;border-bottom:1px solid #1e293b;align-items:center">
+        <span style="color:#3d4460;font-size:10px;min-width:60px">${ev.ts}</span>
+        <span style="color:${colors[decision]||'#94a3b8'};font-weight:700;font-size:10px;min-width:80px">${ev.type}</span>
+        <span style="color:#64748b;font-size:10px">${detail}</span>
+      </div>`;
+    }).join('');
+  }
+}
+
+function resetSM(){
+  document.getElementById('sm-phase').textContent='—';
+  document.getElementById('sm-crime').textContent='—';
+  document.getElementById('sm-turn').textContent='—';
+  document.getElementById('sm-score-bar').style.width='0%';
+  document.getElementById('sm-score-label').textContent='0 / 100';
+  document.getElementById('sm-collected').innerHTML='<span style="font-size:11px;color:#475569">none yet</span>';
+  document.getElementById('sm-pending').innerHTML='<span style="font-size:11px;color:#475569">none yet</span>';
+  document.getElementById('sm-routing-log').innerHTML='<span style="color:#475569">New session started...</span>';
+  ['sm-intake','sm-expert','sm-followup'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.classList.remove('sm-active');
+    el.style.boxShadow='';
+  });
+}
+
+// ── EMERGENCY TOGGLE ──────────────────────────────────────────────────────────
+function toggleEmergency(){
+  emergencyEnabled=!emergencyEnabled;
+  const tog=document.getElementById('emerg-toggle');
+  const lbl=document.getElementById('emerg-label');
+  if(emergencyEnabled){
+    tog.className='toggle on'; lbl.textContent='ON'; lbl.style.color='#22c55e';
+  } else {
+    tog.className='toggle off'; lbl.textContent='OFF'; lbl.style.color='#ef4444';
+  }
+  fetch(API+'/api/admin/settings',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({pin:CORRECT,emergency_check_enabled:emergencyEnabled})
+  }).then(()=>{
+    addLog(emergencyEnabled?'OK':'WARN',`Emergency detection ${emergencyEnabled?'ENABLED':'DISABLED'}`,true);
+  }).catch(e=>addLog('ERR','Failed to update emergency setting: '+e.message));
+}
+
+// ── POLL LOGS ─────────────────────────────────────────────────────────────────
 async function pollLogs(){
   try{
-    const r=await fetch(API+'/api/admin/logs?limit=50');
+    const r=await fetch(API+'/api/admin/logs?limit=100');
     const d=await r.json();
     const events=d.events||[];
-    if(events.length===0)return;
+    if(!events.length) return;
 
-    // Only show new events since last poll
+    // Update state machine
+    updateSM(events);
+
+    // Show new log entries
     const lastTs=window._lastLogTs||'';
-    const newEvents=lastTs
-      ? events.filter(e=>e.ts>lastTs)
-      : events.slice(-10); // first poll: show last 10
-    if(newEvents.length===0)return;
+    const newEvts=lastTs ? events.filter(e=>e.ts>lastTs) : events.slice(-10);
+    if(!newEvts.length) return;
     window._lastLogTs=events[events.length-1].ts;
 
-    for(const ev of newEvents){
-      const detail=Object.entries(ev.detail||{})
-        .map(([k,v])=>`<span style="color:#5f6688">${k}=</span>${v}`)
-        .join(' ');
-      const isHighlight=['EMERGENCY','PHASE','DONE','EXPERT'].includes(ev.type);
-      const isError=ev.level==='ERROR'||ev.type==='ERROR';
-      const icon={
-        'INTAKE':'🔍','EXPERT':'⚡','EMERGENCY':'🚨','PHASE':'→',
-        'RAG':'📚','ROUTE':'🔀','DONE':'✅','ERROR':'❌',
-        'PARAM':'📝','EMERGENCY_CHECK':'🛡️','FOLLOWUP':'💬'
-      }[ev.type]||'•';
-      const lbl=`${icon} [${ev.type}]${ev.session?' <span style="color:#3d4460">'+ev.session+'</span>':''} ${detail}`;
-      addLog(isError?'ERR':isHighlight?'EVENT':'INFO', lbl, isHighlight);
+    for(const ev of newEvts){
+      const detail=Object.entries(ev.detail||{}).map(([k,v])=>`<span style="color:#5f6688">${k}=</span>${v}`).join(' ');
+      const isHL=['EMERGENCY','PHASE','DONE','EXPERT'].includes(ev.type);
+      const isErr=ev.level==='ERROR'||ev.type==='ERROR';
+      const icons={'INTAKE':'🔍','EXPERT':'⚡','EMERGENCY':'🚨','PHASE':'→','RAG':'📚','ROUTE':'🔀','DONE':'✅','ERROR':'❌','PARAM':'📝','FOLLOWUP':'💬'};
+      const icon=icons[ev.type]||'•';
+      const lbl=`${icon} [${ev.type}]${ev.session?' <span style="color:#3d4460">'+ev.session.slice(0,8)+'</span>':''} ${detail}`;
+      addLog(isErr?'ERR':isHL?'EVENT':'INFO',lbl,isHL);
     }
-  }catch(e){
-    // silent — log polling is best effort
-  }
+  }catch(e){}
 }
 
 function addLog(level,msg,highlight){
   const now=new Date().toLocaleTimeString();
   eventLog.push({time:now,level,msg,highlight:!!highlight});
-  if(eventLog.length>200)eventLog.shift();
+  if(eventLog.length>200) eventLog.shift();
   logStats.total++;
-  if(msg.includes('emergency')||msg.includes('EMERGENCY'))logStats.emergencies++;
-  if(msg.includes('expert')||msg.includes('EXPERT'))logStats.expert++;
-  if(msg.includes('TTS')||msg.includes('tts'))logStats.tts++;
+  if(msg.includes('EMERGENCY')||msg.includes('emergency')) logStats.emergencies++;
+  if(msg.includes('EXPERT')||msg.includes('expert')) logStats.expert++;
+  if(msg.includes('TTS')||msg.includes('tts')) logStats.tts++;
   document.getElementById('log-total').textContent=logStats.total;
   document.getElementById('log-emerg').textContent=logStats.emergencies;
   document.getElementById('log-expert').textContent=logStats.expert;
@@ -452,27 +777,31 @@ function addLog(level,msg,highlight){
 }
 
 function addHealthLog(level,msg){
-  const c=document.getElementById('health-log');if(!c)return;
-  const e=document.createElement('div');e.className='le';
+  const c=document.getElementById('health-log'); if(!c) return;
+  const e=document.createElement('div'); e.className='le';
   e.innerHTML=`<span class="lt">${new Date().toLocaleTimeString()}</span><span class="ll ${level}">${level}</span><span class="lm">${msg}</span>`;
-  c.appendChild(e);c.scrollTop=c.scrollHeight;
-  while(c.children.length>60)c.removeChild(c.firstChild);
+  c.appendChild(e); c.scrollTop=c.scrollHeight;
+  while(c.children.length>60) c.removeChild(c.firstChild);
 }
 
 function renderLogs(){
   const c=document.getElementById('log-box');
-  if(eventLog.length===0){c.innerHTML='<div class="log-empty">No events yet — start a conversation in the app</div>';return;}
-  c.innerHTML=eventLog.slice().reverse().map(e=>`<div class="le"><span class="lt">${e.time}</span><span class="ll ${e.level}">${e.level}</span><span class="lm ${e.highlight?'hl':''}">${e.msg}</span></div>`).join('');
+  if(!eventLog.length){c.innerHTML='<div class="log-empty">No events yet — start a conversation</div>';return;}
+  c.innerHTML=eventLog.slice().reverse().map(e=>
+    `<div class="le"><span class="lt">${e.time}</span><span class="ll ${e.level}">${e.level}</span><span class="lm ${e.highlight?'hl':''}">${e.msg}</span></div>`
+  ).join('');
 }
 
 function clearLogs(){
-  eventLog=[];logStats={total:0,emergencies:0,expert:0,tts:0};
+  eventLog=[]; logStats={total:0,emergencies:0,expert:0,tts:0};
   ['log-total','log-emerg','log-expert','log-tts','log-badge'].forEach(id=>document.getElementById(id).textContent=0);
   document.getElementById('health-log').innerHTML='';
+  window._lastLogTs='';
   renderLogs();
   addLog('INFO','Log cleared');
 }
 
+// ── SETTINGS ──────────────────────────────────────────────────────────────────
 async function loadSettings(){
   try{
     const r=await fetch(API+'/api/admin/settings');
@@ -482,22 +811,40 @@ async function loadSettings(){
     if(s.intake_max_turns){document.getElementById('intake-turns').value=s.intake_max_turns;document.getElementById('itv').textContent=s.intake_max_turns;}
     if(s.temperature){document.getElementById('temp').value=s.temperature;document.getElementById('tmpv').textContent=s.temperature;}
     if(s.expert_max_tokens){document.getElementById('max-tok').value=s.expert_max_tokens;document.getElementById('tokv').textContent=s.expert_max_tokens;}
+    if(s.emergency_check_enabled!==undefined){
+      emergencyEnabled=s.emergency_check_enabled;
+      const tog=document.getElementById('emerg-toggle');
+      const lbl=document.getElementById('emerg-label');
+      if(emergencyEnabled){tog.className='toggle on';lbl.textContent='ON';lbl.style.color='#22c55e';}
+      else{tog.className='toggle off';lbl.textContent='OFF';lbl.style.color='#ef4444';}
+    }
     document.getElementById('config-json').textContent=JSON.stringify(s,null,2);
-    addLog('OK','Settings loaded from backend: '+JSON.stringify(s));
+    addLog('OK','Settings loaded');
   }catch(e){addLog('WARN','Could not load settings: '+e.message);}
 }
 
 async function saveSettings(){
   const msg=document.getElementById('savedmsg');
-  const s={pin:CORRECT,tts_speed_hi:parseFloat(document.getElementById('hi-speed').value),tts_speed_en:parseFloat(document.getElementById('en-speed').value),intake_max_turns:parseInt(document.getElementById('intake-turns').value),temperature:parseFloat(document.getElementById('temp').value),expert_max_tokens:parseInt(document.getElementById('max-tok').value)};
+  const s={
+    pin:CORRECT,
+    tts_speed_hi:parseFloat(document.getElementById('hi-speed').value),
+    tts_speed_en:parseFloat(document.getElementById('en-speed').value),
+    intake_max_turns:parseInt(document.getElementById('intake-turns').value),
+    temperature:parseFloat(document.getElementById('temp').value),
+    expert_max_tokens:parseInt(document.getElementById('max-tok').value),
+    emergency_check_enabled:emergencyEnabled
+  };
   try{
     const r=await fetch(API+'/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(s)});
-    if(!r.ok)throw new Error('HTTP '+r.status);
+    if(!r.ok) throw new Error('HTTP '+r.status);
     const saved=await r.json();
     document.getElementById('config-json').textContent=JSON.stringify(saved,null,2);
-    msg.textContent='✓ Saved — active immediately';msg.style.color='#22c55e';
-    addLog('OK',`Settings saved → TTS_hi:${s.tts_speed_hi}× TTS_en:${s.tts_speed_en}× turns:${s.intake_max_turns} temp:${s.temperature} tokens:${s.expert_max_tokens}`,true);
-  }catch(e){msg.textContent='⚠️ '+e.message;msg.style.color='#ef4444';addLog('ERR','Settings save failed: '+e.message);}
+    msg.textContent='✓ Saved — active immediately'; msg.style.color='#22c55e';
+    addLog('OK',`Saved → turns:${s.intake_max_turns} temp:${s.temperature} tokens:${s.expert_max_tokens} emergency:${s.emergency_check_enabled}`,true);
+  }catch(e){
+    msg.textContent='⚠️ '+e.message; msg.style.color='#ef4444';
+    addLog('ERR','Save failed: '+e.message);
+  }
   setTimeout(()=>msg.textContent='',4000);
 }
 </script>
