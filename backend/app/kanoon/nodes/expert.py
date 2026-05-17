@@ -28,13 +28,62 @@ def clean_response_for_user(response: str) -> str:
     return response.strip()
 
 
+def prune_history(history: list, max_turns: int = 4) -> tuple[list, str]:
+    """
+    Keep last max_turns verbatim.
+    Summarize older turns into one line.
+    Returns (pruned_history, summary_line)
+    """
+    if len(history) <= max_turns * 2:
+        return history, ""
+
+    # Split into old and recent
+    cutoff = len(history) - (max_turns * 2)
+    old_turns = history[:cutoff]
+    recent_turns = history[cutoff:]
+
+    # Build summary from old turns
+    user_msgs = [m["content"][:80] for m in old_turns if m.get("role") == "user"]
+    summary = f"[Earlier conversation summary: User mentioned — {' | '.join(user_msgs[:3])}]"
+
+    return recent_turns, summary
+
+
 def build_expert_prompt(state: KanoonState) -> tuple[str, int]:
     """Build the expert system prompt from frozen template."""
     lang = state.get("language", "hi")
     lang_instr = LANG_INSTRUCTION.get(lang, LANG_INSTRUCTION["en"])
     crime_type = state.get("crime_type", "other")
+    lang_name = {"hi": "Devanagari Hindi", "en": "English", "bn": "Bengali"}.get(lang, "English")
 
-    # Build rich case file from all collected fields
+    # Detect follow-up mode
+    is_followup = state.get("phase") == "follow_up"
+
+    if is_followup:
+        # Short focused prompt for follow-up questions
+        last_user = state.get("user_message_raw", "")
+        for m in reversed(state.get("history", [])):
+            if m.get("role") == "user":
+                last_user = m.get("content", "")
+                break
+
+        system = f"""{lang_instr}
+
+You are Kanoon Sakhi — answering a follow-up question from a woman who already received legal advice.
+
+CASE FILE: {json.dumps({k: state.get(k) for k in ['crime_type','urgency','relationship_to_accused','living_situation','type_of_violence','has_children'] if state.get(k)}, ensure_ascii=False)}
+HER QUESTION: {last_user}
+
+Answer ONLY her specific question in 2-4 sentences in {lang_name}.
+Do NOT repeat the full legal advice she already received.
+If she confirms she has evidence → tell her exactly what to do with it (which officer, what to bring).
+If she asks about free lawyer → give NALSA 15100 + 2 steps.
+Keep response under 80 words.
+
+{lang_instr}"""
+        return system, 200
+
+    # Full expert prompt
     case_fields = [
         "crime_type", "urgency", "relationship_to_accused", "state_india",
         "has_children", "marriage_date", "other_context",
@@ -54,10 +103,16 @@ def build_expert_prompt(state: KanoonState) -> tuple[str, int]:
     ]
     case_file = {f: state.get(f) for f in case_fields if state.get(f) is not None}
 
+    # Prune history to avoid context overflow
     history = state.get("history", [])
-    history_text = "\n".join([
-        f"{'User' if m['role']=='user' else 'Sakhi'}: {m['content']}"
-        for m in history[-8:] if m.get("content")
+    pruned_history, old_summary = prune_history(history, max_turns=4)
+
+    history_text = ""
+    if old_summary:
+        history_text = old_summary + "\n\n"
+    history_text += "\n".join([
+        f"{'User' if m['role']=='user' else 'Sakhi'}: {m['content'][:300]}"
+        for m in pruned_history[-6:] if m.get("content")
     ])
 
     system = EXPERT_SYSTEM.format(
@@ -67,20 +122,10 @@ def build_expert_prompt(state: KanoonState) -> tuple[str, int]:
         rag_context=state.get("rag_context", "No specific legal context retrieved."),
         history=history_text,
         timeline=TIMELINE_FORMAT.get(lang, TIMELINE_FORMAT["en"]),
-        lang_name={"hi": "Devanagari Hindi", "en": "English", "bn": "Bengali"}.get(lang, "English"),
+        lang_name=lang_name,
     )
 
-    # Follow-up mode: short answer
-    last_user = ""
-    for m in reversed(history):
-        if m.get("role") == "user":
-            last_user = m.get("content", "")
-            break
-
-    is_followup = state.get("phase") == "follow_up"
-    max_tokens = 250 if is_followup else 900
-
-    return system, max_tokens
+    return system, 900
 
 
 async def expert_node(state: KanoonState) -> dict:
@@ -88,6 +133,11 @@ async def expert_node(state: KanoonState) -> dict:
     Non-streaming expert call.
     Graph streams via astream_events — this node just returns the full response.
     """
+    import logging
+    log = logging.getLogger("strisakhi")
+    phase = state.get("phase", "unknown")
+    log.info(f"Expert node called — phase={phase}, crime={state.get('crime_type')}")
+
     system, max_tokens = build_expert_prompt(state)
     history = state.get("history", [])
 
